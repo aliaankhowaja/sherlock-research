@@ -7,9 +7,8 @@
 # public_g1.json into docs/eval/public_traces. The corpus file is gitignored; if it is missing the
 # script expands cases.jsonl.gz.
 #
-# LOCAL mode (the default, for the A100 box) runs the `laya` package in this process through
-# `uv run --with laya`: nothing leaves the machine and no key is needed. Set LOCAL=false and
-# LAYA_API_KEY to use the hosted endpoint instead. Card scores are cached in
+# Inference is local only (for the GPU box): the `laya` package runs in this process through
+# `uv run --with laya`, nothing leaves the machine and no key is needed. Card scores are cached in
 # python/sherlock/eval/.g1/public_cache, so a re-run after a failure only pays for what is missing.
 #
 # Shutdown: once the evaluation is armed (after the smoke test), the machine shuts down when the
@@ -22,18 +21,6 @@ cd "$(dirname "$0")/.."
 
 section() { echo; echo "=== $1 ==="; }
 truthy() { case "${1:-}" in 1|true|TRUE|True|yes|YES|Yes|on|ON|On) return 0;; *) return 1;; esac; }
-falsy() { case "${1:-}" in 0|false|FALSE|False|no|NO|No|off|OFF|Off) return 0;; *) return 1;; esac; }
-
-if [ -f .env ]; then
-  if [ -z "${LAYA_API_KEY:-}" ]; then
-    LAYA_API_KEY="$(grep '^LAYA_API_KEY=' .env | head -1 | cut -d= -f2- | tr -d '\r"'"'"'' || true)"
-    [ -z "$LAYA_API_KEY" ] || export LAYA_API_KEY
-  fi
-  if [ -z "${LOCAL:-}" ]; then
-    LOCAL="$(grep '^LOCAL=' .env | head -1 | cut -d= -f2- | tr -d '\r"'"'"'' || true)"
-    [ -z "$LOCAL" ] || export LOCAL
-  fi
-fi
 
 if truthy "${SHUTDOWN:-1}"; then
   if ! sudo -n true 2>/dev/null; then
@@ -70,23 +57,12 @@ fi
 [ -f docs/eval/public_traces/cases.jsonl ] \
   || { echo "g1-public: docs/eval/public_traces/cases.jsonl is missing (and cases.jsonl.gz did not produce it)" >&2; exit 1; }
 
-if falsy "${LOCAL:-}"; then
-  [ -n "${LAYA_API_KEY:-}" ] || { echo "g1-public: LOCAL=false needs LAYA_API_KEY (environment or .env)" >&2; exit 1; }
-  RUN=(uv run)
-  smoke_args=(--g1-allow-remote)
-  label="endpoint"
-else
-  # Default: final evaluations run locally, in-process (A100 box). LOCAL=true also lands here.
-  RUN=(uv run --with laya)
-  smoke_args=()
-  label="local"
-  export LOCAL=true
-fi
+RUN=(uv run --with laya)
 
 cd python/sherlock
 
-section "1/2 smoke test: Laya answers the sample card ($label)"
-"${RUN[@]}" sherlock-rec g1-check "${smoke_args[@]}"
+section "1/2 smoke test: Laya answers the sample card (local)"
+"${RUN[@]}" sherlock-rec g1-check
 
 armed=1
 section "2/2 G1 ordering run: public_g1 over the 5,032-trace public corpus (the long step; results print at the end)"

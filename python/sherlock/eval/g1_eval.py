@@ -111,6 +111,11 @@ def evaluate(cases, cfg):
             c["status"][g1["status"]] = c["status"].get(g1["status"], 0) + 1
             if g1["status"] == "unavailable":
                 reasons.append(f"{case['id']} ({m}): {g1.get('reason') or 'unavailable'}")
+            # per-case cost record (metrics spec §10): wall-clock in g1, truncation and card
+            # pressure per node; card lengths stand in for tokens (chars / 3 is the CARD_CHARS rule)
+            row.setdefault("cost", {})[m] = {"ms": g1["ms"], "cache": cache,
+                                             "truncated_cards": g1["truncated_cards"],
+                                             "card_chars": g1.get("card_chars", {})}
         if cfg["stability"] and len(case["candidates"]) > 1:
             runs = [[s["node"] for s in rank({**cfg["g1"], "cache_dir": None}, case["candidates"],
                                              lambda n: tuple(case["cards"][n]))["scores"]] for _ in range(2)]
@@ -168,7 +173,7 @@ def main():
     cases = [json.loads(line) for line in a.cases.read_text(encoding="utf-8").splitlines() if line.strip()]
     cases = [c for c in cases if c["status"] == "found"]
     cfg = {"seed": a.seed, "stability": a.stability, "tight": a.tight,
-           "g1": {"backend": a.backend, "allow_remote": True, "cache_dir": HERE / ".g1" / "cache"}}
+           "g1": {"backend": a.backend, "cache_dir": HERE / ".g1" / "cache"}}
     rows, cost, passes, reasons = evaluate(cases, cfg)
     down = sum(c["status"].get("unavailable", 0) for c in cost.values())
     if a.backend == "laya" and down:  # the laya rows would silently be the G0 order

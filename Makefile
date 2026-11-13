@@ -16,8 +16,8 @@ test: ## Run the test suites and re-check the committed evaluation results again
 eval: ## Regenerate the 3-gate evaluation tables in docs/eval (about 5 minutes)
 	cd python/sherlock && uv run python eval/run_eval.py --out ../../docs/eval
 
-g1-eval: ## G1 ordering evaluations (planted + generated cases; needs LAYA_API_KEY or LOCAL=true)
+g1-eval: ## G1 ordering evaluations (planted + generated cases; local laya inference)
 	@bash scripts/g1-eval.sh
 
-g1-public: ## G1 ordering on the public trace corpus (LOCAL=true default, no key needed)
+g1-public: ## G1 ordering on the public trace corpus (local laya inference, no key)
 	@bash scripts/g1-public.sh

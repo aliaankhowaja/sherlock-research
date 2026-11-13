@@ -108,55 +108,33 @@ def parse_pasted(items) -> dict:
 
 
 def _laya_cfg(args, cache_dir: Path | None) -> dict:
-    """G1 Laya settings from the flags. The key stays in the environment: LAYA_API_KEY, or a .env file here."""
-    env_file = Path(".env")
-    if env_file.is_file():
-        for line in env_file.read_text(encoding="utf-8").splitlines():
-            name, sep, value = line.partition("=")
-            if sep and name.strip() in ("LAYA_API_KEY", "LOCAL") and name.strip() not in os.environ:
-                os.environ[name.strip()] = value.strip().strip("'\"")
-    from sherlock.g1 import env_true
-
-    given = {"endpoint": args.g1_endpoint or os.environ.get("LAYA_API_BASE"), "path": args.g1_path,
-             "model": args.g1_model, "timeout_ms": args.g1_timeout_ms, "total_timeout_ms": args.g1_total_timeout_ms}
-    return {"backend": "laya", "local": env_true("LOCAL"), "allow_remote": args.g1_allow_remote,
-            "cache_dir": None if args.g1_no_cache else cache_dir,
+    """G1 Laya settings from the flags. Local inference only: no endpoint, no key."""
+    given = {"model": args.g1_model, "total_timeout_ms": args.g1_total_timeout_ms}
+    return {"backend": "laya", "cache_dir": None if args.g1_no_cache else cache_dir,
             **{k: v for k, v in given.items() if v is not None}}
 
 
 def _g1_check(args) -> int:
-    """Smoke test of G1 Laya (local or endpoint): the sample card twice, the reported model, usage and answers."""
+    """Smoke test of G1 Laya (local): the sample card twice, the reported model, usage and answers."""
     import time
-    from urllib.parse import urlsplit
 
-    from sherlock.g1 import DEFAULTS, SAMPLE_CARD, ask, blocked, local_mode, parse
+    from sherlock.g1 import DEFAULTS, SAMPLE_CARD, ask, parse
 
     cfg = {**DEFAULTS, **_laya_cfg(args, None)}
-    local = local_mode(cfg)
-    if local:
-        print(f"sherlock-rec: this runs Laya locally with model {cfg.get('model')}", file=sys.stderr)
-    else:
-        print(f"sherlock-rec: this sends card text to {urlsplit(cfg['endpoint']).hostname}", file=sys.stderr)
-    problem = blocked(cfg)
-    if problem:
-        print(f"sherlock-rec: {problem}", file=sys.stderr)
-        return EXIT_ERROR
+    print(f"sherlock-rec: this runs Laya locally with model {cfg.get('model')}", file=sys.stderr)
     runs = []
     try:
         for _ in range(2):
             start = time.monotonic()
-            raw = ask(cfg, SAMPLE_CARD, cfg["timeout_ms"] / 1000)
+            raw = ask(cfg, SAMPLE_CARD, cfg["total_timeout_ms"] / 1000)
             runs.append((raw, *parse(raw), round(1000 * (time.monotonic() - start))))
     except (OSError, ValueError, RuntimeError) as exc:
-        hint = " (the Laya workspace has no credits)" if getattr(exc, "code", None) == 402 else ""
-        where = f"local model {cfg.get('model')}" if local else f"{cfg['endpoint']}{cfg['path']}"
-        print(f"sherlock-rec: {where}: {type(exc).__name__}: {exc}{hint}", file=sys.stderr)
+        print(f"sherlock-rec: local model {cfg.get('model')}: {type(exc).__name__}: {exc}", file=sys.stderr)
         return EXIT_ERROR
     (raw, answers, truncated, first_ms), (_, again, _, warm_ms) = runs
-    print(json.dumps({"mode": "local" if local else "http",
-                      "url": None if local else cfg["endpoint"] + cfg["path"],
+    print(json.dumps({"mode": "local",
                       "model_requested": cfg.get("model"),
-                      "model_reported": raw.get("model"), "routed_to": (raw.get("routing") or {}).get("model"),
+                      "model_reported": raw.get("model"),
                       "usage": raw.get("usage"), "truncated": truncated, "answers": answers,
                       "same_answers_twice": answers == again, "ms_first": first_ms, "ms_warm": warm_ms}, indent=2))
     return 0
@@ -234,16 +212,10 @@ def _intake(args) -> int:
 
 def _laya_args(p) -> None:
     p.add_argument("--g1-model", help="Laya checkpoint: an alias, HF repo id or local path (default typed-decisions)")
-    p.add_argument("--g1-endpoint", help="Laya base URL (default: env LAYA_API_BASE, else https://api.laya.studio)")
-    p.add_argument("--g1-path", help="Laya path (default /v1/systemone)")
-    p.add_argument("--g1-allow-remote", action="store_true",
-                   help="allow a non-local Laya endpoint: the redacted node cards then leave this machine "
-                        "(unused when env LOCAL=true runs the model in this process)")
-    p.add_argument("--g1-timeout-ms", type=int, help="per Laya call (default 10000)")
     p.add_argument("--g1-total-timeout-ms", type=int,
-                   help="all of G1 in one diagnosis (default 60000; 600000 when LOCAL=true)")
+                   help="all of G1 in one diagnosis (default 600000: local inference is slow on CPU, fast on GPU)")
     p.add_argument("--g1-no-cache", action="store_true",
-                   help="always call the endpoint; the result is then not reproducible (g1.cache = disabled)")
+                   help="always infer again; the result is then not reproducible (g1.cache = disabled)")
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -290,8 +262,8 @@ def main(argv: list[str] | None = None) -> int:
                     help="hard cap on G3 trials (default: 40, or 3 per candidate + 20 when larger)")
     dg.add_argument("--g1", choices=["off", "hosted", "laya", "fake"],
                     help="optional G1 trial ordering (default off; hosted when --g1-url is given). `laya` scores each "
-                         "candidate with the Laya API (key: env LAYA_API_KEY); with env LOCAL=true it runs the laya "
-                         "package in this process instead; `fake` scores by a hash of the node name, for tests. "
+                         "candidate with the open-weight Laya checkpoint run in this process (GPU recommended; "
+                         "CPU works, slower); `fake` scores by a hash of the node name, for tests. "
                          "G1 only reorders trials, never changes the answer")
     dg.add_argument("--g1-url", help="optional G1 shortlist: base URL of an OpenAI-compatible endpoint "
                                      "(e.g. https://api.openai.com/v1). The model sees redacted node summaries, has no tools, "
@@ -319,7 +291,7 @@ def main(argv: list[str] | None = None) -> int:
     it.add_argument("--check", help="a check file Z (sherlock.yaml)")
     it.add_argument("--note")
     it.add_argument("--dir", default=".sherlock", help="Sherlock directory (default .sherlock)")
-    gc = sub.add_parser("g1-check", help="smoke-test G1 Laya with the sample card (local or endpoint; runs it twice)")
+    gc = sub.add_parser("g1-check", help="smoke-test G1 Laya locally with the sample card (runs it twice)")
     _laya_args(gc)
     run = sub.add_parser("run", help="run a command under the recorder")
     run.add_argument("--replay", action="store_true", help="serve calls from the cassette; never go live")

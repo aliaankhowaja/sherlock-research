@@ -73,9 +73,9 @@ def _orders(record: dict, seed: int, backend: str):
     shuffled = list(on_path)
     random.Random(f"{seed}:{record['id']}").shuffle(shuffled)
     out = {"random": shuffled, "path": list(on_path), "g0": order_candidates(on_path, clues)}
-    # `local` is left unset so LOCAL=true selects the in-process checkpoint, as in g1_eval.
-    cfg = {"backend": backend, "allow_remote": True, "cache_dir": HERE / ".g1" / "public_cache"}
-    problems = []
+    # Inference is local only: no endpoint, no key, no card text leaves the machine.
+    cfg = {"backend": backend, "cache_dir": HERE / ".g1" / "public_cache"}
+    problems, cost = [], {}
     for name in ("laya", "laya_masked"):
         deck = decks[name]
         g1 = rank(cfg, on_path, lambda n, deck=deck: tuple(deck[n]))
@@ -83,7 +83,10 @@ def _orders(record: dict, seed: int, backend: str):
             problems.append(f"{record['id']} ({name}): {g1.get('reason') or 'unavailable'}")
         else:
             out[name] = order_candidates(on_path, clues, [s["node"] for s in g1["scores"]])
-    return out, problems
+        cost[name] = {"ms": g1["ms"], "cache": g1.get("cache"),
+                      "truncated_cards": g1["truncated_cards"],
+                      "card_chars": g1.get("card_chars", {})}
+    return out, problems, cost
 
 
 def _score_row(record: dict, orders: dict) -> dict:
@@ -156,11 +159,12 @@ def two_role_appendix(records: list[dict]) -> dict:
 
 
 def evaluate(headline: list[dict], appendix: list[dict], backend: str, seed: int) -> dict:
-    rows = []
+    rows, costs = [], []
     for record in headline:
-        orders, failed = _orders(record, seed, backend)
+        orders, failed, cost = _orders(record, seed, backend)
         if failed:
             raise RuntimeError("Laya was unavailable:\n" + "\n".join(failed[:8]))
+        costs.append({"id": record["id"], **cost})
         rows.append(_score_row(record, orders))
     by_source = {}
     for row in rows:
@@ -173,6 +177,7 @@ def evaluate(headline: list[dict], appendix: list[dict], backend: str, seed: int
         "by_source": {source: summarize(group) for source, group in sorted(by_source.items())},
         "g0_only": g0_only_table(headline),
         "two_role": two_role_appendix(appendix),
+        "cost": {"cases": costs},
         "rows": rows,
     }
 

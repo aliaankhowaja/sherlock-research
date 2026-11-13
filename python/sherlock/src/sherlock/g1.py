@@ -2,14 +2,12 @@
 
 The scores feed `order_candidates` as the tie-breaker inside equal G0 clue scores (ordering variant A), so a clue
 always outranks a score. G1 never names a cause, never adds or removes a candidate, and never fails a diagnosis.
-Backends: `laya` (the Laya System One API, zero-shot: the score is P(needs_restore = yes)) and `fake` (a hash of the
-node name, no network, for tests). Today's hosted shortlist stays in gates.py.
+Backends: `laya` (the open-weight Laya checkpoint run in this process, zero-shot: the score is P(needs_restore =
+yes)) and `fake` (a hash of the node name, no network, for tests). Today's hosted shortlist stays in gates.py.
 
-The Laya call is the only network use in a diagnosis, and only with `--g1 laya`. Set `LOCAL=true` to run the
-`laya` package in this process instead: no endpoint, no key and no card text leaves the machine (the checkpoint
-itself may be downloaded once). A non-local HTTP endpoint also needs `--g1-allow-remote`, because the card text
-leaves the machine. Answers are rounded to 4 decimals and cached on disk by card, so a re-run gives the same scores
-offline. The API key comes from the environment, never from a flag, and is never written anywhere.
+Local Laya is the only inference: no endpoint, no key, and no card text leaves the machine (the checkpoint itself
+may be downloaded once). It must run on the GPU box for speed, but a CPU run works and is only slower. Answers are
+rounded to 4 decimals and cached on disk by card, so a re-run gives the same scores offline.
 
 Each candidate is shown to the scorer as a node card: a short, redacted, deterministic text that puts the node's
 failed behaviour next to its known-good behaviour. The recording does not say which node made a tool call, so
@@ -19,13 +17,9 @@ cards carry no tool fields; nothing in a run names a node's role, so there is no
 import difflib
 import hashlib
 import json
-import os
 import re
 import time
-import urllib.error
-import urllib.request
 from pathlib import Path
-from urllib.parse import urlsplit
 
 from sherlock import __version__
 from sherlock.redact import redact_body
@@ -33,12 +27,10 @@ from sherlock.sources import node_outputs
 
 CARD_CHARS = 2400  # 800 tokens at a conservative 1 token per 3 characters (spec 5, rule 3)
 SNIPPET = 200
-LOCAL_HOSTS = ("localhost", "127.0.0.1", "::1")
-_ENV_TRUTHY = {"1", "true", "yes", "on"}
+LOCAL_TOTAL_TIMEOUT_MS = 600000  # slow on CPU, fast on GPU; still bounded
 _LOCAL_AGENTS: dict[str, object] = {}
-DEFAULTS = {"endpoint": "https://api.laya.studio", "path": "/v1/systemone", "model": "typed-decisions",
-            "timeout_ms": 10000, "total_timeout_ms": 60000}  # typed-decisions: English, 1,024-token context
-LOCAL_TOTAL_TIMEOUT_MS = 600000  # local CPU inference is much slower than one HTTP call; still bounded
+DEFAULTS = {"model": "typed-decisions", "total_timeout_ms": LOCAL_TOTAL_TIMEOUT_MS}
+# typed-decisions: English, 1,024-token context
 QUESTION_VERSION = "g1_questions_v1"
 QUESTIONS = {  # the wording is part of QUESTION_VERSION: any change needs a new version. No tool_relevance (see above)
     "output_effect": {"type": "choice", "instructions": "How does the failed output differ from the good output?",
@@ -157,33 +149,6 @@ class LocalUnavailable(RuntimeError):
     """Local Laya cannot run here (missing package or checkpoint); G1 falls back to the G0 order (C8)."""
 
 
-class _NoRedirect(urllib.request.HTTPRedirectHandler):
-    def redirect_request(self, *args):  # a redirect could carry the card and the key to another host
-        return None
-
-
-def env_true(name: str) -> bool:
-    return os.environ.get(name, "").strip().lower() in _ENV_TRUTHY
-
-
-def local_mode(cfg: dict) -> bool:
-    """`LOCAL=true` runs the model in this process; an explicit cfg["local"] wins over the environment."""
-    value = cfg.get("local")
-    return env_true("LOCAL") if value is None else bool(value)
-
-
-def blocked(cfg: dict) -> str | None:
-    """Why G1 may not call this endpoint at all, checked before any request is built."""
-    if local_mode(cfg):  # in-process inference contacts no endpoint and needs no key
-        return None
-    host = urlsplit(cfg["endpoint"]).hostname or ""
-    if host not in LOCAL_HOSTS and not cfg.get("allow_remote"):
-        return f"{host} is not local, so card text would leave the machine; pass --g1-allow-remote to allow it"
-    if host not in LOCAL_HOSTS and not os.environ.get("LAYA_API_KEY"):
-        return "LAYA_API_KEY is not set"
-    return None
-
-
 def _local_agent(cfg: dict):
     """The resident `laya` agent for this checkpoint, loaded once and reused across cards."""
     model = cfg.get("model") or DEFAULTS["model"]
@@ -217,26 +182,9 @@ def _ask_local(cfg: dict, card: str) -> dict:
 
 
 def ask(cfg: dict, card: str, timeout_s: float) -> dict:
-    """Score one card locally or POST it to the endpoint; the raw response."""
-    if local_mode(cfg):
-        return _ask_local(cfg, card)
-    key = os.environ.get("LAYA_API_KEY")
-    body = {"state": card, "questions": QUESTIONS, **({"model": cfg["model"]} if cfg.get("model") else {})}
-    req = urllib.request.Request(cfg["endpoint"].rstrip("/") + cfg["path"], json.dumps(body).encode(),
-                                 {"Content-Type": "application/json", "User-Agent": f"sherlock-rec/{__version__}",
-                                  **({"Authorization": f"Bearer {key}"} if key else {})})
-    for attempt in (0, 1):
-        try:
-            with urllib.request.build_opener(_NoRedirect).open(req, timeout=timeout_s) as resp:  # noqa: S310
-                return json.loads(resp.read())
-        except urllib.error.HTTPError as exc:
-            if attempt or not (exc.code == 429 or exc.code >= 500):
-                raise
-        except urllib.error.URLError:
-            if attempt:
-                raise
-        time.sleep(1)  # fixed, no jitter: behaviour stays reproducible
-    raise AssertionError("unreachable")
+    """Score one card with the local checkpoint; the raw response. `timeout_s` is unused today
+    (the total budget bounds the whole pass), kept so callers stay stable for future backends."""
+    return _ask_local(cfg, card)
 
 
 def parse(raw: dict) -> tuple[dict, bool]:
@@ -261,10 +209,7 @@ def parse(raw: dict) -> tuple[dict, bool]:
 def _cache_path(cfg: dict, card: str) -> Path | None:
     if not cfg.get("cache_dir"):
         return None
-    if local_mode(cfg):
-        key = json.dumps(["local", cfg.get("model"), QUESTION_VERSION, card])
-    else:
-        key = json.dumps([urlsplit(cfg["endpoint"]).netloc, cfg["path"], cfg.get("model"), QUESTION_VERSION, card])
+    key = json.dumps(["local", cfg.get("model"), QUESTION_VERSION, card])
     return Path(cfg["cache_dir"]) / f"{hashlib.sha256(key.encode()).hexdigest()}.json"
 
 
@@ -297,22 +242,17 @@ def rank(cfg: dict, candidates: list[str], card_of) -> dict:
     """The artifact's `g1` object. `scores` is in rank order: score high to low, then name; null scores last.
     `card_of(node)` gives (card, truncated); a card that cannot be built gives a null score (C8), never an error."""
     start = time.monotonic()
-    given = cfg
     cfg = {**DEFAULTS, **cfg}
     laya = cfg["backend"] == "laya"
-    local = local_mode(cfg)
-    if local and "total_timeout_ms" not in given:
-        cfg["total_timeout_ms"] = LOCAL_TOTAL_TIMEOUT_MS
     out = {"backend": cfg["backend"], "status": "skipped", "order_variant": "A", "scores": [], "truncated_cards": [],
-           "card_hashes": {}}
+           "card_hashes": {}, "card_chars": {}}
     if laya:
-        out.update(question_version=QUESTION_VERSION, mode="local" if local else "http",
-                   endpoint_host=None if local else urlsplit(cfg["endpoint"]).hostname,
-                   model=cfg.get("model"), client_version=__version__, server_version=None,
+        out.update(question_version=QUESTION_VERSION, mode="local", model=cfg.get("model"),
+                   client_version=__version__, total_timeout_ms=cfg["total_timeout_ms"],
                    cache={"hits": 0, "misses": 0} if cfg.get("cache_dir") else "disabled")
     if len(candidates) < 2:
         return {**out, "ms": 0}
-    problem = blocked(cfg) if laya else None
+    problem = None
     scores, answers, called = {}, {}, False
     misses: list[tuple[str, str]] = []
 
@@ -329,21 +269,18 @@ def rank(cfg: dict, candidates: list[str], card_of) -> dict:
         scores[n] = None if entry["truncated"] else entry["answers"]["needs_restore"]["yes"]
 
     def _score_one(n: str, card: str) -> bool:
-        """Score one card. False means stop: the endpoint is dead, the key is missing, or time ran out."""
+        """Score one card. False means stop: time ran out or the checkpoint could not be loaded."""
         nonlocal problem
         left = cfg["total_timeout_ms"] / 1000 - (time.monotonic() - start)
         if left <= 0:
             problem = f"the G1 time limit of {cfg['total_timeout_ms']} ms was reached"
             return False
         try:
-            entry, hit = cached_answers(cfg, card, min(cfg["timeout_ms"] / 1000, left))
+            entry, hit = cached_answers(cfg, card, left)
         except LocalUnavailable as exc:  # C8: no local package or checkpoint means G1 is off, not a failed run
             problem = str(exc)
             return False
-        except Exception as exc:  # noqa: BLE001 - C8: one bad card is a null score; a dead endpoint stops G1
-            if isinstance(exc, OSError) and (not called or getattr(exc, "code", None) in (401, 402, 403)):
-                problem = f"the endpoint failed: {type(exc).__name__} {getattr(exc, 'code', '')}".rstrip()
-                return False
+        except Exception:  # noqa: BLE001 - C8: one bad card is a null score and the pass continues
             scores[n] = None
             return True
         _accept(n, entry, hit)
@@ -356,19 +293,16 @@ def rank(cfg: dict, candidates: list[str], card_of) -> dict:
             scores[n] = None
             continue
         out["card_hashes"][n] = hashlib.sha256(card.encode()).hexdigest()[:16]
+        out["card_chars"][n] = len(card)
         out["truncated_cards"] += [n] if truncated else []
         if not laya:
             scores[n] = fake_score(n)
             continue
-        if local:
-            path = _cache_path(cfg, card)
-            if path and path.is_file():
-                _accept(n, json.loads(path.read_text(encoding="utf-8")), True)
-            else:
-                misses.append((n, card))
-            continue
-        if not _score_one(n, card):
-            break
+        path = _cache_path(cfg, card)
+        if path and path.is_file():
+            _accept(n, json.loads(path.read_text(encoding="utf-8")), True)
+        else:
+            misses.append((n, card))
     if misses and not problem:
         # One forward for every uncached card. On Metal, system_one scores a single card and
         # leaves the batch axis idle; predict_batch packs them. Checked against system_one on
@@ -403,17 +337,17 @@ def rank(cfg: dict, candidates: list[str], card_of) -> dict:
                 if not _score_one(n, card):
                     break
     # A card the model cut gets a null score and the run continues (spec rule 4). That is
-    # `partial`, including when every card was cut. `unavailable` is a dead endpoint, a missing
-    # key, or a time limit: treating "all truncated" as that made the evaluation stop and blame
-    # the API key.
-    every_card_cut = bool(scores) and set(scores) <= set(out["truncated_cards"])
+    # `partial`, including when every card was cut. `unavailable` is a missing checkpoint or a
+    # time limit: treating "all truncated" as that made the evaluation stop and blame the model.
+    every_card_cut = set(scores) <= set(out["truncated_cards"])
     if not problem and all(v is None for v in scores.values()) and not every_card_cut:
         problem = "no card got a score"
     if problem:  # C8: the run goes on exactly as if G1 were off
         out.update(status="unavailable", reason=problem)
     else:
         order = sorted(candidates, key=lambda n: (scores[n] is None, -(scores[n] or 0.0), n))
-        out.update(status="ok" if None not in scores.values() else "partial",
+        partial = not scores or any(v is None for v in scores.values())
+        out.update(status="partial" if partial else "ok",
                    scores=[{"node": n, "score": scores[n], **({"answers": answers[n]} if n in answers else {})}
                            for n in order])
     out["ms"] = round(1000 * (time.monotonic() - start))

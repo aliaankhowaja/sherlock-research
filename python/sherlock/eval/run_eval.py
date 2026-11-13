@@ -191,6 +191,7 @@ def _run_group(cases, seed):
                          "retry": retry,
                          "sherlock": {"status": art["status"], "reason_code": art.get("reason_code"),
                                       "trials_used": red.get("trials_used", 0),
+                                      "elapsed_s": (art.get("budget") or {}).get("elapsed_s"),
                                       "exhaustive_trials": red.get("exhaustive_trials", 0),
                                       "pruned_ratio": (art.get("pruning") or {}).get("pruned_ratio"),
                                       "unverified_sets": art.get("unverified_sets", []),

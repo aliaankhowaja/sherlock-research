@@ -47,14 +47,15 @@ Experiments:
 
 ```sh
 make eval        # 3-gate planted evaluation, about 5 minutes, writes docs/eval/results.*
-make g1-eval     # G1 ordering, planted + generated cases (LOCAL=true for local laya, else LAYA_API_KEY)
-make g1-public   # G1 ordering on the public corpus (LOCAL=true default; SHUTDOWN=0 keeps the machine on)
+make g1-eval     # G1 ordering, planted + generated cases (local laya inference; GPU box recommended)
+make g1-public   # G1 ordering on the public corpus (local laya; SHUTDOWN=0 keeps the machine on)
 ```
 
 The planted 3-gate evaluation needs `langgraph-cli` and no network: runs are recorded against a local echo
-stub, then replayed inside a socket trap that forbids every non-loopback connection. G1 evaluations with
-`LOCAL=true` run the `laya` package in-process and send nothing anywhere; answers are cached in
-`python/sherlock/eval/.g1/` so a re-run after a failure only pays for what is missing.
+stub, then replayed inside a socket trap that forbids every non-loopback connection. G1 runs the open-weight
+`laya` checkpoint **locally** in-process (GPU box recommended; a CPU run works and is only slower): no endpoint,
+no key, and no card text leaves the machine. Answers are cached in `python/sherlock/eval/.g1/` so a re-run
+after a failure only pays for what is missing.
 
 ## Datasets
 

@@ -2,41 +2,22 @@
 # G1 ordering evaluation: every live run in one place.
 # Usage: make g1-eval   (or: bash scripts/g1-eval.sh)
 #
-# HTTP mode needs LAYA_API_KEY (environment or .env in the repo root) on a Laya workspace with credits: about
-# 3.2M input tokens, about $0.12, and sends synthetic node cards to api.laya.studio. LOCAL=true instead runs the
-# `laya` package in this process through `uv run --with laya` (first run downloads the CPU/CUDA package set) and
-# sends nothing. Answers are cached in
-# python/sherlock/eval/.g1/cache, so a re-run after a failure only pays for what is missing.
+# Inference is local only: the `laya` package runs in this process through `uv run --with laya`
+# (first run downloads the CPU/CUDA package set; use the GPU box for speed) and sends nothing
+# anywhere. Answers are cached in python/sherlock/eval/.g1/cache, so a re-run after a failure
+# only pays for what is missing.
 # Writes docs/eval/g1 (86 planted cases) and docs/eval/g1_gen (generated test half); commit both afterwards.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
 section() { echo; echo "=== $1 ==="; }
-truthy() { case "${1:-}" in 1|true|TRUE|True|yes|YES|Yes|on|ON|On) return 0;; *) return 1;; esac; }
 
-if [ -f .env ]; then
-  if [ -z "${LAYA_API_KEY:-}" ]; then
-    LAYA_API_KEY="$(grep '^LAYA_API_KEY=' .env | head -1 | cut -d= -f2- | tr -d '\r"'"'"'' || true)"
-    [ -z "$LAYA_API_KEY" ] || export LAYA_API_KEY
-  fi
-  if [ -z "${LOCAL:-}" ]; then
-    LOCAL="$(grep '^LOCAL=' .env | head -1 | cut -d= -f2- | tr -d '\r"'"'"'' || true)"
-    [ -z "$LOCAL" ] || export LOCAL
-  fi
-fi
-
-if truthy "${LOCAL:-}"; then
-  RUN=(uv run --with laya)
-  smoke=("${RUN[@]}" sherlock-rec g1-check)
-else
-  [ -n "${LAYA_API_KEY:-}" ] || { echo "g1-eval: set LAYA_API_KEY or LOCAL=true (environment or .env)" >&2; exit 1; }
-  RUN=(uv run)
-  smoke=("${RUN[@]}" sherlock-rec g1-check --g1-allow-remote)
-fi
+RUN=(uv run --with laya)
+smoke=("${RUN[@]}" sherlock-rec g1-check)
 
 cd python/sherlock
 
-section "1/6 smoke test: Laya answers the sample card twice ($(truthy "${LOCAL:-}" && echo local || echo endpoint))"
+section "1/6 smoke test: Laya answers the sample card twice (local)"
 "${smoke[@]}"
 
 if [ ! -f eval/.g1/cases.jsonl ]; then
