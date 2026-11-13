@@ -1,0 +1,305 @@
+"""`sherlock-rec diagnose`: find every 1-minimal set of nodes whose restoration fixes a failed run.
+
+Composes G0 clues and the G2 path check (clues.py), known-good sources (sources.py), pruning and
+search (search.py) over the G3 trial primitive (g3.py). Writes a JSON artifact for the UI to
+`.sherlock/diagnoses/<thread_id>.json`. No live calls, ever: every trial is served from the cassette
+or abstains (NFR-3).
+"""
+
+import json
+import time
+from datetime import datetime, timezone
+from pathlib import Path
+
+from sherlock.cassette import Cassette
+from sherlock.checks import Checks, evaluate
+from sherlock.clues import differs_clues, history_clues, order_candidates, path_check, tool_call_clues
+from sherlock.g1 import node_card
+from sherlock.g1 import rank as rank_g1
+from sherlock.g3 import G3Error, history_usable, run_g3
+from sherlock.gates import disabled as g1_disabled
+from sherlock.gates import run_g1
+from sherlock.search import LIMITATION, Budget, Pruning, SearchResult, _supersteps, plan_candidates, score_of, search
+from sherlock.sources import Source, assess, rank
+
+# Schema 1 stays; Phase 4 only adds fields: clues, path_check, known_good_source, sources_considered,
+# other_sources, intake, trials[].n/elapsed_s, pruning.pruned_ratio/widened, g1, gate_summary, trials[].gates,
+# screen (how the minimal sets were found).
+SCHEMA = 1
+MAX_SOURCES = 3  # prior successes searched and compared (FR-K4); each gets the full trial budget
+DISCOVER_CAP = 10
+LIMITATIONS = [
+    LIMITATION,
+    "restoration goes through the run context only (spec 4.4, secondary path); a node whose behaviour "
+    "is not configurable through context cannot be restored",
+    "trials are served only from the recorded cassette; a set that needs a call that was never recorded "
+    "is reported as 'cannot say', never guessed",
+    "human-in-the-loop / interrupt resumes are out of scope for v1 (FR-G3.10): a run whose history shows an "
+    "interrupt is not diagnosed, it abstains interrupt_unsupported",
+    "clues (G0) are weaker than a G3 trial: they order the search and may widen it, they never decide",
+]
+NEW_FIELDS = {"clues": [], "path_check": None, "known_good_source": None, "sources_considered": [],
+              "other_sources": [], "intake": None, "g1": g1_disabled(), "gate_summary": None}
+
+
+def _early(thread_id, code, reason, check=None, **extra) -> dict:
+    """An abstain decided before any trial."""
+    empty = Pruning(list(extra.pop("on_path", [])), [], {}, [])  # the path is shown, nothing is claimed about it
+    return {"schema": SCHEMA, "thread_id": thread_id, "status": "abstain", "reason_code": code, "reason": reason,
+            "minimal_sets": [], "unverified_sets": [], "complete": False, "notes": [],
+            "counts": {"fixes": 0, "partly_helps": 0, "does_not_help": 0, "cannot_say": 0, "total": 0},
+            "budget": {}, "trials": [], "check": check, "pruning": empty.to_dict(),
+            "trial_reduction": None, "limitations": LIMITATIONS, **{**NEW_FIELDS, **extra}}
+
+
+def _context_of(client, thread_id, history):
+    run_id = (history[0].get("metadata") or {}).get("run_id")
+    run = client.request("GET", f"/threads/{thread_id}/runs/{run_id}") if run_id else None
+    return ((run or {}).get("kwargs") or {}).get("context") or {}
+
+
+def _tool_clues(cassette_path):
+    cassette = Cassette(cassette_path)
+    return tool_call_clues(cassette.calls(), cassette.chunks)
+
+
+def _gather_sources(client, thread_id, graph_id, history, context, checks, good_runs, discover,
+                    owners=None) -> list[Source]:
+    """Assess every named prior run (confirmed by the engineer) and, if asked, same-graph runs found on the server."""
+    wanted = [(g, True) for g in dict.fromkeys(good_runs) if g != thread_id]
+    if discover:
+        found = client.request("POST", "/threads/search", {"metadata": {"graph_id": graph_id}, "limit": 50}) or []
+        known = {g for g, _ in wanted} | {thread_id}
+        # Sherlock's own trial forks are never sources (they carry `sherlock_fork_of`).
+        own = [t for t in found if t["thread_id"] not in known and "sherlock_fork_of" not in (t.get("metadata") or {})]
+        wanted += [(t["thread_id"], False) for t in own][:DISCOVER_CAP]
+    sources = []
+    for gid, confirmed in wanted:
+        try:
+            good_history = client.request("POST", f"/threads/{gid}/history", {"limit": 1000})
+        except G3Error as exc:
+            sources.append(Source(gid, confirmed, why=f"cannot be read: {exc}"))
+            continue
+        sources.append(assess(gid, confirmed, history, context, good_history,
+                              _context_of(client, gid, good_history) if good_history else None, checks, owners))
+    return sources
+
+
+def _no_source_reason(sources):
+    if not sources:
+        return ("no known-good source: pass --good-run THREAD (a prior successful run of the same input), "
+                "--known-good FILE, or --discover-good")
+    return "no usable known-good run: " + "; ".join(f"{s.thread_id} {s.why}" for s in sources)
+
+
+ANCESTRY = ("runs after the last write", "runs in parallel with the node")
+
+
+def _gate_summary(on_path, pruning, unit_clues, nominated, path, trials_used) -> dict:
+    """What each gate contributed (G0 flagged, G1 nominated, G2 cut, G3 trials) next to the pruning that came first."""
+    pruned = pruning.pruned
+    cut_by_g2 = [n for n, why in pruned.items() if why.startswith("not on the shortlist")] + (list(path.rejected) if path else [])
+    return {"nodes_total": len(on_path),
+            "pruned_by_ancestry": sum(why.startswith(ANCESTRY) for why in pruned.values()),
+            "pruned_other": sum(not why.startswith(ANCESTRY) and not why.startswith("not on the shortlist") for why in pruned.values()),
+            "g0_flagged": len({c.node for c in unit_clues if c.node}),
+            "g1_nominated": len(nominated), "g2_cut": len(dict.fromkeys(cut_by_g2)),
+            "g3_trials": trials_used, "exhaustive_count": pruning.exhaustive_trials}
+
+
+def _unit(client, thread_id, history, context, checks, cassette_path, budget, clock, original, clues, kg,
+          source, path, suspects, emit=lambda _event: None, nominated=(), g1_cfg=None):
+    """One search with one known-good source. Returns (result dict, pruning, clues shown)."""
+    unit_clues = clues + (differs_clues(source.differing, source.same_output, source.thread_id) if source else [])
+    widen = {c.node for c in unit_clues if c.widens and c.node}
+    pruning = plan_candidates(history, kg, context, checks.output_key,
+                              set(source.same_output) if source else set(), widen)
+    notes = []
+    if suspects:
+        allowed = set(path.kept) | (widen & set(pruning.candidates))
+        for n in pruning.candidates:
+            if n not in allowed:
+                pruning.pruned[n] = "not on the shortlist and no widening clue (FR-G0.5)"
+        pruning.candidates = [n for n in pruning.candidates if n in allowed]
+        notes.append("the search was limited to the suspects and the nodes a G0 clue widened it with")
+    if g1_cfg:  # the G1 scorer sees only the survivors; its order breaks ties inside a G0 score (variant A)
+        good = source.history if source else None
+        g1 = rank_g1(g1_cfg, pruning.candidates,
+                     lambda n: node_card(n, history, good, checks, g1_cfg.get("mask", False)))
+        nominated = [s["node"] for s in g1["scores"]]
+        g1["order_changed"] = (order_candidates(pruning.candidates, unit_clues)
+                               != order_candidates(pruning.candidates, unit_clues, nominated))
+        emit({"event": "g1", "backend": g1["backend"], "status": g1["status"], "nominated": nominated,
+              "cache": g1.get("cache"), "ms": g1["ms"]})
+    candidates = order_candidates(pruning.candidates, unit_clues, list(nominated))
+    pruning.candidates = candidates
+    tags = {n: {g for g, on in (("g0", n in {c.node for c in unit_clues}), ("g1", n in nominated),
+                                ("g2", bool(path) and n in path.kept)) if on} for n in candidates}
+    emit({"event": "plan", "source": source.thread_id if source else None, "candidates": candidates,
+          "pruned": dict(pruning.pruned), "exhaustive_trials": pruning.exhaustive_trials,
+          "max_trials": budget.max_trials, "max_size": budget.max_size})
+    if source and source.unattributed:
+        result = SearchResult(
+            "abstain", "cannot_attribute",
+            f"the passing run {source.thread_id} differs in {', '.join(source.unattributed)}, which no node name "
+            "claims, so Sherlock cannot tell which node's behaviour to restore (name context items after their "
+            "node, e.g. `writer.template`, or pass --node-map or --known-good)", notes=notes).to_dict()
+    else:
+        result = search(candidates,
+                        lambda restore: run_g3(client, thread_id, restore, kg, checks, cassette_path, context,
+                                               progress=emit),
+                        score_of(original), budget, clock, pruning.untestable, progress=emit, tags=tags).to_dict()
+        if suspects:
+            result["complete"] = False
+        if source and result["reason_code"] == "no_candidates":
+            result["reason"] += (f"; the passing run {source.thread_id} used the same node configuration or wrote "
+                                 "the same outputs, so the difference is not something Sherlock can restore")
+        result["notes"] = notes + result["notes"]
+    if g1_cfg:
+        result["g1"] = g1
+    return result, pruning, unit_clues
+
+
+def diagnose(client, thread_id: str, known_good: dict | None, checks: Checks | None, cassette_path: Path | str,
+             budget: Budget | None = None, context: dict | None = None, clock=time.monotonic, *,
+             good_runs=(), discover_good: bool = False, suspects=(), intake: dict | None = None,
+             node_map: dict[str, str] | None = None, progress=None, g1: dict | None = None,
+             pasted_nodes=()) -> dict:
+    """Run the whole diagnosis and return the result artifact (a JSON-able dict).
+
+    Known-good comes from `known_good` (a hand-written per-node context patch), from prior successful runs
+    (`good_runs`, or found with `discover_good`), or both (the file overrides the derived patch per node).
+    `node_map` says which node a run-context item or key configures when its name does not (a global
+    prompt, an unprefixed flag); without an entry such a difference still abstains `cannot_attribute`.
+    `suspects` is an optional shortlist that the G2 path check must accept. `checks` None means the run was
+    marked wrong with no check yet: the result is the G0 clues and an abstain.
+
+    `pasted_nodes` names the nodes of `known_good` that the user pasted by hand (FR-K2); the artifact records
+    that source as "pasted". The pasted value is the node's known-good behaviour, restored through the run
+    context like any other; a downstream node's recorded output is never pasted back (FR-G3.4).
+
+    `g1` ({url, model, samples, key}) switches on the optional G1 shortlist (gates.py); {"backend": "laya" | "fake",
+    ...} switches on the G1 scorer instead (g1.py, settings in g1.DEFAULTS); None leaves G1 off.
+
+    `progress(event)` (optional) hears each step as it happens: `start`, `check`, `sources`, `plan`, then per trial
+    `trial_start`, `fork`, `resume`, `rerun` (each re-run node with its input and output), `trial`, and always a
+    final `done`. Each event carries what it happened to; see the emit calls below.
+    """
+    emit = progress or (lambda _event: None)
+    result = _diagnose(client, thread_id, known_good, checks, cassette_path, budget, context, clock, good_runs,
+                       discover_good, suspects, intake, node_map, emit, g1, list(pasted_nodes))
+    emit({"event": "done", "status": result["status"], "reason_code": result.get("reason_code"),
+          "reason": result.get("reason"), "minimal_sets": result.get("minimal_sets", []),
+          "trials_used": (result.get("budget") or {}).get("trials_used", 0)})
+    return result
+
+
+def _diagnose(client, thread_id, known_good, checks, cassette_path, budget, context, clock, good_runs,
+              discover_good, suspects, intake, node_map, emit, g1_config=None, pasted=()) -> dict:
+    budget = budget or Budget()
+    cassette_path = Path(cassette_path)
+    known_good = known_good or {}
+    created = datetime.now(timezone.utc).isoformat(timespec="seconds")
+    if checks is not None and Cassette(cassette_path).replay_sessions() == 0:
+        raise G3Error("no replay session on this cassette: start the server with "
+                      "`sherlock-rec run --replay <server command>` first; diagnose never runs against a "
+                      "server that could make live calls")
+    thread = client.request("GET", f"/threads/{thread_id}")
+    history = client.request("POST", f"/threads/{thread_id}/history", {"limit": 1000})
+    problem = history_usable(history)
+    if problem:
+        return _early(thread_id, "no_history", problem, created=created, intake=intake)
+    if any(t.get("interrupts") for s in history for t in s.get("tasks") or []):
+        return _early(thread_id, "interrupt_unsupported",
+                      "the run's history shows an interrupt (human-in-the-loop); resuming those is out of scope for v1",
+                      created=created, intake=intake)
+    clues = history_clues(history, checks.output_key if checks else "final_output") + _tool_clues(cassette_path)
+    on_path = list(dict.fromkeys(t["name"] for step in _supersteps(history) for t in step))
+    shown = [c.to_dict() for c in clues]
+    emit({"event": "start", "thread_id": thread_id, "graph_id": (thread.get("metadata") or {}).get("graph_id"),
+          "nodes_on_path": on_path, "clues": len(shown)})
+    if checks is None:
+        return _early(thread_id, "no_check",
+                      "the run is marked wrong, but there is no check Z to say what right looks like; the clues are "
+                      "not a verdict. Add a check (-c sherlock.yaml, or `intake --expected`) and a known-good run "
+                      "to get one", created=created, intake=intake, clues=shown, on_path=on_path)
+    report = evaluate(checks.assertions, (history[0]["values"] or {}).get(checks.output_key) or "", checks.base_dir)
+    original = report.to_dict()
+    emit({"event": "check", "pass": report.passed,
+          "failed": [r["reason"] for r in original.get("results", []) if not r.get("pass")]})
+    if report.passed:
+        return _early(thread_id, "already_passes", "the original run already passes the check; "
+                      "there is nothing to diagnose", check=original, created=created, intake=intake, clues=shown, on_path=on_path)
+    if context is None:
+        context = _context_of(client, thread_id, history)
+    graph_id = (thread.get("metadata") or {}).get("graph_id")
+
+    sources = (_gather_sources(client, thread_id, graph_id, history, context, checks, good_runs, discover_good, node_map)
+               if (good_runs or discover_good) else [])
+    g1 = g1_disabled()
+    nominated: list[str] = []
+    hosted = bool(g1_config) and g1_config.get("backend", "hosted") == "hosted"
+    if hosted:  # optional, weak, never fatal (FR-G1.6): any failure falls back to G0-only ordering
+        res = run_g1(history, checks.output_key, (history[0]["values"] or {}).get(checks.output_key) or "",
+                     [r["reason"] for r in original.get("results", []) if not r.get("pass")], on_path,
+                     url=g1_config["url"], model=g1_config["model"], samples=g1_config.get("samples", 1),
+                     key=g1_config.get("key"))
+        g1, nominated = res.to_dict(), res.nominated
+        emit({"event": "g1", "nominated": nominated, "fallback": res.fallback, "samples_ok": res.samples_ok})
+    early = dict(created=created, intake=intake, clues=shown, on_path=on_path, g1=g1,
+                 sources_considered=[s.to_dict() for s in sources])
+    if sources:
+        emit({"event": "sources", "sources": [{"thread_id": s.thread_id, "eligible": s.eligible, "why": s.why,
+                                               "differing_nodes": s.differing} for s in sources]})
+    path = path_check(history, checks.output_key, list(suspects)) if suspects else None
+    if path:
+        early["path_check"] = path.to_dict()
+    ranked = rank(sources)[:MAX_SOURCES]
+    if not ranked and not known_good:
+        return _early(thread_id, "no_known_good", _no_source_reason(sources), check=original, **early)
+    if path is not None and not path.kept and not any(c.widens and c.node for c in clues):
+        reasons = "; ".join(f"{k}: {v}" for k, v in path.rejected.items())
+        return _early(thread_id, "path_check_failed",
+                      f"no suspect names a recorded arrow ({reasons}), so there is nothing to test",
+                      check=original, **early)
+
+    units = [(s, {**s.known_good, **known_good}) for s in ranked] or [(None, known_good)]
+    outcomes = [(source, *_unit(client, thread_id, history, context, checks, cassette_path, budget, clock, original,
+                                clues, kg, source, path, list(suspects), emit, nominated, None if hosted else g1_config))
+                for source, kg in units]
+
+    found = [o for o in outcomes if o[1]["status"] == "found"]
+    source, result, pruning, unit_clues = (found or outcomes)[0]
+    result = dict(result)
+    g1 = result.pop("g1", g1)
+    nominated = nominated or [s["node"] for s in g1.get("scores", [])]
+    distinct = {frozenset(frozenset(s) for s in o[1]["minimal_sets"]) for o in found}
+    if len(distinct) > 1:  # FR-K4: successes that disagree about what restoring flips never become gold
+        said = "; ".join(f"{o[0].thread_id}: " + " and ".join("{" + ", ".join(s) + "}" for s in o[1]["minimal_sets"])
+                         for o in found)
+        result.update(status="abstain", reason_code="sources_disagree", minimal_sets=[], complete=False,
+                      reason=f"the prior successful runs disagree about which nodes fix the run ({said}); "
+                             "Sherlock does not take either as gold")
+    used = result["budget"].get("trials_used", 0)
+    exhaustive = pruning.exhaustive_trials
+    return {"schema": SCHEMA, "created": created, "thread_id": thread_id, "graph_id": graph_id, "check": original,
+            "context": context, **result, "pruning": pruning.to_dict(),
+            "trial_reduction": {"exhaustive_trials": exhaustive, "trials_used": used,
+                                "fewer_pct": round(100 * (1 - used / exhaustive), 1) if exhaustive else 0.0},
+            "clues": [c.to_dict() for c in unit_clues], "path_check": path.to_dict() if path else None,
+            "known_good_source": source.to_dict() if source else (
+                {"kind": "pasted", "confirmed": True, "nodes": sorted(pasted)} if pasted else {"kind": "file", "confirmed": True}),
+            "sources_considered": early["sources_considered"],
+            "other_sources": [{"thread_id": o[0].thread_id, "status": o[1]["status"],
+                               "minimal_sets": o[1]["minimal_sets"], "reason_code": o[1]["reason_code"]}
+                              for o in outcomes if o[0] is not source and o[0]],
+            "intake": intake, "g1": g1,
+            "gate_summary": _gate_summary(on_path, pruning, unit_clues, nominated, path, used),
+            "limitations": LIMITATIONS}
+
+
+def write_artifact(result: dict, sherlock_dir: Path | str) -> Path:
+    path = Path(sherlock_dir) / "diagnoses" / f"{result['thread_id']}.json"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(result, indent=2), encoding="utf-8")
+    return path

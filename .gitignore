@@ -1,0 +1,19 @@
+.env
+
+# Python
+__pycache__/
+.venv/
+.pytest_cache/
+
+# LangGraph dev server state
+harness/.langgraph_api/
+harness/langgraph-dev.log
+
+# Sherlock local state (tapes, cassettes, diagnoses)
+.sherlock/
+
+# Evaluation scratch state (G1 card-score caches)
+python/sherlock/eval/.g1/
+
+# Uncompressed public-trace corpus (about 411 MB). The gzip beside it is tracked.
+docs/eval/public_traces/cases.jsonl

@@ -1,0 +1,188 @@
+"""SQLite cassette store under .sherlock/ (spec 4.2, 9.3).
+
+One row per intercepted call (HTTP request or local tool call) plus its
+response as an ordered list of chunks. Matching key = hash of the request;
+`next_by_name` is the sequential-order fallback.
+"""
+
+import hashlib
+import json
+import os
+import sqlite3
+import sys
+import time
+from pathlib import Path
+
+from sherlock.redact import redact_body
+
+_SCHEMA = """
+CREATE TABLE IF NOT EXISTS calls (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  kind TEXT NOT NULL,
+  name TEXT NOT NULL,
+  key TEXT NOT NULL,
+  request BLOB NOT NULL,
+  status INTEGER,
+  headers TEXT,
+  is_sse INTEGER NOT NULL DEFAULT 0,
+  started REAL NOT NULL,
+  duration_ms REAL,
+  complete INTEGER NOT NULL DEFAULT 0
+);
+CREATE INDEX IF NOT EXISTS calls_key ON calls(kind, key);
+CREATE TABLE IF NOT EXISTS chunks (
+  call_id INTEGER NOT NULL, seq INTEGER NOT NULL, data BLOB NOT NULL,
+  PRIMARY KEY (call_id, seq)
+);
+CREATE TABLE IF NOT EXISTS abstains (
+  id INTEGER PRIMARY KEY AUTOINCREMENT, reason TEXT NOT NULL, at REAL NOT NULL
+);
+CREATE TABLE IF NOT EXISTS trials (
+  id INTEGER PRIMARY KEY AUTOINCREMENT, at REAL NOT NULL
+);
+CREATE TABLE IF NOT EXISTS replay_sessions (
+  id INTEGER PRIMARY KEY AUTOINCREMENT, pid INTEGER NOT NULL, at REAL NOT NULL
+);
+"""
+# calls.kind: 'http' | 'tool'.  calls.name: 'POST <url>' or the tool name.
+# calls.status: HTTP status; for tools 0 = returned, 1 = raised.
+# calls.headers: JSON list of [name, value].
+
+
+DEFAULT_MAX_MB = 500  # NFR-10: size cap; `run --max-cassette-mb` or env SHERLOCK_MAX_CASSETTE_MB overrides
+
+
+class CassetteFull(Exception):
+    """The cassette reached its size cap: new calls are not recorded (the user's app is unaffected)."""
+
+
+def max_mb_from_env() -> float:
+    try:
+        return float(os.environ.get("SHERLOCK_MAX_CASSETTE_MB", DEFAULT_MAX_MB))
+    except ValueError:
+        return DEFAULT_MAX_MB
+
+
+def request_key(kind: str, name: str, body: bytes) -> str:
+    try:
+        canon = json.dumps(json.loads(body), sort_keys=True, separators=(",", ":")).encode()
+    except (ValueError, UnicodeDecodeError):
+        canon = body
+    h = hashlib.sha256()
+    for part in (kind.encode(), name.encode(), canon):
+        h.update(part)
+        h.update(b"\0")
+    return h.hexdigest()
+
+
+class Cassette:
+    def __init__(self, path, max_mb: float | None = None):
+        self.path = Path(path)
+        self.max_bytes = int((max_mb_from_env() if max_mb is None else max_mb) * 1024 * 1024)
+        self._warned = False
+        self.path.parent.mkdir(parents=True, exist_ok=True)
+        self._run_script(_SCHEMA)
+
+    def _conn(self):
+        conn = sqlite3.connect(self.path, timeout=30)
+        # NFR-10: WAL lets a reader (the UI) and the recorder work at once; busy_timeout waits instead of failing.
+        conn.execute("PRAGMA journal_mode=WAL")
+        conn.execute("PRAGMA busy_timeout=30000")
+        conn.row_factory = sqlite3.Row
+        return conn
+
+    def _run_script(self, script):
+        conn = self._conn()
+        try:
+            conn.executescript(script)
+        finally:
+            conn.close()
+
+    def _run(self, sql, args=(), *, one=False, write=False):
+        conn = self._conn()
+        try:
+            cur = conn.execute(sql, args)
+            if write:
+                conn.commit()
+                return cur.lastrowid
+            rows = cur.fetchall()
+            return (rows[0] if rows else None) if one else rows
+        finally:
+            conn.close()
+
+    def size_bytes(self) -> int:
+        return sum(p.stat().st_size for p in (self.path, Path(f"{self.path}-wal")) if p.exists())
+
+    def begin(self, kind, name, body: bytes) -> int:
+        if self.size_bytes() >= self.max_bytes:
+            if not self._warned:
+                self._warned = True
+                print(f"sherlock: cassette reached its {self.max_bytes / 1048576:.4g} MB cap ({self.path}); "
+                      "recording stopped, later calls are not recorded (raise --max-cassette-mb)", file=sys.stderr)
+            raise CassetteFull("cassette size cap reached")
+        return self._run(
+            "INSERT INTO calls(kind, name, key, request, started) VALUES (?,?,?,?,?)",
+            (kind, name, request_key(kind, name, body), redact_body(body), time.time()), write=True)
+
+    def finish(self, call_id, *, status, headers, is_sse, duration_ms, chunks):
+        conn = self._conn()
+        try:
+            conn.execute("DELETE FROM chunks WHERE call_id=?", (call_id,))
+            conn.executemany("INSERT INTO chunks VALUES (?,?,?)",
+                             [(call_id, i, c) for i, c in enumerate(chunks)])
+            conn.execute(
+                "UPDATE calls SET status=?, headers=?, is_sse=?, duration_ms=?, complete=1 WHERE id=?",
+                (status, json.dumps(headers), int(is_sse), duration_ms, call_id))
+            conn.commit()
+        finally:
+            conn.close()
+
+    @staticmethod
+    def _row(r):
+        if r is None:
+            return None
+        d = dict(r)
+        d["headers"] = json.loads(d["headers"]) if d["headers"] else []
+        return d
+
+    @staticmethod
+    def _skip(consumed):
+        return f" AND id NOT IN ({','.join(str(int(i)) for i in consumed)})" if consumed else ""
+
+    def find(self, kind, key, consumed):
+        return self._row(self._run(
+            "SELECT * FROM calls WHERE kind=? AND key=? AND complete=1" + self._skip(consumed)
+            + " ORDER BY id LIMIT 1", (kind, key), one=True))
+
+    def next_by_name(self, kind, name, consumed):
+        return self._row(self._run(
+            "SELECT * FROM calls WHERE kind=? AND name=? AND complete=1" + self._skip(consumed)
+            + " ORDER BY id LIMIT 1", (kind, name), one=True))
+
+    def chunks(self, call_id):
+        rows = self._run("SELECT data FROM chunks WHERE call_id=? ORDER BY seq", (call_id,))
+        return [bytes(r["data"]) for r in rows]
+
+    def calls(self):
+        return [self._row(r) for r in self._run("SELECT * FROM calls ORDER BY id")]
+
+    def add_abstain(self, reason):
+        self._run("INSERT INTO abstains(reason, at) VALUES (?,?)", (reason, time.time()), write=True)
+
+    def start_trial(self) -> int:
+        """Begin a new trial: replay processes see the new id and hand recordings out afresh."""
+        return self._run("INSERT INTO trials(at) VALUES (?)", (time.time(),), write=True)
+
+    def trial_id(self) -> int:
+        row = self._run("SELECT MAX(id) AS m FROM trials", one=True)
+        return row["m"] or 0
+
+    def mark_replay(self, pid):
+        """A process serving this cassette in replay mode has started (G3 refuses to run without one)."""
+        self._run("INSERT INTO replay_sessions(pid, at) VALUES (?,?)", (pid, time.time()), write=True)
+
+    def replay_sessions(self) -> int:
+        return self._run("SELECT COUNT(*) AS n FROM replay_sessions", one=True)["n"]
+
+    def abstains(self):
+        return [r["reason"] for r in self._run("SELECT reason FROM abstains ORDER BY id")]

@@ -1,0 +1,341 @@
+"""Minimality search and verdicts (spec 5.5; FR-D1-D9, D11).
+
+Pure logic: no server, no I/O. `plan_candidates` prunes the nodes on the recorded path;
+`search` drives a G3 oracle over subsets of the candidates and returns EVERY 1-minimal set
+(S passes Z and no proper subset does), or an honest abstain.
+
+Cutoff for the 2^k subset space (FR-D9, open item 2): sets of at most `Budget.max_size` nodes
+(default 3), at most `max_trials` G3 trials (default 40) and `max_minutes` (default 10), whichever
+comes first. Each set is tried at most once; supersets of a passing set are never tried.
+"""
+
+import time
+from dataclasses import dataclass, field
+from itertools import product
+
+from sherlock.g3 import apply_restore
+
+LABELS = ("fixes", "partly_helps", "does_not_help", "cannot_say")  # FR-D6
+LIMITATION = "we recover ancestry, not read-dependencies; the dependency graph is conservative (spec 9.2)"
+
+
+@dataclass
+class Budget:
+    max_trials: int = 40
+    max_minutes: float = 10.0
+    max_size: int = 3  # the subset cutoff (FR-D9)
+    auto: bool = False  # max_trials was not set by the user: let it grow with the candidate count (see `for_candidates`)
+
+    def for_candidates(self, m: int) -> "Budget":
+        """An unset trial budget scales with the pipeline: the probe, one leave-one-out per node and slack."""
+        if not self.auto:
+            return self
+        return Budget(max(self.max_trials, 3 * m + 20), self.max_minutes, self.max_size, auto=True)
+
+
+# --- pruning (FR-D1, D2) -----------------------------------------------------------------------------
+
+@dataclass
+class Pruning:
+    on_path: list[str]
+    candidates: list[str]
+    pruned: dict[str, str]  # node -> why it cannot be the cause
+    untestable: list[str]  # nodes with no known-good behaviour: kept out of the search, never ruled out
+    widened: list[str] = field(default_factory=list)  # kept in the search only because a G0 clue widened it
+
+    @property
+    def exhaustive_trials(self) -> int:
+        return 2 ** len(self.on_path) - 1
+
+    @property
+    def search_space(self) -> int:
+        return 2 ** len(self.candidates) - 1
+
+    def to_dict(self):
+        return {"nodes_on_path": self.on_path, "candidates": self.candidates, "pruned": self.pruned,
+                "untestable": self.untestable, "widened": self.widened, "exhaustive_trials": self.exhaustive_trials,
+                "search_space": self.search_space,
+                "pruned_ratio": round(len(self.pruned) / len(self.on_path), 3) if self.on_path else 0.0,
+                "limitation": LIMITATION}
+
+
+def _supersteps(history: list[dict]) -> list[list[dict]]:
+    """Tasks that ran, per superstep in order (history is newest first). Internal `__` nodes skipped."""
+    steps = []
+    for snap in reversed(history):
+        tasks = [t for t in snap.get("tasks") or [] if not t["name"].startswith("__")]
+        if tasks:
+            steps.append(tasks)
+    return steps
+
+
+def plan_candidates(history: list[dict], known_good: dict, context: dict | None, output_key: str,
+                    same_output: set[str] | frozenset = frozenset(), widen: set[str] | frozenset = frozenset()) -> Pruning:
+    """Conservative pruning from the recorded path.
+
+    1. Ancestry: only nodes in a superstep up to the last writer of `output_key` can reach it, and in
+       that superstep only the writers themselves (parallel nodes are independent). Nodes are
+       over-included, never dropped, when ordering says "maybe" (FR-D2).
+    2. Same output as the passing run (`same_output`, FR-K1): the node wrote exactly what the known-good
+       run wrote, so it is not tested. A G0 clue that may widen (`widen`, FR-G0.5) brings it back.
+    3. No-op restores: a node whose known-good patch leaves the run context unchanged would replay the
+       original, so it can neither be a cause nor part of a minimal set.
+    Nodes with no known-good behaviour are `untestable`, not pruned.
+    """
+    steps = _supersteps(history)
+    on_path = list(dict.fromkeys(t["name"] for step in steps for t in step))
+    writer_step = max((i for i, step in enumerate(steps)
+                       if any(output_key in (t.get("result") or {}) for t in step)), default=None)
+    pruned, candidates, untestable, widened = {}, [], [], []
+    base = context or {}
+    for i, step in enumerate(steps):
+        for task in step:
+            node = task["name"]
+            if node in pruned or node in candidates or node in untestable:
+                continue
+            if writer_step is not None and i > writer_step:
+                pruned[node] = f"runs after the last write of `{output_key}`, so it cannot reach the output"
+            elif writer_step is not None and i == writer_step and output_key not in (task.get("result") or {}):
+                pruned[node] = f"runs in parallel with the node that writes `{output_key}`; it cannot feed it"
+            elif node not in known_good:
+                untestable.append(node)
+            elif node in same_output and node not in widen:
+                pruned[node] = "it wrote the same output as the passing run, so it is not tested (FR-K1)"
+            elif apply_restore(context, known_good, [node]) == base:
+                pruned[node] = "restoring it changes nothing (its known-good behaviour is already in the run)"
+            else:
+                candidates.append(node)
+                if node in same_output:
+                    widened.append(node)
+    return Pruning(on_path, candidates, pruned, untestable, widened)
+
+
+# --- verdict labels ------------------------------------------------------------------------------------
+
+def score_of(check: dict | None) -> float | None:
+    results = (check or {}).get("results") or []
+    return sum(r["score"] for r in results) / len(results) if results else None
+
+
+def label_of(verdict, original_score: float | None) -> str:
+    """FR-D6: fixes it / partly helps / doesn't help / cannot say."""
+    if verdict.verdict == "pass":
+        return "fixes"
+    if verdict.verdict == "abstain":
+        return "cannot_say"
+    score = score_of(verdict.check)
+    return "partly_helps" if None not in (score, original_score) and score > original_score else "does_not_help"
+
+
+# --- the search ----------------------------------------------------------------------------------------
+
+class _Exhausted(Exception):
+    pass
+
+
+LOO_MIN = 6  # the duality search starts above this many candidates
+HIT_CAP = 64  # most "nothing else is left" probes per check
+
+
+def _colex(m: int, k: int):
+    """k-subsets of range(m) lazily, ordered by their highest index: every set among the first j
+    (highest-priority) candidates is tried before any set that needs candidate j+1."""
+    if k == 0:
+        yield ()
+        return
+    for hi in range(k - 1, m):
+        for rest in _colex(hi, k - 1):
+            yield rest + (hi,)
+
+
+@dataclass
+class SearchResult:
+    status: str  # "found" | "abstain"
+    reason_code: str
+    reason: str
+    minimal_sets: list[list[str]] = field(default_factory=list)
+    unverified_sets: list[list[str]] = field(default_factory=list)  # pass, but a proper subset could not be tested
+    complete: bool = False
+    notes: list[str] = field(default_factory=list)
+    trials: list[dict] = field(default_factory=list)
+    counts: dict = field(default_factory=dict)
+    budget: dict = field(default_factory=dict)
+    screen: dict = field(default_factory=dict)  # leave-one-out result and whether "no other minimal set" was proved
+
+    def to_dict(self):
+        return {"status": self.status, "reason_code": self.reason_code, "reason": self.reason,
+                "minimal_sets": self.minimal_sets, "unverified_sets": self.unverified_sets,
+                "complete": self.complete, "notes": self.notes, "counts": self.counts,
+                "budget": self.budget, "screen": self.screen, "trials": self.trials}
+
+
+def search(candidates: list[str], oracle, original_score: float | None, budget: Budget,
+           clock=time.monotonic, untestable=(), progress=None, tags: dict | None = None) -> SearchResult:
+    """Find every 1-minimal set among `candidates`. `oracle(restore_list) -> g3.Verdict`.
+
+    `candidates` is in priority order (G0 clues, then G1 nominations, first): sets made of high-priority nodes are
+    tried first, but every set the cutoff allows is still decided, so priority is speed only. `tags` maps a node to
+    the gates that put it on the list (`g0`, `g1`, `g2`); a trial record lists the gates behind its nodes plus `g3`.
+
+    Two shortcuts, both resting on the monotonicity the supersets-are-skipped rule already assumes (restoring more
+    never un-fixes a run): above `LOO_MIN` candidates a leave-one-out screen finds the nodes every fix needs (restoring
+    all but one still fails), which then join every set instead of multiplying the search; and once sets are found,
+    one probe per way of dodging them proves nothing else is left, which also lifts the size cutoff.
+
+    `progress(event)` (optional) hears `trial_start` before each new trial and `trial` (the record, minus the
+    check details) after it."""
+    emit = progress or (lambda _event: None)
+    budget = budget.for_candidates(len(candidates))
+    order = list(candidates)
+    rank = {n: i for i, n in enumerate(order)}
+    tags = tags or {}
+    t0 = clock()
+    cache: dict[frozenset, tuple[dict, object]] = {}
+    exhausted: list[str] = []
+
+    def gates_of(restored) -> list[str]:
+        seen = set().union(*(tags.get(n, ()) for n in restored)) if restored else set()
+        return sorted(seen) + ["g3"]
+
+    def trial(subset) -> dict:
+        key = frozenset(subset)
+        if key not in cache:
+            if len(cache) >= budget.max_trials:
+                raise _Exhausted(f"the trial budget of {budget.max_trials} was used up")
+            if clock() - t0 > budget.max_minutes * 60:
+                raise _Exhausted(f"the time budget of {budget.max_minutes:g} minute(s) was used up")
+            restored = sorted(key, key=rank.get)
+            emit({"event": "trial_start", "n": len(cache) + 1, "restored": restored})
+            started = clock()
+            v = oracle(restored)
+            cache[key] = ({"n": len(cache) + 1, "restored": restored, "verdict": v.verdict, "label": label_of(v, original_score),
+                           "score": score_of(v.check), "reason": v.reason, "fork_node": v.fork_node,
+                           "fork_thread": v.fork_thread, "check": v.check, "gates": gates_of(restored),
+                           "elapsed_s": round(clock() - started, 3), "cassette_miss": bool(v.evidence.get("cassette_miss"))}, v)
+            emit({"event": "trial", **{k: x for k, x in cache[key][0].items() if k != "check"}})
+        return cache[key][0]
+
+    minimal: list[frozenset] = []
+    unverified: list[frozenset] = []
+    m = len(order)
+    full_failed = False
+    proved = False  # "no other minimal set exists" was shown by probes (not by enumerating everything)
+    mode = "enumeration"
+
+    def found_sets():
+        return minimal + unverified
+
+    def passes(subset) -> bool:
+        return trial(subset)["verdict"] == "pass"
+
+    def shrink(start) -> frozenset:
+        """A passing set cut down to one where removing any single node breaks it: chunks of the lowest-priority
+        nodes first (halving), so a few high-priority culprits are isolated in about k*log2(n) trials."""
+        keep = sorted(start, key=rank.get)
+        chunk = max(len(keep) // 2, 1)
+        while True:
+            i = len(keep)
+            while i > 0:
+                lo = max(i - chunk, 0)
+                trimmed = keep[:lo] + keep[i:]
+                if trimmed and len(trimmed) < len(keep) and passes(trimmed):
+                    keep, i = trimmed, lo
+                else:
+                    i = lo
+            if chunk == 1:
+                return frozenset(keep)
+            chunk //= 2
+
+    def record(key):
+        below = [s for s, (rec, _) in cache.items() if s < key and rec["verdict"] == "abstain"]
+        (unverified if below else minimal).append(key)
+
+    def dual() -> bool:
+        """Find every minimal set by duality: any set not yet found avoids one node of each found set, so it
+        lies inside `all candidates minus one node per found set`. Probe each such way; a pass is shrunk into a
+        new minimal set; when every way fails, nothing else exists. False when there are too many ways to probe."""
+        while True:
+            parts = [sorted(f, key=rank.get) for f in found_sets()]
+            ways = 1
+            for p in parts:
+                ways *= len(p)
+            if ways > HIT_CAP:
+                return False
+            undecided = False
+            for h in product(*parts):
+                outside = frozenset(order) - set(h)
+                verdict = trial(outside)["verdict"]
+                if verdict == "pass":
+                    record(shrink(outside))
+                    break
+                undecided |= verdict != "fail"  # a set that could not be tested proves nothing
+            else:
+                return not undecided
+
+    try:
+        if m > 1:  # feasibility probe: if restoring everything fails, no subset can pass
+            full_failed = trial(order)["verdict"] == "fail"
+        if not full_failed and m > LOO_MIN and m + 2 <= budget.max_trials:
+            mode = "duality"
+            proved = dual()
+        if not full_failed and not proved:
+            checked = 0
+            for hi in range(m):  # by priority: every set within the first hi+1 candidates before any needing the next
+                for k in range(1, min(budget.max_size, hi + 1) + 1):  # small before large
+                    for lower in _colex(hi, k - 1):
+                        key = frozenset(order[i] for i in (*lower, hi))
+                        if any(found <= key for found in found_sets()):
+                            continue
+                        if passes(key):
+                            record(key)
+    except _Exhausted as exc:
+        exhausted.append(str(exc))
+
+    def as_lists(sets):
+        return [sorted(s, key=rank.get) for s in sets]
+
+    records = [rec for rec, _ in cache.values()]
+    counts = {name: sum(r["label"] == name for r in records) for name in LABELS} | {"total": len(records)}
+    notes = []
+    if exhausted:
+        notes.append(f"search stopped early: {exhausted[0]}; sets may be missing")
+    covered = m <= budget.max_size or proved
+    if proved and mode == "duality":
+        notes.append("no other minimal set exists: restoring everything except one node of each set found still fails")
+    if not covered and not exhausted:
+        notes.append(f"sets larger than {budget.max_size} nodes were not tried (raise --max-size)")
+    if untestable:
+        notes.append(f"no known-good behaviour for {', '.join(untestable)}, so they could not be ruled out")
+    misses = [r for r in records if r["verdict"] == "abstain"]
+    if misses:
+        notes.append(f"{len(misses)} set(s) could not be tested: {misses[0]['reason']}")
+    # complete: every set up to the size of the candidates was decided, nothing was untestable or unknown
+    complete = not exhausted and not misses and not untestable and (full_failed or covered)
+    spent = {"max_trials": budget.max_trials, "max_minutes": budget.max_minutes, "max_size": budget.max_size,
+             "trials_used": len(records), "elapsed_s": round(clock() - t0, 3)}
+    base = dict(minimal_sets=as_lists(minimal), unverified_sets=as_lists(unverified), notes=notes,
+                trials=records, counts=counts, budget=spent,
+                screen={"mode": mode, "proved_no_others": proved})
+
+    if minimal:
+        names = " and ".join("{" + ", ".join(s) + "}" for s in base["minimal_sets"])
+        return SearchResult("found", "ok", f"minimal set(s) of nodes whose restoration fixes the run: {names}",
+                            complete=complete, **base)
+    if exhausted:
+        code, why = "budget_exhausted", f"{exhausted[0]} before any minimal set was confirmed"
+    elif misses:
+        code = "unrecorded_call" if any(r["cassette_miss"] for r in misses) else "cannot_test"
+        why = f"{len(misses)} candidate set(s) could not be tested honestly: {misses[0]['reason']}"
+        if unverified:
+            why += f"; {{{', '.join(base['unverified_sets'][0])}}} passes but is not confirmed minimal"
+    elif untestable:
+        code, why = "no_known_good", (f"no known-good behaviour for {', '.join(untestable)}, "
+                                      "so they could not be ruled out as the cause")
+    elif m == 0:
+        code, why = "no_candidates", "no node on the recorded path can be restored to a different behaviour"
+    elif not full_failed and not covered:
+        code, why = "cutoff", (f"restoring all {m} candidates fixes the run but no set of at most "
+                               f"{budget.max_size} nodes does (raise --max-size)")
+    else:
+        code, why = "not_fixable", f"restoring the candidates ({', '.join(order)}) does not fix the run"
+    return SearchResult("abstain", code, why, complete=False, **base)

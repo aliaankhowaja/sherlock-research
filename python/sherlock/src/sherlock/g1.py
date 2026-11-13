@@ -1,0 +1,420 @@
+"""G1 suspicion scorer: one score per surviving candidate, used only to order G3 trials.
+
+The scores feed `order_candidates` as the tie-breaker inside equal G0 clue scores (ordering variant A), so a clue
+always outranks a score. G1 never names a cause, never adds or removes a candidate, and never fails a diagnosis.
+Backends: `laya` (the Laya System One API, zero-shot: the score is P(needs_restore = yes)) and `fake` (a hash of the
+node name, no network, for tests). Today's hosted shortlist stays in gates.py.
+
+The Laya call is the only network use in a diagnosis, and only with `--g1 laya`. Set `LOCAL=true` to run the
+`laya` package in this process instead: no endpoint, no key and no card text leaves the machine (the checkpoint
+itself may be downloaded once). A non-local HTTP endpoint also needs `--g1-allow-remote`, because the card text
+leaves the machine. Answers are rounded to 4 decimals and cached on disk by card, so a re-run gives the same scores
+offline. The API key comes from the environment, never from a flag, and is never written anywhere.
+
+Each candidate is shown to the scorer as a node card: a short, redacted, deterministic text that puts the node's
+failed behaviour next to its known-good behaviour. The recording does not say which node made a tool call, so
+cards carry no tool fields; nothing in a run names a node's role, so there is no role field either.
+"""
+
+import difflib
+import hashlib
+import json
+import os
+import re
+import time
+import urllib.error
+import urllib.request
+from pathlib import Path
+from urllib.parse import urlsplit
+
+from sherlock import __version__
+from sherlock.redact import redact_body
+from sherlock.sources import node_outputs
+
+CARD_CHARS = 2400  # 800 tokens at a conservative 1 token per 3 characters (spec 5, rule 3)
+SNIPPET = 200
+LOCAL_HOSTS = ("localhost", "127.0.0.1", "::1")
+_ENV_TRUTHY = {"1", "true", "yes", "on"}
+_LOCAL_AGENTS: dict[str, object] = {}
+DEFAULTS = {"endpoint": "https://api.laya.studio", "path": "/v1/systemone", "model": "typed-decisions",
+            "timeout_ms": 10000, "total_timeout_ms": 60000}  # typed-decisions: English, 1,024-token context
+LOCAL_TOTAL_TIMEOUT_MS = 600000  # local CPU inference is much slower than one HTTP call; still bounded
+QUESTION_VERSION = "g1_questions_v1"
+QUESTIONS = {  # the wording is part of QUESTION_VERSION: any change needs a new version. No tool_relevance (see above)
+    "output_effect": {"type": "choice", "instructions": "How does the failed output differ from the good output?",
+                      "criteria": {"same": "identical in meaning and content",
+                                   "cosmetic": "only wording, order or formatting differs",
+                                   "meaningful": "facts, values or content differ"}},
+    "fault_origin": {"type": "choice", "instructions": "Where did the difference start?",
+                     "criteria": {"originated_here": "this node introduced the difference",
+                                  "inherited": "the node's input already differed and the node behaved correctly on it",
+                                  "none": "no difference"}},
+    "dropped_input": {"type": "noul", "instructions": "Did the node omit information that was in its input?"},
+    "invented_output": {"type": "noul", "instructions": "Does the output contain content its input does not support?"},
+    "pass_through": {"type": "noul", "instructions": "Did the node only pass its input along unchanged?"},
+    "needs_restore": {"type": "noul",
+                      "instructions": "Must this node be restored to its good behaviour for the run to pass the check?"},
+}
+SAMPLE_CARD = """NODE: extractor
+CHECK: contains "ISO 27001"; contains "Data region: EU"; not contains "SOC 2"
+FLAGS: output_same_as_good=no input_same_as_good=no errored=no upstream_differs=[retriever]
+DIFF: removed "ISO 27001" | added "SOC 2 (current)"
+OUT_FAILED: {"certs": ["SOC 2"], "region": "EU"}
+OUT_GOOD: {"certs": ["ISO 27001"], "region": "EU"}
+IN_FAILED: docs=[doc1: "SOC 2 certificate ... expired in 2023", doc2: "All data stored in the EU"]"""
+
+
+def _redacted(value):
+    return json.loads(redact_body(json.dumps(value, default=str).encode()))
+
+
+def _flat(value) -> str:
+    return " ".join(json.dumps(_redacted(value), sort_keys=True, ensure_ascii=False).split())
+
+
+def _words(value) -> list[str]:
+    if isinstance(value, dict):
+        return [w for k in sorted(value) for w in _words(value[k])]
+    if isinstance(value, list):
+        return [w for v in value for w in _words(v)]
+    return str(value).split()
+
+
+def _cut(text: str, keep: int) -> str:
+    if len(text) <= keep:
+        return text
+    head = keep // 2
+    return f"{text[:head]}[...{len(text) - keep} chars cut...]{text[len(text) - (keep - head):]}"
+
+
+def _diff(failed, good) -> str:
+    """Word-level over the values: what the good output has that the failed one lacks (removed), and the reverse."""
+    a, b = _words(_redacted(good)), _words(_redacted(failed))
+    removed, added = [], []
+    for op, i1, i2, j1, j2 in difflib.SequenceMatcher(None, a, b, autojunk=False).get_opcodes():
+        if op != "equal":
+            removed += [" ".join(a[i1:i2])] if i2 > i1 else []
+            added += [" ".join(b[j1:j2])] if j2 > j1 else []
+    if not removed + added:
+        return "none"
+    side = lambda parts: json.dumps(_cut(" ... ".join(parts), SNIPPET), ensure_ascii=False)  # noqa: E731
+    return f"removed {side(removed)} | added {side(added)}"
+
+
+def _first_runs(history: list[dict]) -> tuple[dict, dict, dict]:
+    """node -> superstep of its first run, the state it started from, its first error. Oldest first."""
+    step, before, error = {}, {}, {}
+    for i, snap in enumerate(reversed(history)):
+        for t in snap.get("tasks") or []:
+            if not t["name"].startswith("__"):
+                step.setdefault(t["name"], i)
+                before.setdefault(t["name"], snap.get("values"))
+                if t.get("error"):
+                    error.setdefault(t["name"], str(t["error"]))
+    return step, before, error
+
+
+def node_card(node: str, history: list[dict], good_history: list[dict] | None, checks, mask: bool = False):
+    """(card text, truncated). A pure function of its inputs: the same run gives the same card, byte for byte."""
+    step, before, error = _first_runs(history)
+    out = node_outputs(history)
+    good_out = node_outputs(good_history) if good_history else {}
+    good_before = _first_runs(good_history)[1] if good_history else {}
+    one = lambda writes: writes[0] if len(writes) == 1 else writes  # noqa: E731
+    yn = lambda same: "unknown" if same is None else "yes" if same else "no"  # noqa: E731
+    same_out = out.get(node) == good_out[node] if node in good_out else None
+    same_in = before.get(node) == good_before[node] if node in good_before else None
+    upstream = (f"[{', '.join(n for n in out if step[n] < step[node] and out[n] != good_out.get(n))}]"
+                if good_history else "unknown")
+    fields = [  # (priority, line): P0 is never cut, the highest number is cut first (spec 5)
+        (0, f"NODE: {node}"),
+        (0, f"FLAGS: output_same_as_good={yn(same_out)} input_same_as_good={yn(same_in)} "
+            f"errored={yn(node in error)} upstream_differs={upstream}"),
+        (1, "CHECK: " + "; ".join(f"{a.get('type')} {_flat(a.get('value'))}" for a in checks.assertions)),
+        *([(1, "DIFF: " + _diff(one(out[node]), one(good_out[node])))] if node in good_out else []),
+        *([(1, f"ERROR: {error[node]}")] if node in error else []),
+        (2, f"OUT_FAILED: {_flat(one(out.get(node, [])))}"),
+        *([(2, f"OUT_GOOD: {_flat(one(good_out[node]))}")] if node in good_out else []),
+        (3, f"IN_FAILED: {_flat(before.get(node))}"),
+    ]
+    fields = [(p, redact_body(line.encode()).decode()) for p, line in fields]
+    if mask:  # shortcut control (spec 9): the same card with every node name replaced by a stable ID
+        for n in sorted(out, key=len, reverse=True):
+            alias = "node_" + hashlib.sha256(n.encode()).hexdigest()[:6]
+            fields = [(p, re.sub(rf"(?<![\w-]){re.escape(n)}(?![\w-])", alias, line)) for p, line in fields]
+    over = sum(len(line) + 1 for _, line in fields) - CARD_CHARS
+    truncated = over > 0
+    for prio in (3, 2, 1):
+        for i in reversed(range(len(fields))):
+            p, line = fields[i]
+            if over > 0 and p == prio and len(line) > 40:
+                fields[i] = (p, _cut(line, max(40, len(line) - over - 30)))  # 30: room for the cut marker
+                over -= len(line) - len(fields[i][1])
+    return "\n".join(line for _, line in fields), truncated
+
+
+class LocalUnavailable(RuntimeError):
+    """Local Laya cannot run here (missing package or checkpoint); G1 falls back to the G0 order (C8)."""
+
+
+class _NoRedirect(urllib.request.HTTPRedirectHandler):
+    def redirect_request(self, *args):  # a redirect could carry the card and the key to another host
+        return None
+
+
+def env_true(name: str) -> bool:
+    return os.environ.get(name, "").strip().lower() in _ENV_TRUTHY
+
+
+def local_mode(cfg: dict) -> bool:
+    """`LOCAL=true` runs the model in this process; an explicit cfg["local"] wins over the environment."""
+    value = cfg.get("local")
+    return env_true("LOCAL") if value is None else bool(value)
+
+
+def blocked(cfg: dict) -> str | None:
+    """Why G1 may not call this endpoint at all, checked before any request is built."""
+    if local_mode(cfg):  # in-process inference contacts no endpoint and needs no key
+        return None
+    host = urlsplit(cfg["endpoint"]).hostname or ""
+    if host not in LOCAL_HOSTS and not cfg.get("allow_remote"):
+        return f"{host} is not local, so card text would leave the machine; pass --g1-allow-remote to allow it"
+    if host not in LOCAL_HOSTS and not os.environ.get("LAYA_API_KEY"):
+        return "LAYA_API_KEY is not set"
+    return None
+
+
+def _local_agent(cfg: dict):
+    """The resident `laya` agent for this checkpoint, loaded once and reused across cards."""
+    model = cfg.get("model") or DEFAULTS["model"]
+    if model in _LOCAL_AGENTS:
+        return _LOCAL_AGENTS[model]
+    try:
+        import laya
+    except Exception as exc:  # noqa: BLE001 - any import failure is a clear install hint
+        raise LocalUnavailable(
+            "local Laya needs the `laya` package: run `pip install laya` (or `uv pip install laya`)") from exc
+    options = {"device": cfg["device"]} if cfg.get("device") else {}
+    try:
+        agent = laya.load(model, **options)
+    except Exception as exc:  # noqa: BLE001 - weights missing, bad path, unsupported device
+        raise LocalUnavailable(
+            f"local Laya model {model!r} could not be loaded: {type(exc).__name__}: {exc}") from exc
+    _LOCAL_AGENTS[model] = agent
+    return agent
+
+
+def _ask_local(cfg: dict, card: str) -> dict:
+    try:
+        raw = _local_agent(cfg).system_one(card, QUESTIONS)
+    except LocalUnavailable:
+        raise
+    except Exception as exc:  # noqa: BLE001 - one bad card is a null score, as with HTTP
+        raise RuntimeError(f"local Laya inference failed: {type(exc).__name__}: {exc}") from exc
+    if not isinstance(raw, dict):
+        raise ValueError("local Laya returned no result mapping")
+    return raw
+
+
+def ask(cfg: dict, card: str, timeout_s: float) -> dict:
+    """Score one card locally or POST it to the endpoint; the raw response."""
+    if local_mode(cfg):
+        return _ask_local(cfg, card)
+    key = os.environ.get("LAYA_API_KEY")
+    body = {"state": card, "questions": QUESTIONS, **({"model": cfg["model"]} if cfg.get("model") else {})}
+    req = urllib.request.Request(cfg["endpoint"].rstrip("/") + cfg["path"], json.dumps(body).encode(),
+                                 {"Content-Type": "application/json", "User-Agent": f"sherlock-rec/{__version__}",
+                                  **({"Authorization": f"Bearer {key}"} if key else {})})
+    for attempt in (0, 1):
+        try:
+            with urllib.request.build_opener(_NoRedirect).open(req, timeout=timeout_s) as resp:  # noqa: S310
+                return json.loads(resp.read())
+        except urllib.error.HTTPError as exc:
+            if attempt or not (exc.code == 429 or exc.code >= 500):
+                raise
+        except urllib.error.URLError:
+            if attempt:
+                raise
+        time.sleep(1)  # fixed, no jitter: behaviour stays reproducible
+    raise AssertionError("unreachable")
+
+
+def parse(raw: dict) -> tuple[dict, bool]:
+    """(answers as option -> probability, rounded to 4 decimals; truncated). ValueError if anything is malformed."""
+    answers = {}
+    try:
+        for qid, q in QUESTIONS.items():
+            a = raw["answers"][qid]
+            probs = ({"yes": a["noul"], "no": 1 - a["noul"]} if q["type"] == "noul"
+                     else {o: a["probabilities"][o] for o in q["criteria"]})
+            ok = all(isinstance(p, int | float) and 0 <= p <= 1 for p in probs.values())
+            if not ok or abs(sum(probs.values()) - 1) > 0.02:
+                raise ValueError(f"answer {qid} is not a probability distribution")
+            answers[qid] = {o: round(p, 4) for o, p in probs.items()}
+        usage = raw.get("usage") or {}
+    except (KeyError, TypeError, AttributeError) as exc:
+        raise ValueError(f"malformed response: missing {exc}") from exc
+    # input_tokens counts the card once per question, so it says nothing about truncation; these fields do
+    return answers, bool(usage.get("truncated") or usage.get("state_tokens_dropped") or usage.get("truncated_questions"))
+
+
+def _cache_path(cfg: dict, card: str) -> Path | None:
+    if not cfg.get("cache_dir"):
+        return None
+    if local_mode(cfg):
+        key = json.dumps(["local", cfg.get("model"), QUESTION_VERSION, card])
+    else:
+        key = json.dumps([urlsplit(cfg["endpoint"]).netloc, cfg["path"], cfg.get("model"), QUESTION_VERSION, card])
+    return Path(cfg["cache_dir"]) / f"{hashlib.sha256(key.encode()).hexdigest()}.json"
+
+
+def _entry_from(cfg: dict, raw: dict) -> dict:
+    answers, truncated = parse(raw)
+    return {"answers": answers, "truncated": truncated, "model": raw.get("model") or cfg.get("model")}
+
+
+def _write_entry(path: Path | None, entry: dict) -> None:
+    if path:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(json.dumps(entry, sort_keys=True), encoding="utf-8")
+
+
+def cached_answers(cfg: dict, card: str, timeout_s: float) -> tuple[dict, bool]:
+    """({answers, truncated, model}, cache hit). The cache holds answers only: never the card, never the key."""
+    path = _cache_path(cfg, card)
+    if path and path.is_file():
+        return json.loads(path.read_text(encoding="utf-8")), True
+    entry = _entry_from(cfg, ask(cfg, card, timeout_s))
+    _write_entry(path, entry)
+    return entry, False
+
+
+def fake_score(node: str) -> float:
+    return round(int(hashlib.sha256(node.encode()).hexdigest()[:8], 16) / 0xFFFFFFFF, 4)
+
+
+def rank(cfg: dict, candidates: list[str], card_of) -> dict:
+    """The artifact's `g1` object. `scores` is in rank order: score high to low, then name; null scores last.
+    `card_of(node)` gives (card, truncated); a card that cannot be built gives a null score (C8), never an error."""
+    start = time.monotonic()
+    given = cfg
+    cfg = {**DEFAULTS, **cfg}
+    laya = cfg["backend"] == "laya"
+    local = local_mode(cfg)
+    if local and "total_timeout_ms" not in given:
+        cfg["total_timeout_ms"] = LOCAL_TOTAL_TIMEOUT_MS
+    out = {"backend": cfg["backend"], "status": "skipped", "order_variant": "A", "scores": [], "truncated_cards": [],
+           "card_hashes": {}}
+    if laya:
+        out.update(question_version=QUESTION_VERSION, mode="local" if local else "http",
+                   endpoint_host=None if local else urlsplit(cfg["endpoint"]).hostname,
+                   model=cfg.get("model"), client_version=__version__, server_version=None,
+                   cache={"hits": 0, "misses": 0} if cfg.get("cache_dir") else "disabled")
+    if len(candidates) < 2:
+        return {**out, "ms": 0}
+    problem = blocked(cfg) if laya else None
+    scores, answers, called = {}, {}, False
+    misses: list[tuple[str, str]] = []
+
+    def _accept(n: str, entry: dict, hit: bool) -> None:
+        nonlocal called
+        called = True
+        if out["cache"] != "disabled":
+            out["cache"]["hits" if hit else "misses"] += 1
+        out["model"] = entry["model"]
+        answers[n] = entry["answers"]
+        if entry["truncated"] and n not in out["truncated_cards"]:
+            out["truncated_cards"].append(n)
+        # a card the model cut may have lost its end or the questions, so it gets no score
+        scores[n] = None if entry["truncated"] else entry["answers"]["needs_restore"]["yes"]
+
+    def _score_one(n: str, card: str) -> bool:
+        """Score one card. False means stop: the endpoint is dead, the key is missing, or time ran out."""
+        nonlocal problem
+        left = cfg["total_timeout_ms"] / 1000 - (time.monotonic() - start)
+        if left <= 0:
+            problem = f"the G1 time limit of {cfg['total_timeout_ms']} ms was reached"
+            return False
+        try:
+            entry, hit = cached_answers(cfg, card, min(cfg["timeout_ms"] / 1000, left))
+        except LocalUnavailable as exc:  # C8: no local package or checkpoint means G1 is off, not a failed run
+            problem = str(exc)
+            return False
+        except Exception as exc:  # noqa: BLE001 - C8: one bad card is a null score; a dead endpoint stops G1
+            if isinstance(exc, OSError) and (not called or getattr(exc, "code", None) in (401, 402, 403)):
+                problem = f"the endpoint failed: {type(exc).__name__} {getattr(exc, 'code', '')}".rstrip()
+                return False
+            scores[n] = None
+            return True
+        _accept(n, entry, hit)
+        return True
+
+    for n in candidates if not problem else ():
+        try:
+            card, truncated = card_of(n)
+        except Exception:  # noqa: BLE001 - C8: G1 must never fail the diagnosis
+            scores[n] = None
+            continue
+        out["card_hashes"][n] = hashlib.sha256(card.encode()).hexdigest()[:16]
+        out["truncated_cards"] += [n] if truncated else []
+        if not laya:
+            scores[n] = fake_score(n)
+            continue
+        if local:
+            path = _cache_path(cfg, card)
+            if path and path.is_file():
+                _accept(n, json.loads(path.read_text(encoding="utf-8")), True)
+            else:
+                misses.append((n, card))
+            continue
+        if not _score_one(n, card):
+            break
+    if misses and not problem:
+        # One forward for every uncached card. On Metal, system_one scores a single card and
+        # leaves the batch axis idle; predict_batch packs them. Checked against system_one on
+        # this checkpoint: the rounded probabilities match, so the cache stays interchangeable.
+        # sort_by_length is left off because that packing can change the floats.
+        left = cfg["total_timeout_ms"] / 1000 - (time.monotonic() - start)
+        raws = None
+        if left <= 0:
+            problem = f"the G1 time limit of {cfg['total_timeout_ms']} ms was reached"
+        else:
+            try:
+                agent = _local_agent(cfg)
+                if len(misses) > 1 and hasattr(agent, "predict_batch"):
+                    raws = agent.predict_batch([card for _, card in misses], QUESTIONS)
+                    if len(raws) != len(misses):
+                        raws = None
+            except LocalUnavailable as exc:
+                problem = str(exc)
+            except Exception:  # noqa: BLE001 - fall back to one card at a time
+                raws = None
+        if not problem and raws is not None:
+            for (n, card), raw in zip(misses, raws):
+                try:
+                    entry = _entry_from(cfg, raw)
+                except Exception:  # noqa: BLE001 - one bad card is a null score
+                    scores[n] = None
+                    continue
+                _write_entry(_cache_path(cfg, card), entry)
+                _accept(n, entry, False)
+        elif not problem:
+            for n, card in misses:
+                if not _score_one(n, card):
+                    break
+    # A card the model cut gets a null score and the run continues (spec rule 4). That is
+    # `partial`, including when every card was cut. `unavailable` is a dead endpoint, a missing
+    # key, or a time limit: treating "all truncated" as that made the evaluation stop and blame
+    # the API key.
+    every_card_cut = bool(scores) and set(scores) <= set(out["truncated_cards"])
+    if not problem and all(v is None for v in scores.values()) and not every_card_cut:
+        problem = "no card got a score"
+    if problem:  # C8: the run goes on exactly as if G1 were off
+        out.update(status="unavailable", reason=problem)
+    else:
+        order = sorted(candidates, key=lambda n: (scores[n] is None, -(scores[n] or 0.0), n))
+        out.update(status="ok" if None not in scores.values() else "partial",
+                   scores=[{"node": n, "score": scores[n], **({"answers": answers[n]} if n in answers else {})}
+                           for n in order])
+    out["ms"] = round(1000 * (time.monotonic() - start))
+    return out
