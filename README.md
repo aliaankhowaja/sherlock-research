@@ -20,6 +20,8 @@ Each experiment is reproducible from the code alone. Committed results live in `
 | G1 ordering (public traces) | 5,032 public agent-run traces (AEGIS / Who&When), orders compared against the published labels | `python/sherlock/eval/public_g1.py` | `docs/eval/public_traces/public_g1.json` / `.md` |
 
 Method, scoring and known limitations of the planted evaluation: `docs/eval/README.md`.
+The pre-registered metrics, statistical protocol and decision rules for all experiments:
+`docs/eval/metrics-spec.md` (commit it before running any 4-gate experiment; deviations go in its §14 log).
 Headline numbers are generated from `results.json` by `python -I scripts/gen-facts.py` into `docs/eval/facts.md`.
 
 ## Layout
