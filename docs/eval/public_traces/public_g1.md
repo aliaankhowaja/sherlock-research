@@ -43,6 +43,37 @@ g0_only names one node. One-name labels are a match rate. Several names report w
 | one name | 1974 | 0.141 | - |
 | several names | 2138 | 0.234 | 0.247 |
 
+## Random-order reference (100 seeds, mean + 95% CI)
+
+| metric | mean | ci95 |
+|---|---|---|
+| rank | 1.685 | [1.664, 1.708] |
+| reciprocal rank | 0.729 | [0.722, 0.737] |
+| recall@3 | 0.867 | [0.861, 0.872] |
+| ndcg@3 | 0.73 | [0.723, 0.736] |
+| trials_to_label | 6.566 | [6.479, 6.65] |
+| no_trial | 0.0 | [0.0, 0.0] |
+
+## Cost
+
+Local laya only: no endpoint, no key, no card text leaves the machine. Wall ms and cache hits are per scoring pass.
+
+| method | nodes | cut cards | cut rate | mean chars | max chars |
+|---|---|---|---|---|---|
+| laya | 14367 | 11995 | 0.835 | 2224.5 | 2399 |
+| laya_masked | 14367 | 11997 | 0.835 | 2224.7 | 2399 |
+
+### Cut cards by card size
+
+| method | card chars | nodes | cut | rate |
+|---|---|---|---|---|
+| laya | <1200 | 932 | 0 | 0.0 |
+| laya | 1200-2399 | 13435 | 11995 | 0.893 |
+| laya | >=2400 | 0 | 0 | - |
+| laya_masked | <1200 | 931 | 0 | 0.0 |
+| laya_masked | 1200-2399 | 13436 | 11997 | 0.893 |
+| laya_masked | >=2400 | 0 | 0 | - |
+
 ## Appendix: two_role
 
 920 rows. Node names: assistant, user_proxy.

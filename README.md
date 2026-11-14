@@ -18,6 +18,7 @@ Each experiment is reproducible from the code alone. Committed results live in `
 | G1 node ordering (planted cases) | the same cases, candidates ordered six ways (random / g0 / rule / hint / laya / laya_masked) | `python/sherlock/eval/g1_eval.py` | `docs/eval/g1/g1_results.json` / `.md` |
 | G1 node ordering (generated cases) | harder generated multi-candidate cases, same methods | `python/sherlock/eval/g1_gen.py` | `docs/eval/g1_gen/g1_results.json` / `.md` |
 | G1 ordering (public traces) | 5,032 public agent-run traces (AEGIS / Who&When), orders compared against the published labels | `python/sherlock/eval/public_g1.py` | `docs/eval/public_traces/public_g1.json` / `.md` |
+| Scored tables (statistics) | Tables 1–5 of `docs/eval/metrics-spec.md` §2–§8 (Wilson/BCa CIs, exact McNemar, exact Wilcoxon + Hodges–Lehmann, Holm, TOST, MDEs, pass@t) re-derived from the committed artifacts | `python/sherlock/eval/score.py` | `docs/eval/score.json` / `score.md` |
 
 Method, scoring and known limitations of the planted evaluation: `docs/eval/README.md`.
 The pre-registered metrics, statistical protocol and decision rules for all experiments:

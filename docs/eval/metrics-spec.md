@@ -173,7 +173,7 @@ script computes every number in §2–§6 from these fields alone; nothing is co
 ## 12. Reproducibility checklist
 
 - [ ] This spec committed before any 4-gate run; case catalogue and seeds frozen in the same commit.
-- [ ] All headline numbers emitted by `eval/score.py` (to be added) from committed artifacts; a
+- [x] All headline numbers emitted by `eval/score.py` (added 2026-11-14) from committed artifacts; a
       unit test re-derives the committed tables from the artifacts.
 - [ ] Re-run determinism check (byte-identical) for deterministic variants.
 - [ ] Public dataset gzip + row-filter code committed; filters printed into the artifact.
@@ -191,3 +191,42 @@ script computes every number in §2–§6 from these fields alone; nothing is co
 
 Any change to populations, budgets, tests or margins made after first results must be appended here
 with the reason and the date, and marked as post-hoc in every table it affects.
+
+- **2026-11-14 — determinism checks compare a canonical projection, not the raw JSON.** The 3-gate
+  artifact records per-case wall-clock seconds (`elapsed_s`) and the G1 artifacts record wall ms,
+  cache hit/miss counters and the 3-pass stability share; all of these legitimately vary between
+  runs, so byte-diffing the whole file made the reproducibility gate impossible to pass. The gates
+  now diff the artifact minus those volatile fields (`run_eval._canonical`; `g1_eval.canonical`,
+  used by `scripts/g1-eval.sh`). Everything the tables are built from — outcomes, predictions,
+  gates, trials, first-fix, truncation flags, card sizes — is still compared exactly. No population,
+  budget, test or margin changed.
+- **2026-11-14 — `random` baseline and the public random-order reference run at 100 seeds.** §6/§8
+  required ≥100 seeds, but the committed code used a single seed. Fixed before the final runs
+  reported here; headline `random` rows stay paired at the shared seed, the reference adds
+  mean + percentile 95% CI (`random_ref` in both artifacts).
+- **2026-11-14 — cost and stability records committed inside the artifacts.** An earlier version of
+  `g1_eval.py` stripped `cost`/`stability` from the committed `g1_results.json` ("markdown only"),
+  which contradicted §10 (scoring reproducible from committed artifacts alone). They are now
+  committed; `public_g1.json` always kept `cost`.
+- **2026-11-14 — post-hoc observation (exploratory, no test run):** on the public corpus 83.5% of
+  laya cards hit the truncation flag (11,995/14,367; 89.3% of the 1200–2399-char bucket), so laya's
+  public ordering rests on the ~16% of nodes that got a score. The §2–§6 statistical layer
+  (`eval/score.py`: Wilson CIs, pass@t curves, McNemar/Wilcoxon/TOST/Holm/MDE) is still "to be
+  added"; every number above is a point estimate from the committed artifacts.
+- **2026-11-14 — the §2–§6 statistical layer is now implemented (`eval/score.py`, `make score`).**
+  Emits Tables 1–5 and the Figure-1 pass@t data from the committed artifacts alone: Wilson 95% CI
+  on every rate, BCa bootstrap (10,000 case-level resamples, committed seed 20261014) on every
+  mean/median, exact McNemar + risk difference (paired bootstrap CI) + paired OR + MDE for family
+  (i), exact Wilcoxon signed-rank (mid-ranks, DP null) with Hodges–Lehmann shift + exact
+  Walsh-average CI + matched-pairs rank-biserial (the paired Cliff's delta) + shift MDE for
+  families (ii)/(iii), Holm–Bonferroni within each family, TOST at the pre-registered δ = 0.25
+  trials for variant-vs-variant comparisons, and the Kaplan–Meier pass@t curve with
+  budget-exhaustion right-censoring (median with CI only when ≥50% solve). `tests/test_score_tables.py`
+  re-derives the committed `score.json` byte for byte from the artifacts. B2 found 15
+  order-invariance violations of trials-to-final-verdict on the generated half (0 on planted) —
+  flagged as an engine-level item to investigate, per §3 B2.
+- **2026-11-14 — post-hoc note on family (ii) at B = 2:** on the planted subset every paired t_i
+  difference between laya/laya_masked and g0 is zero (36 and 35 non-censored pairs), so the
+  Wilcoxon is degenerate (p = 1.0); the §7 H2 comparison is only informative on the generated half
+  (B = 10), where laya is significantly *slower* to first fix than g0 (Holm p = 0.0002, HL shift
+  +0.5 trials).

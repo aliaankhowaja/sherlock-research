@@ -38,10 +38,25 @@ section "5/6 reproducibility: two more runs from the cache give byte-identical r
 for i in 1 2; do
   "${RUN[@]}" python eval/g1_eval.py --tight 2 --out "eval/.g1/rerun_$i" > /dev/null
   "${RUN[@]}" python eval/g1_eval.py --cases eval/.g1/gen_v1/test.jsonl --tight 10 --out "eval/.g1/rerun_gen_$i" > /dev/null
-  cmp ../../docs/eval/g1/g1_results.json "eval/.g1/rerun_$i/g1_results.json"
-  cmp ../../docs/eval/g1_gen/g1_results.json "eval/.g1/rerun_gen_$i/g1_results.json"
 done
-echo "reproducibility check: identical"
+# g1_results.json now carries the per-case cost and stability records (metrics spec §10); wall ms,
+# cache counters and the stability share legitimately differ between runs, so the determinism
+# check compares the canonical projection (see g1_eval.canonical): every scored field must match.
+"${RUN[@]}" python - <<'EOF'
+import json, sys
+from pathlib import Path
+sys.path.insert(0, "eval")
+from g1_eval import canonical
+
+pairs = [(Path("../../docs/eval/g1/g1_results.json"), Path("eval/.g1/rerun_1/g1_results.json")),
+         (Path("eval/.g1/rerun_1/g1_results.json"), Path("eval/.g1/rerun_2/g1_results.json")),
+         (Path("../../docs/eval/g1_gen/g1_results.json"), Path("eval/.g1/rerun_gen_1/g1_results.json")),
+         (Path("eval/.g1/rerun_gen_1/g1_results.json"), Path("eval/.g1/rerun_gen_2/g1_results.json"))]
+for main, rerun in pairs:
+    if canonical(json.loads(main.read_text())) != canonical(json.loads(rerun.read_text())):
+        sys.exit(f"reproducibility check FAILED: {main} vs {rerun}")
+print("reproducibility check: identical (canonical projection)")
+EOF
 
 section "6/6 the pre-declared ship rule"
 "${RUN[@]}" python - <<'EOF'

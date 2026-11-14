@@ -158,7 +158,8 @@ def two_role_appendix(records: list[dict]) -> dict:
     return {"rows": len(records), "node_names": names}
 
 
-def evaluate(headline: list[dict], appendix: list[dict], backend: str, seed: int) -> dict:
+def evaluate(headline: list[dict], appendix: list[dict], backend: str, seed: int,
+             random_seeds: int = 100) -> dict:
     rows, costs = [], []
     for record in headline:
         orders, failed, cost = _orders(record, seed, backend)
@@ -174,12 +175,95 @@ def evaluate(headline: list[dict], appendix: list[dict], backend: str, seed: int
         "backend": backend,
         "seed": seed,
         "methods": summarize(rows),
+        "random_ref": random_ref(headline, random_seeds),
         "by_source": {source: summarize(group) for source, group in sorted(by_source.items())},
         "g0_only": g0_only_table(headline),
         "two_role": two_role_appendix(appendix),
         "cost": {"cases": costs},
         "rows": rows,
     }
+
+
+_RANDOM_COLS = ("rank", "reciprocal rank", "recall@3", "ndcg@3", "trials_to_label")
+
+
+def random_ref(headline: list[dict], seeds: int) -> dict | None:
+    """§8: the random-order reference over a committed seed list (1..seeds), mean + percentile 95% CI.
+
+    The headline `random` rows stay paired (one shared seed); this reference exists so no mean is
+    read off a single shuffle as if it had no variance. Same budget as the scored rows."""
+    if seeds < 2:
+        return None
+    prepared = []
+    for record in headline:
+        gold_names = set(record["gold"][0])
+        on_path = path_of(record["history"])
+        prepared.append((record["id"], on_path, record["gold"], gold_names,
+                         label_budget(len(on_path), len(gold_names))))
+    per_seed = []
+    for seed in range(1, seeds + 1):
+        cells = []
+        for row_id, on_path, gold, gold_names, budget in prepared:
+            shuffled = list(on_path)
+            random.Random(f"{seed}:{row_id}").shuffle(shuffled)
+            scored = metrics(shuffled, gold_names)
+            trial, _reason = first_fix(shuffled, gold, budget)
+            cells.append({"rank": scored["rank"], "reciprocal rank": scored["rr"], "recall@3": scored["recall3"],
+                          "ndcg@3": scored["ndcg3"], "trials_to_label": trial})
+        per_seed.append({col: _mean([c[col] for c in cells if c[col] is not None]) for col in _RANDOM_COLS}
+                        | {"no_trial": sum(c["trials_to_label"] is None for c in cells) / len(cells)})
+    out = {"seeds": seeds, "metrics": {}}
+    for col in _RANDOM_COLS + ("no_trial",):
+        vals = sorted(p[col] for p in per_seed if p[col] is not None)
+        if not vals:
+            continue
+        out["metrics"][col] = {"mean": _mean(vals),
+                               "ci95": [round(vals[int(0.025 * len(vals))], 3),
+                                        round(vals[min(len(vals) - 1, int(0.975 * len(vals)))], 3)]}
+    return out
+
+
+def cost_section(cost_cases: list[dict]) -> str:
+    """§4, the 'is context length the issue' analysis: truncation against card size, per method.
+
+    card_chars is the character count of each node's card; 2400 chars is the 800-token cut line."""
+    buckets = ("<1200", "1200-2399", ">=2400")
+
+    def bucket(chars):
+        return "<1200" if chars < 1200 else ">=2400" if chars >= 2400 else "1200-2399"
+
+    per_method, by_card = {}, {}
+    for case in cost_cases:
+        for m in ("laya", "laya_masked"):
+            c = case.get(m)
+            if not c:
+                continue
+            truncated = set(c.get("truncated_cards") or [])
+            chars = c.get("card_chars") or {}
+            pm = per_method.setdefault(m, {"nodes": 0, "truncated": 0, "chars": []})
+            pm["nodes"] += len(chars)
+            pm["truncated"] += len(truncated)
+            pm["chars"] += list(chars.values())
+            for n, size in chars.items():
+                for key in ((m, bucket(size)), (m, "all")):
+                    by_card[key] = by_card.get(key, [0, 0])
+                    by_card[key][0] += 1
+                    by_card[key][1] += n in truncated
+    parts = ["## Cost", "",
+             "Local laya only: no endpoint, no key, no card text leaves the machine. Wall ms and cache "
+             "hits are per scoring pass.", "",
+             _table(["method", "nodes", "cut cards", "cut rate", "mean chars", "max chars"],
+                    [[m, v["nodes"], v["truncated"],
+                      round(v["truncated"] / v["nodes"], 3) if v["nodes"] else None,
+                      round(statistics.mean(v["chars"]), 1) if v["chars"] else None,
+                      max(v["chars"]) if v["chars"] else None]
+                     for m, v in sorted(per_method.items())]),
+             "", "### Cut cards by card size", "",
+             _table(["method", "card chars", "nodes", "cut", "rate"],
+                    [[m, b, *by_card.get((m, b), [0, 0]),
+                      round(by_card[(m, b)][1] / by_card[(m, b)][0], 3) if by_card.get((m, b)) else None]
+                     for m in sorted(per_method) for b in buckets])]
+    return "\n".join(parts)
 
 
 def _cell(value) -> str:
@@ -211,7 +295,12 @@ def render(report: dict) -> str:
               "node sits in the label, and the Jaccard of the two sets.", "",
               _table(["labels", "rows", "name in label", "Jaccard"],
                      [[key, g0[key]["rows"], g0[key]["name in label"], g0[key]["Jaccard"]] for key in ("one name", "several names")]),
-              "", "## Appendix: two_role", ""]
+              ""]
+    if report.get("random_ref"):
+        r = report["random_ref"]["metrics"]
+        parts += [f"## Random-order reference ({report['random_ref']['seeds']} seeds, mean + 95% CI)", "",
+                  _table(["metric", "mean", "ci95"], [[k, v["mean"], v["ci95"]] for k, v in r.items()]), ""]
+    parts += [cost_section(report["cost"]["cases"]), "", "## Appendix: two_role", ""]
     appendix = report["two_role"]
     names = ", ".join(appendix["node_names"]) or "(none)"
     noun = "row" if appendix["rows"] == 1 else "rows"
@@ -227,12 +316,14 @@ def main():
     ap.add_argument("--out", type=Path, help="write public_g1.md and public_g1.json here")
     ap.add_argument("--backend", choices=("laya", "fake"), default="laya")
     ap.add_argument("--seed", type=int, default=1)
+    ap.add_argument("--random-seeds", type=int, default=100,
+                    help="seeds for the random-order reference (spec 8: >=100; 0 disables)")
     args = ap.parse_args()
     records = [json.loads(line) for line in args.cases.read_text(encoding="utf-8").splitlines() if line.strip()]
     headline = [row for row in records if "two_role" not in row.get("tags", [])]
     appendix = [row for row in records if "two_role" in row.get("tags", [])]
     try:
-        report = evaluate(headline, appendix, args.backend, args.seed)
+        report = evaluate(headline, appendix, args.backend, args.seed, args.random_seeds)
     except RuntimeError as exc:
         sys.exit(f"public_g1: {exc}")
     text = render(report)

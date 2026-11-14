@@ -668,6 +668,7 @@
           "router",
           "writer"
         ],
+        "elapsed_s": 0.714,
         "exhaustive_trials": 31,
         "g0_hit": true,
         "gate": {
@@ -819,6 +820,7 @@
           "reviewer",
           "writer"
         ],
+        "elapsed_s": 0.905,
         "exhaustive_trials": 31,
         "g0_hit": true,
         "gate": {
@@ -969,6 +971,7 @@
         "clue_nodes": [
           "reviewer"
         ],
+        "elapsed_s": 0.97,
         "exhaustive_trials": 31,
         "g0_hit": true,
         "gate": {
@@ -1123,6 +1126,7 @@
           "reviewer",
           "writer"
         ],
+        "elapsed_s": 2.99,
         "exhaustive_trials": 31,
         "g0_hit": true,
         "gate": {
@@ -1277,6 +1281,7 @@
           "reviewer",
           "writer"
         ],
+        "elapsed_s": 2.862,
         "exhaustive_trials": 31,
         "g0_hit": true,
         "gate": {
@@ -1429,6 +1434,7 @@
           "assemble",
           "pricing"
         ],
+        "elapsed_s": 1.026,
         "exhaustive_trials": 15,
         "g0_hit": true,
         "gate": {
@@ -1581,6 +1587,7 @@
           "parse",
           "pricing"
         ],
+        "elapsed_s": 0.961,
         "exhaustive_trials": 15,
         "g0_hit": true,
         "gate": {
@@ -1735,6 +1742,7 @@
           "assemble",
           "stock"
         ],
+        "elapsed_s": 3.021,
         "exhaustive_trials": 15,
         "g0_hit": true,
         "gate": {
@@ -1886,6 +1894,7 @@
           "normalize",
           "post"
         ],
+        "elapsed_s": 0.972,
         "exhaustive_trials": 15,
         "g0_hit": true,
         "gate": {
@@ -2045,6 +2054,7 @@
           "normalize",
           "post"
         ],
+        "elapsed_s": 2.932,
         "exhaustive_trials": 15,
         "g0_hit": true,
         "gate": {
@@ -2198,6 +2208,7 @@
           "extract",
           "post"
         ],
+        "elapsed_s": 2.991,
         "exhaustive_trials": 15,
         "g0_hit": true,
         "gate": {
@@ -2348,6 +2359,7 @@
         "clue_nodes": [
           "fmt"
         ],
+        "elapsed_s": 0.968,
         "exhaustive_trials": 7,
         "g0_hit": true,
         "gate": {
@@ -2498,6 +2510,7 @@
           "fmt",
           "prep"
         ],
+        "elapsed_s": 0.925,
         "exhaustive_trials": 7,
         "g0_hit": true,
         "gate": {
@@ -2649,6 +2662,7 @@
           "ask",
           "fmt"
         ],
+        "elapsed_s": 0.979,
         "exhaustive_trials": 7,
         "g0_hit": true,
         "gate": {
@@ -2799,6 +2813,7 @@
           "fmt",
           "prep"
         ],
+        "elapsed_s": 2.805,
         "exhaustive_trials": 7,
         "g0_hit": true,
         "gate": {
@@ -2965,6 +2980,7 @@
           "sla_standard",
           "urgency"
         ],
+        "elapsed_s": 0.995,
         "exhaustive_trials": 4294967295,
         "g0_hit": true,
         "gate": {
@@ -3127,6 +3143,7 @@
           "sla_standard",
           "urgency"
         ],
+        "elapsed_s": 3.279,
         "exhaustive_trials": 4294967295,
         "g0_hit": true,
         "gate": {
@@ -3274,6 +3291,7 @@
         "clue_nodes": [
           "order_lookup"
         ],
+        "elapsed_s": 1.001,
         "exhaustive_trials": 15,
         "g0_hit": true,
         "gate": {
@@ -3421,6 +3439,7 @@
           "intake",
           "order_lookup"
         ],
+        "elapsed_s": 0.994,
         "exhaustive_trials": 15,
         "g0_hit": true,
         "gate": {
@@ -3582,6 +3601,7 @@
           "send",
           "tone_check"
         ],
+        "elapsed_s": 2.981,
         "exhaustive_trials": 4294967295,
         "g0_hit": true,
         "gate": {
@@ -3743,6 +3763,7 @@
           "sla_standard",
           "urgency"
         ],
+        "elapsed_s": 3.024,
         "exhaustive_trials": 4294967295,
         "g0_hit": true,
         "gate": {
@@ -3902,6 +3923,7 @@
           "send",
           "tone_check"
         ],
+        "elapsed_s": 2.772,
         "exhaustive_trials": 4294967295,
         "g0_hit": true,
         "gate": {
@@ -4067,6 +4089,7 @@
           "rerank",
           "send"
         ],
+        "elapsed_s": 3.026,
         "exhaustive_trials": 4294967295,
         "g0_hit": true,
         "gate": {
@@ -4221,6 +4244,7 @@
           "rerank",
           "send"
         ],
+        "elapsed_s": 0.976,
         "exhaustive_trials": 4294967295,
         "g0_hit": true,
         "gate": {
@@ -4375,6 +4399,7 @@
           "send",
           "tone_check"
         ],
+        "elapsed_s": 0.972,
         "exhaustive_trials": 4294967295,
         "g0_hit": true,
         "gate": {
@@ -4534,6 +4559,7 @@
           "audit_log",
           "send"
         ],
+        "elapsed_s": 7.024,
         "exhaustive_trials": 4294967295,
         "g0_hit": true,
         "gate": {
@@ -4687,6 +4713,7 @@
           "refund_format",
           "send"
         ],
+        "elapsed_s": 0.905,
         "exhaustive_trials": 4294967295,
         "g0_hit": true,
         "gate": {
@@ -4844,6 +4871,7 @@
           "payment_calc",
           "pricing"
         ],
+        "elapsed_s": 0.986,
         "exhaustive_trials": 1073741823,
         "g0_hit": true,
         "gate": {
@@ -5009,6 +5037,7 @@
           "notify",
           "policy_rules"
         ],
+        "elapsed_s": 3.048,
         "exhaustive_trials": 536870911,
         "g0_hit": true,
         "gate": {
@@ -5174,6 +5203,7 @@
           "notify",
           "policy_rules"
         ],
+        "elapsed_s": 3.046,
         "exhaustive_trials": 536870911,
         "g0_hit": true,
         "gate": {
@@ -5335,6 +5365,7 @@
           "notify",
           "policy_rules"
         ],
+        "elapsed_s": 0.98,
         "exhaustive_trials": 536870911,
         "g0_hit": true,
         "gate": {
@@ -5492,6 +5523,7 @@
           "policy_rules",
           "risk_score"
         ],
+        "elapsed_s": 0.985,
         "exhaustive_trials": 536870911,
         "g0_hit": true,
         "gate": {
@@ -5652,6 +5684,7 @@
           "policy_rules",
           "risk_score"
         ],
+        "elapsed_s": 3.051,
         "exhaustive_trials": 536870911,
         "g0_hit": true,
         "gate": {
@@ -5808,6 +5841,7 @@
           "manual_referral",
           "notify"
         ],
+        "elapsed_s": 0.972,
         "exhaustive_trials": 536870911,
         "g0_hit": true,
         "gate": {
@@ -5967,6 +6001,7 @@
           "notify",
           "policy_rules"
         ],
+        "elapsed_s": 0.983,
         "exhaustive_trials": 536870911,
         "g0_hit": true,
         "gate": {
@@ -6119,6 +6154,7 @@
           "letter_draft",
           "notify"
         ],
+        "elapsed_s": 0.95,
         "exhaustive_trials": 1073741823,
         "g0_hit": true,
         "gate": {
@@ -6274,6 +6310,7 @@
           "notify",
           "policy_rules"
         ],
+        "elapsed_s": 0.969,
         "exhaustive_trials": 536870911,
         "g0_hit": true,
         "gate": {
@@ -6433,6 +6470,7 @@
           "notify",
           "policy_rules"
         ],
+        "elapsed_s": 0.763,
         "exhaustive_trials": 536870911,
         "g0_hit": true,
         "gate": {
@@ -6589,6 +6627,7 @@
           "notify",
           "pricing"
         ],
+        "elapsed_s": 2.995,
         "exhaustive_trials": 1073741823,
         "g0_hit": true,
         "gate": {
@@ -6761,6 +6800,7 @@
           "validate_crm",
           "validate_webstore"
         ],
+        "elapsed_s": 0.987,
         "exhaustive_trials": 4294967295,
         "g0_hit": true,
         "gate": {
@@ -6930,6 +6970,7 @@
           "quality_note",
           "validate_billing"
         ],
+        "elapsed_s": 0.988,
         "exhaustive_trials": 4294967295,
         "g0_hit": true,
         "gate": {
@@ -7095,6 +7136,7 @@
           "outlier_filter",
           "publish"
         ],
+        "elapsed_s": 0.99,
         "exhaustive_trials": 4294967295,
         "g0_hit": true,
         "gate": {
@@ -7265,6 +7307,7 @@
           "quality_note",
           "validate_crm"
         ],
+        "elapsed_s": 3.068,
         "exhaustive_trials": 4294967295,
         "g0_hit": true,
         "gate": {
@@ -7436,6 +7479,7 @@
           "publish",
           "validate_refunds"
         ],
+        "elapsed_s": 3.05,
         "exhaustive_trials": 4294967295,
         "g0_hit": true,
         "gate": {
@@ -7601,6 +7645,7 @@
           "quality_gate",
           "quality_note"
         ],
+        "elapsed_s": 0.965,
         "exhaustive_trials": 4294967295,
         "g0_hit": true,
         "gate": {
@@ -7754,6 +7799,7 @@
           "quality_gate",
           "quality_note"
         ],
+        "elapsed_s": 0.963,
         "exhaustive_trials": 4294967295,
         "g0_hit": true,
         "gate": {
@@ -7907,6 +7953,7 @@
           "quality_gate",
           "quality_note"
         ],
+        "elapsed_s": 1.231,
         "exhaustive_trials": 4294967295,
         "g0_hit": true,
         "gate": {
@@ -8065,6 +8112,7 @@
           "narrative_prep",
           "publish"
         ],
+        "elapsed_s": 3.015,
         "exhaustive_trials": 4294967295,
         "g0_hit": true,
         "gate": {
@@ -8241,6 +8289,7 @@
           "validate_crm",
           "validate_webstore"
         ],
+        "elapsed_s": 3.034,
         "exhaustive_trials": 4294967295,
         "g0_hit": true,
         "gate": {
@@ -8411,6 +8460,7 @@
           "publish",
           "quality_gate"
         ],
+        "elapsed_s": 3.09,
         "exhaustive_trials": 4294967295,
         "g0_hit": true,
         "gate": {
@@ -8564,6 +8614,7 @@
           "format_tables",
           "publish"
         ],
+        "elapsed_s": 0.889,
         "exhaustive_trials": 4294967295,
         "g0_hit": true,
         "gate": {
@@ -8717,6 +8768,7 @@
           "join_segments",
           "publish"
         ],
+        "elapsed_s": 0.971,
         "exhaustive_trials": 4294967295,
         "g0_hit": true,
         "gate": {
@@ -8874,6 +8926,7 @@
           "router",
           "writer"
         ],
+        "elapsed_s": 2.987,
         "exhaustive_trials": 31,
         "g0_hit": true,
         "gate": {
@@ -9031,6 +9084,7 @@
           "reviewer",
           "writer"
         ],
+        "elapsed_s": 2.993,
         "exhaustive_trials": 31,
         "g0_hit": true,
         "gate": {
@@ -9187,6 +9241,7 @@
           "router",
           "writer"
         ],
+        "elapsed_s": 2.999,
         "exhaustive_trials": 31,
         "g0_hit": true,
         "gate": {
@@ -9342,6 +9397,7 @@
           "reviewer",
           "writer"
         ],
+        "elapsed_s": 0.975,
         "exhaustive_trials": 31,
         "g0_hit": true,
         "gate": {
@@ -9497,6 +9553,7 @@
           "pricing",
           "stock"
         ],
+        "elapsed_s": 3.057,
         "exhaustive_trials": 15,
         "g0_hit": true,
         "gate": {
@@ -9653,6 +9710,7 @@
           "parse",
           "pricing"
         ],
+        "elapsed_s": 2.99,
         "exhaustive_trials": 15,
         "g0_hit": true,
         "gate": {
@@ -9809,6 +9867,7 @@
           "parse",
           "pricing"
         ],
+        "elapsed_s": 2.991,
         "exhaustive_trials": 15,
         "g0_hit": true,
         "gate": {
@@ -9963,6 +10022,7 @@
           "assemble",
           "pricing"
         ],
+        "elapsed_s": 3.088,
         "exhaustive_trials": 15,
         "g0_hit": true,
         "gate": {
@@ -10114,6 +10174,7 @@
         "clue_nodes": [
           "post"
         ],
+        "elapsed_s": 0.969,
         "exhaustive_trials": 15,
         "g0_hit": true,
         "gate": {
@@ -10265,6 +10326,7 @@
           "post",
           "validate"
         ],
+        "elapsed_s": 0.972,
         "exhaustive_trials": 15,
         "g0_hit": true,
         "gate": {
@@ -10418,6 +10480,7 @@
           "post",
           "validate"
         ],
+        "elapsed_s": 3.065,
         "exhaustive_trials": 15,
         "g0_hit": true,
         "gate": {
@@ -10571,6 +10634,7 @@
           "post",
           "validate"
         ],
+        "elapsed_s": 0.974,
         "exhaustive_trials": 15,
         "g0_hit": true,
         "gate": {
@@ -10724,6 +10788,7 @@
           "ask",
           "fmt"
         ],
+        "elapsed_s": 3.013,
         "exhaustive_trials": 7,
         "g0_hit": true,
         "gate": {
@@ -10876,6 +10941,7 @@
         "clue_nodes": [
           "fmt"
         ],
+        "elapsed_s": 0.971,
         "exhaustive_trials": 7,
         "g0_hit": true,
         "gate": {
@@ -11028,6 +11094,7 @@
           "ask",
           "fmt"
         ],
+        "elapsed_s": 3.011,
         "exhaustive_trials": 7,
         "g0_hit": true,
         "gate": {
@@ -11181,6 +11248,7 @@
           "fmt",
           "prep"
         ],
+        "elapsed_s": 3.012,
         "exhaustive_trials": 7,
         "g0_hit": true,
         "gate": {
@@ -11337,6 +11405,7 @@
           "rerank",
           "send"
         ],
+        "elapsed_s": 0.983,
         "exhaustive_trials": 4294967295,
         "g0_hit": true,
         "gate": {
@@ -11494,6 +11563,7 @@
           "refund_format",
           "send"
         ],
+        "elapsed_s": 0.976,
         "exhaustive_trials": 4294967295,
         "g0_hit": true,
         "gate": {
@@ -11654,6 +11724,7 @@
           "send",
           "tone_check"
         ],
+        "elapsed_s": 3.024,
         "exhaustive_trials": 4294967295,
         "g0_hit": true,
         "gate": {
@@ -11817,6 +11888,7 @@
           "send",
           "tone_check"
         ],
+        "elapsed_s": 3.066,
         "exhaustive_trials": 4294967295,
         "g0_hit": true,
         "gate": {
@@ -11974,6 +12046,7 @@
           "audit_log",
           "send"
         ],
+        "elapsed_s": 2.983,
         "exhaustive_trials": 4294967295,
         "g0_hit": true,
         "gate": {
@@ -12132,6 +12205,7 @@
           "rerank",
           "send"
         ],
+        "elapsed_s": 3.034,
         "exhaustive_trials": 4294967295,
         "g0_hit": true,
         "gate": {
@@ -12288,6 +12362,7 @@
           "manual_referral",
           "notify"
         ],
+        "elapsed_s": 0.972,
         "exhaustive_trials": 536870911,
         "g0_hit": true,
         "gate": {
@@ -12442,6 +12517,7 @@
           "notify",
           "pricing"
         ],
+        "elapsed_s": 0.895,
         "exhaustive_trials": 1073741823,
         "g0_hit": true,
         "gate": {
@@ -12604,6 +12680,7 @@
           "policy_rules",
           "risk_score"
         ],
+        "elapsed_s": 3.058,
         "exhaustive_trials": 536870911,
         "g0_hit": true,
         "gate": {
@@ -12759,6 +12836,7 @@
           "notify",
           "risk_score"
         ],
+        "elapsed_s": 3.07,
         "exhaustive_trials": 1073741823,
         "g0_hit": true,
         "gate": {
@@ -12915,6 +12993,7 @@
           "kyc_match",
           "notify"
         ],
+        "elapsed_s": 1.018,
         "exhaustive_trials": 1073741823,
         "g0_hit": true,
         "gate": {
@@ -13076,6 +13155,7 @@
           "notify",
           "policy_rules"
         ],
+        "elapsed_s": 3.071,
         "exhaustive_trials": 536870911,
         "g0_hit": true,
         "gate": {
@@ -13248,6 +13328,7 @@
           "quality_gate",
           "quality_note"
         ],
+        "elapsed_s": 3.121,
         "exhaustive_trials": 4294967295,
         "g0_hit": true,
         "gate": {
@@ -13420,6 +13501,7 @@
           "publish",
           "validate_refunds"
         ],
+        "elapsed_s": 3.033,
         "exhaustive_trials": 4294967295,
         "g0_hit": true,
         "gate": {
@@ -13581,6 +13663,7 @@
           "publish",
           "qa_checks"
         ],
+        "elapsed_s": 3.097,
         "exhaustive_trials": 4294967295,
         "g0_hit": true,
         "gate": {
@@ -13747,6 +13830,7 @@
           "quality_gate",
           "quality_note"
         ],
+        "elapsed_s": 3.02,
         "exhaustive_trials": 4294967295,
         "g0_hit": true,
         "gate": {
@@ -13917,6 +14001,7 @@
           "quality_gate",
           "quality_note"
         ],
+        "elapsed_s": 3.035,
         "exhaustive_trials": 4294967295,
         "g0_hit": true,
         "gate": {
@@ -14088,6 +14173,7 @@
           "quality_gate",
           "quality_note"
         ],
+        "elapsed_s": 3.034,
         "exhaustive_trials": 4294967295,
         "g0_hit": true,
         "gate": {

@@ -44,11 +44,22 @@ class Oracle:
                        check={"pass": ok, "results": [{"score": 1.0 if ok else 0.0}]})
 
 
-def first_fix(order, gold, budget):
-    """(smallest trial n whose restored set is one of the minimal sets or None, reason_code)."""
+def search_fix(order, gold, budget):
+    """(smallest trial n whose restored set is one of the minimal sets or None, reason_code, SearchResult).
+
+    The result's `budget.trials_used` is B2, the trials-to-final-verdict count (metrics spec §3):
+    the search decides every set the cutoff allows, so it terminates at its own pace regardless
+    of the order — recording it lets the run assert the G1-does-not-change-B2 invariant."""
     res = search(order, Oracle(gold), 0.0, budget)
     found = {frozenset(s) for s in res.minimal_sets}
-    return min((t["n"] for t in res.trials if frozenset(t["restored"]) in found), default=None), res.reason_code
+    fix = min((t["n"] for t in res.trials if frozenset(t["restored"]) in found), default=None)
+    return fix, res.reason_code, res
+
+
+def first_fix(order, gold, budget):
+    """(smallest trial n whose restored set is one of the minimal sets or None, reason_code)."""
+    fix, code, _res = search_fix(order, gold, budget)
+    return fix, code
 
 
 def metrics(order, gold):
@@ -65,12 +76,17 @@ def rule_order(case):
     return sorted(case["candidates"], key=lambda n: (n not in flagged, pos.get(n, len(pos))))
 
 
+def shuffled_order(case, seed):
+    """The `random` order for one seed: the shared `{seed}:{case id}` formula (metrics spec §6)."""
+    shuffled = list(case["candidates"])
+    random.Random(f"{seed}:{case['id']}").shuffle(shuffled)
+    return shuffled
+
+
 def orders(case, cfg, gold):
     cands, cost = case["candidates"], {}
     clues = [Clue("stand_in", n, "", w) for n, w in case["clue_score"].items() if w]
-    shuffled = list(cands)
-    random.Random(f"{cfg['seed']}:{case['id']}").shuffle(shuffled)
-    out = {"random": shuffled, "g0": cands, "rule": rule_order(case),
+    out = {"random": shuffled_order(case, cfg["seed"]), "g0": cands, "rule": rule_order(case),
            "hint": order_candidates(cands, clues, case["hint"])}
     for name, cards in (("laya", case["cards"]), ("laya_masked", case["masked"])):
         g1 = rank(cfg["g1"], cands, lambda n, c=cards: tuple(c[n]))
@@ -98,9 +114,10 @@ def evaluate(cases, cfg):
         order, g1s = orders(case, cfg, gold)
         row = {"id": case["id"], "team": case["team"], "candidates": len(case["candidates"]), "methods": {}}
         for m, o in order.items():
-            fix, code = first_fix(o, case["gold"], Budget(auto=True))
+            fix, code, res = search_fix(o, case["gold"], Budget(auto=True))
             _, tight = first_fix(o, case["gold"], Budget(max_trials=cfg["tight"]))
             row["methods"][m] = {"first_fix": fix, "first_gold_rank": metrics(o, gold)["rank"], "_m": metrics(o, gold),
+                                 "final_trials": res.budget.get("trials_used"),
                                  "_exh": (code == "budget_exhausted", tight == "budget_exhausted")}
         for m, g1 in g1s.items():
             c = cost[m]
@@ -133,7 +150,100 @@ def summarize(rows):
                   "mrr": mean([x["_m"]["rr"] for x in ms]), "recall3": mean([x["_m"]["recall3"] for x in ms]),
                   "ndcg3": mean([x["_m"]["ndcg3"] for x in ms]), "fix_mean": mean(fixes),
                   "fix_median": statistics.median(fixes) if fixes else None, "no_fix": len(ms) - len(fixes),
-                  "exhausted_default": sum(x["_exh"][0] for x in ms), "exhausted_tight": sum(x["_exh"][1] for x in ms)}
+                  "exhausted_default": sum(x["_exh"][0] for x in ms), "exhausted_tight": sum(x["_exh"][1] for x in ms),
+                  "final_mean": mean([x["final_trials"] for x in ms if x["final_trials"] is not None])}
+    return out
+
+
+def random_ref(cases, cfg, seeds):
+    """§6/§9: the `random` baseline over a committed seed list (1..seeds), mean + percentile 95% CI.
+
+    The headline `random` row stays paired (one shared seed); this reference exists so no table
+    reads a one-seed random number as if it had no variance."""
+    if seeds < 2:
+        return None
+    per_seed = []
+    for seed in range(1, seeds + 1):
+        cells = []
+        for case in cases:
+            gold = {n for s in case["gold"] for n in s}
+            order = shuffled_order(case, seed)
+            fix, _code = first_fix(order, case["gold"], Budget(auto=True))
+            _, tight = first_fix(order, case["gold"], Budget(max_trials=cfg["tight"]))
+            m = metrics(order, gold)
+            cells.append({"fix_mean": fix, "no_fix": fix is None, "exhausted_tight": tight == "budget_exhausted",
+                          "mrr": m["rr"], "recall3": m["recall3"], "ndcg3": m["ndcg3"]})
+        per_seed.append({key: (statistics.mean([c[key] for c in cells if c[key] is not None])
+                               if any(c[key] is not None for c in cells) and not isinstance(cells[0][key], bool)
+                               else sum(bool(c[key]) for c in cells) / len(cells))
+                         for key in ("fix_mean", "no_fix", "exhausted_tight", "mrr", "recall3", "ndcg3")})
+    out = {"seeds": seeds, "metrics": {}}
+    for key in ("fix_mean", "no_fix", "exhausted_tight", "mrr", "recall3", "ndcg3"):
+        vals = sorted(p[key] for p in per_seed if p[key] is not None)
+        if not vals:
+            continue
+        out["metrics"][key] = {"mean": round(statistics.mean(vals), 3),
+                               "ci95": [round(vals[int(0.025 * len(vals))], 3),
+                                        round(vals[min(len(vals) - 1, int(0.975 * len(vals)))], 3)]}
+    return out
+
+
+def canonical(res):
+    """The artifact minus the fields that legitimately differ run to run: per-call wall ms, the
+    cache hit/miss counters (a re-run is all hits) and the stability share. Everything a scoring
+    script needs — first_fix, final_trials, truncated_cards, card_chars — stays in."""
+    out = json.loads(json.dumps(res))
+    out.pop("stability", None)
+
+    def strip(cost, aggregate=False):
+        if isinstance(cost, dict):
+            for k in ("ms", "cache", "calls", "hits") if aggregate else ("ms", "cache"):
+                cost.pop(k, None)
+
+    for v in (out.get("cost") or {}).values():
+        strip(v, aggregate=True)
+    for row in out.get("cases", []):
+        for c in (row.get("cost") or {}).values():
+            strip(c)
+    return out
+
+
+def cost_analysis(cases):
+    """§4, the 'is context length the issue' tables: truncation against card size and team size.
+
+    card_chars is the character count of each node's card (2400 chars = the 800-token cut line)."""
+    buckets = ("<1200", "1200-2399", ">=2400")
+
+    def bucket(chars):
+        return "<1200" if chars < 1200 else ">=2400" if chars >= 2400 else "1200-2399"
+
+    by_card, by_team, sizes = {}, {}, {}
+    for case in cases:
+        for m, c in (case.get("cost") or {}).items():
+            truncated = set(c.get("truncated_cards") or [])
+            for n, chars in (c.get("card_chars") or {}).items():
+                for key in ((m, bucket(chars)), (m, "all")):
+                    by_card[key] = by_card.get(key, [0, 0])
+                    by_card[key][0] += 1
+                    by_card[key][1] += n in truncated
+            teams = by_team.setdefault((m, case["candidates"]), [0, 0])
+            teams[0] += 1
+            teams[1] += bool(truncated)
+            sizes.setdefault(m, []).extend((c.get("card_chars") or {}).values())
+    def team_label(k):
+        return "2" if k <= 2 else "3-5" if k <= 5 else ">=6"
+    grouped = {}
+    for (m, k), (n, t) in by_team.items():
+        grouped.setdefault((m, team_label(k)), [0, 0])
+        grouped[(m, team_label(k))][0] += n
+        grouped[(m, team_label(k))][1] += t
+    out = {"by_card_size": [[m, b, *by_card.get((m, b), [0, 0]),
+                             round(by_card[(m, b)][1] / by_card[(m, b)][0], 3) if by_card.get((m, b)) else None]
+                            for m in ("laya", "laya_masked") for b in buckets + ("all",)],
+           "by_candidate_count": [[m, k, *v, round(v[1] / v[0], 3) if v[0] else None]
+                                  for (m, k), v in sorted(grouped.items())],
+           "card_chars_mean": {m: round(statistics.mean(v), 1) for m, v in sizes.items() if v},
+           "card_chars_max": {m: max(v) for m, v in sizes.items() if v}}
     return out
 
 
@@ -144,7 +254,7 @@ def table(head, body):
 
 def report(res):
     cols = ["cases", "multi_candidate", "mrr", "recall3", "ndcg3", "fix_mean", "fix_median", "no_fix",
-            "exhausted_default", "exhausted_tight"]
+            "exhausted_default", "exhausted_tight", "final_mean"]
     s, g = res["summary"], res["gate"]
     parts = [f"# G1 zero-shot evaluation ({res['backend']}, {res['question_version']})", "## Methods",
              table(["method"] + cols, [[m] + [s[m][c] for c in cols] for m in METHODS]),
@@ -155,6 +265,17 @@ def report(res):
              "(true: planted data cannot show a gain)",
              "## Cost\n" + table(["method", "calls", "cache hits", "ms", "statuses"],
                                  [[m, c["calls"], c["hits"], c["ms"], c["status"]] for m, c in res["cost"].items()])]
+    if res["random_ref"]:
+        r = res["random_ref"]["metrics"]
+        parts.append("## Random reference (100 seeds, mean + 95% CI)\n"
+                     + table(["metric", "mean", "ci95"],
+                             [[k, v["mean"], v["ci95"]] for k, v in r.items()]))
+    if res.get("cost_analysis"):
+        ca = res["cost_analysis"]
+        parts.append("## Truncation by card size (2400 chars = the 800-token cut line)\n"
+                     + table(["method", "card chars", "nodes", "truncated", "rate"], ca["by_card_size"]))
+        parts.append("## Truncation by candidate-set size\n"
+                     + table(["method", "candidates", "cases", "with a cut card", "rate"], ca["by_candidate_count"]))
     if res["stability"]:
         parts.append(f"## Stability\nlaya order identical in 3 passes: {res['stability']['share']} "
                      f"of {res['stability']['cases']} cases with 2+ candidates")
@@ -169,6 +290,8 @@ def main():
     ap.add_argument("--seed", type=int, default=1)
     ap.add_argument("--stability", action="store_true", help="two extra uncached laya passes")
     ap.add_argument("--tight", type=int, default=10, help="the tight trial budget (spec: e.g. 10; 2 for the planted cases)")
+    ap.add_argument("--random-seeds", type=int, default=100,
+                    help="seeds for the random baseline reference (spec 6: >=100; 0 disables)")
     a = ap.parse_args()
     cases = [json.loads(line) for line in a.cases.read_text(encoding="utf-8").splitlines() if line.strip()]
     cases = [c for c in cases if c["status"] == "found"]
@@ -193,7 +316,10 @@ def main():
     res = {"backend": a.backend, "question_version": QUESTION_VERSION, "seed": a.seed, "tight_budget": a.tight,
            "summary": summarize(rows),
            "per_team": per_team, "gate": {"share": share, "gate_fires": share is not None and share >= 0.95},
-           "cost": cost, "stability": {"cases": len(passes), "share": mean([float(p) for p in passes])} if passes else None}
+           "cost": cost,
+           "stability": {"cases": len(passes), "share": mean([float(p) for p in passes])} if passes else None,
+           "random_ref": random_ref(cases, cfg, a.random_seeds),
+           "cost_analysis": cost_analysis(rows)}
     for r in rows:
         for x in r["methods"].values():
             x.pop("_m"), x.pop("_exh")
@@ -201,8 +327,7 @@ def main():
     md = report(res)
     if a.out:
         a.out.mkdir(parents=True, exist_ok=True)
-        kept = {k: v for k, v in res.items() if k not in ("cost", "stability")}  # these vary run to run: markdown only
-        (a.out / "g1_results.json").write_text(json.dumps(kept, indent=2, sort_keys=True) + "\n", encoding="utf-8",
+        (a.out / "g1_results.json").write_text(json.dumps(res, indent=2, sort_keys=True) + "\n", encoding="utf-8",
                                                newline="\n")
         (a.out / "g1_results.md").write_text(md, encoding="utf-8", newline="\n")
     print(md, end="")

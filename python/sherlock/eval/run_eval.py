@@ -385,6 +385,26 @@ def render(res: dict) -> str:
     return "\n".join(out)
 
 
+def _canonical(res):
+    """The artifact minus run-to-run volatile fields, for --check: per-case wall-clock seconds.
+
+    Everything the committed tables are built from (outcomes, predictions, gates, trials) is
+    deterministic and still compared byte for byte; only timing varies between runs."""
+    out = json.loads(json.dumps(res))
+
+    def strip(v):
+        if isinstance(v, dict):
+            v.pop("elapsed_s", None)
+            for c in v.values():
+                strip(c)
+        elif isinstance(v, list):
+            for c in v:
+                strip(c)
+
+    strip(out)
+    return out
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("--out", help="write results.json and results.md here")
@@ -406,8 +426,9 @@ def main() -> int:
     for f in res["failures"]:
         print(f"FAIL: {f}", file=sys.stderr)
     if args.check:
-        want = Path(args.check).read_text(encoding="utf-8").replace("\r\n", "\n")
-        if want != text:
+        want = _canonical(json.loads(Path(args.check).read_text(encoding="utf-8")))
+        fresh = json.dumps(_canonical(res), indent=2, sort_keys=True) + "\n"
+        if json.dumps(want, indent=2, sort_keys=True) + "\n" != fresh:
             print(f"eval: results differ from {args.check} (not reproducible, or the code changed)", file=sys.stderr)
             return 1
         print("eval: results identical to", args.check)
