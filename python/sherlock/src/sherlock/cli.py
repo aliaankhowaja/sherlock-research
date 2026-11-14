@@ -140,6 +140,47 @@ def _g1_check(args) -> int:
     return 0
 
 
+def _g1_api_check(args) -> int:
+    """Smoke test of the G1 API scorer: the sample card, `--passes` calls, every reply parsed.
+
+    Reads the provider configuration from the environment / .env (envfile), so a reviewer can point it
+    at their own key. Prints one JSON block: config, per-call usage, scores, across-call agreement."""
+    import time as _time
+
+    from sherlock import envfile, g1_api
+    from sherlock.g1 import SAMPLE_CARD
+
+    envfile.load()
+    given = {k: v for k, v in (("provider", args.provider), ("model", args.model),
+                               ("base_url", args.base_url), ("api_key", args.api_key)) if v}
+    try:
+        cfg = {**g1_api.env_config(), **given}
+        cfg["passes"] = max(1, args.passes)
+    except g1_api.ConfigError as exc:
+        print(f"sherlock-rec: {exc}", file=sys.stderr)
+        return EXIT_ERROR
+    print(f"sherlock-rec: G1 API smoke: provider={cfg['provider']} model={cfg['model']} "
+          f"endpoint={g1_api.endpoint_of(cfg)}", file=sys.stderr)
+    calls, failed = [], []
+    for p in range(cfg["passes"]):
+        started = _time.monotonic()
+        res = g1_api._stable_call(cfg, SAMPLE_CARD, p)
+        ms = round(1000 * (_time.monotonic() - started))
+        if res["score"] is None:
+            failed.append(res.get("error"))
+        calls.append({"pass": p, "score": res["score"], "usage": res.get("usage"), "cached": res.get("cached"),
+                      "ms": ms, "error": res.get("error")})
+    scores = [c["score"] for c in calls if c["score"] is not None]
+    out = {"provider": cfg["provider"], "model": cfg["model"], "endpoint": g1_api.endpoint_of(cfg),
+           "prompt_version": g1_api.PROMPT_VERSION, "config_hash": g1_api.config_hash(cfg),
+           "scores": scores, "agree": len(set(scores)) <= 1 if scores else None, "calls": calls}
+    if failed and not scores:
+        print(f"sherlock-rec: every call failed: {failed[0]}", file=sys.stderr)
+        return EXIT_ERROR
+    print(json.dumps(out, indent=2))
+    return 0
+
+
 def _diagnose(args) -> int:
     from sherlock.checks import CheckError
     from sherlock.diagnose import diagnose, write_artifact
@@ -293,6 +334,13 @@ def main(argv: list[str] | None = None) -> int:
     it.add_argument("--dir", default=".sherlock", help="Sherlock directory (default .sherlock)")
     gc = sub.add_parser("g1-check", help="smoke-test G1 Laya locally with the sample card (runs it twice)")
     _laya_args(gc)
+    ga = sub.add_parser("g1-api-check", help="smoke-test the G1 API scorer with the sample card "
+                                             "(provider/model from the environment or .env)")
+    ga.add_argument("--provider", help="vertex | gemini_api | openai_compat (default: SHERLOCK_G1_PROVIDER)")
+    ga.add_argument("--model", help="default: SHERLOCK_G1_MODEL")
+    ga.add_argument("--base-url", help="openai_compat only (default: SHERLOCK_G1_BASE_URL)")
+    ga.add_argument("--api-key", help="default: SHERLOCK_G1_API_KEY")
+    ga.add_argument("--passes", type=int, default=2, help="calls to make (default 2: smoke = repeatability)")
     run = sub.add_parser("run", help="run a command under the recorder")
     run.add_argument("--replay", action="store_true", help="serve calls from the cassette; never go live")
     run.add_argument("--cassette", default=".sherlock/cassette.db")
@@ -316,6 +364,8 @@ def main(argv: list[str] | None = None) -> int:
         return _intake(args)
     if args.verb == "g1-check":
         return _g1_check(args)
+    if args.verb == "g1-api-check":
+        return _g1_api_check(args)
     cmd = args.cmd[1:] if args.cmd[:1] == ["--"] else args.cmd
     if not cmd:
         ap.error("run: missing command")

@@ -27,6 +27,17 @@ from sherlock.sources import node_outputs
 
 CARD_CHARS = 2400  # 800 tokens at a conservative 1 token per 3 characters (spec 5, rule 3)
 SNIPPET = 200
+# Card variants (metrics spec, experiments E1/E2; pre-registered before the runs):
+# `small` is the card above, byte for byte the card the local laya checkpoint was shown (its context
+# is 1,024 tokens). `big` gives a hosted model more context: an 8x character budget, 4x snippets and
+# three extra fields — GOOD_IN (the passing run's input state to the node; only exists when a
+# known-good run does, so public-trace rows never have it), UPSTREAM (what every earlier superstep's
+# node wrote in the failed run and, when it exists, in the passing run) and WRITES_ALL (every recorded
+# run of the node with its input and output; only added when the node ran more than once, so it never
+# duplicates IN_FAILED/OUT_FAILED). The schema, field order and priorities are otherwise identical, so
+# the only manipulated variables are the context budget and the three fields.
+CARD_VARIANTS = {"small": {"card_chars": CARD_CHARS, "snippet": SNIPPET, "extra_fields": False},
+                 "big": {"card_chars": 12000, "snippet": 800, "extra_fields": True}}
 LOCAL_TOTAL_TIMEOUT_MS = 600000  # slow on CPU, fast on GPU; still bounded
 _LOCAL_AGENTS: dict[str, object] = {}
 DEFAULTS = {"model": "typed-decisions", "total_timeout_ms": LOCAL_TOTAL_TIMEOUT_MS}
@@ -106,12 +117,17 @@ def _first_runs(history: list[dict]) -> tuple[dict, dict, dict]:
     return step, before, error
 
 
-def node_card(node: str, history: list[dict], good_history: list[dict] | None, checks, mask: bool = False):
-    """(card text, truncated). A pure function of its inputs: the same run gives the same card, byte for byte."""
+def node_card(node: str, history: list[dict], good_history: list[dict] | None, checks, mask: bool = False,
+              card_chars: int = CARD_CHARS, snippet: int = SNIPPET, extra_fields: bool = False):
+    """(card text, truncated). A pure function of its inputs: the same run gives the same card, byte for byte.
+    `card_chars`/`snippet`/`extra_fields` are the card variant (CARD_VARIANTS); the defaults are the small
+    card the laya checkpoint was scored on, so every committed artifact is unaffected."""
     step, before, error = _first_runs(history)
     out = node_outputs(history)
     good_out = node_outputs(good_history) if good_history else {}
-    good_before = _first_runs(good_history)[1] if good_history else {}
+    _good_step, good_before, _good_error = _first_runs(good_history) if good_history else ({}, {}, {})
+    runs = [{"in": snap.get("values"), "out": t.get("result")} for snap in reversed(history)
+            for t in snap.get("tasks") or [] if t["name"] == node]
     one = lambda writes: writes[0] if len(writes) == 1 else writes  # noqa: E731
     yn = lambda same: "unknown" if same is None else "yes" if same else "no"  # noqa: E731
     same_out = out.get(node) == good_out[node] if node in good_out else None
@@ -127,16 +143,23 @@ def node_card(node: str, history: list[dict], good_history: list[dict] | None, c
         *([(1, f"ERROR: {error[node]}")] if node in error else []),
         (2, f"OUT_FAILED: {_flat(one(out.get(node, [])))}"),
         *([(2, f"OUT_GOOD: {_flat(one(good_out[node]))}")] if node in good_out else []),
+        *([(2, "UPSTREAM: " + "; ".join(
+            f"{n}: {_flat(one(out[n]))}" + (f" | GOOD: {_flat(one(good_out[n]))}" if n in good_out else "")
+            for n in sorted((n for n in out if step[n] < step.get(node, -1)), key=lambda n: (step[n], n))))]
+          if extra_fields else []),
         (3, f"IN_FAILED: {_flat(before.get(node))}"),
+        *([(3, f"GOOD_IN: {_flat(good_before.get(node))}")] if extra_fields and node in good_before else []),
+        *([(4, "WRITES_ALL: " + " | ".join(f"#{k} IN={_flat(r['in'])} OUT={_flat(r['out'])}" for k, r in
+                                           enumerate(runs)))] if extra_fields and len(runs) > 1 else []),
     ]
     fields = [(p, redact_body(line.encode()).decode()) for p, line in fields]
     if mask:  # shortcut control (spec 9): the same card with every node name replaced by a stable ID
         for n in sorted(out, key=len, reverse=True):
             alias = "node_" + hashlib.sha256(n.encode()).hexdigest()[:6]
             fields = [(p, re.sub(rf"(?<![\w-]){re.escape(n)}(?![\w-])", alias, line)) for p, line in fields]
-    over = sum(len(line) + 1 for _, line in fields) - CARD_CHARS
+    over = sum(len(line) + 1 for _, line in fields) - card_chars
     truncated = over > 0
-    for prio in (3, 2, 1):
+    for prio in (4, 3, 2, 1):
         for i in reversed(range(len(fields))):
             p, line = fields[i]
             if over > 0 and p == prio and len(line) > 40:
@@ -238,11 +261,79 @@ def fake_score(node: str) -> float:
     return round(int(hashlib.sha256(node.encode()).hexdigest()[:8], 16) / 0xFFFFFFFF, 4)
 
 
+def _rank_api(cfg: dict, candidates: list[str], card_of) -> dict:
+    """The `api` backend: one hosted-LLM call per card per pass (g1_api). Same contract as the laya path:
+    never raises, scores may be null, a null-scoring shortlist is `partial` or `unavailable` (C8) — and the
+    eval scripts stop the run on `unavailable`, so a dead endpoint is never a silent G0 fallback."""
+    from sherlock import g1_api  # imported here: the module is only needed when the backend is used
+
+    start = time.monotonic()
+    out = {"backend": "api", "provider": cfg.get("provider"), "model": cfg.get("model"), "status": "skipped",
+           "order_variant": "A", "scores": [], "truncated_cards": [], "card_hashes": {}, "card_chars": {},
+           "question_version": g1_api.PROMPT_VERSION, "mode": "api", "endpoint": None,
+           "temperature": cfg.get("temperature"), "passes": cfg.get("passes") or 1,
+           "client_version": __version__, "config_hash": None,
+           "cache": {"hits": 0, "misses": 0} if cfg.get("cache_dir") else "disabled"}
+    try:
+        out["endpoint"] = g1_api.endpoint_of(cfg)
+        out["config_hash"] = g1_api.config_hash(cfg)
+    except Exception as exc:  # noqa: BLE001 - a malformed config is reported, not raised (C8)
+        return {**out, "status": "unavailable", "reason": f"bad G1 API config: {type(exc).__name__}: {exc}",
+                "ms": 0}
+    if len(candidates) < 2:
+        return {**out, "ms": 0}
+    cards, built = {}, []
+    for n in candidates:
+        try:
+            card, truncated = card_of(n)
+        except Exception:  # noqa: BLE001 - C8: a card that cannot be built gets no score, the pass continues
+            built.append(n)
+            continue
+        cards[n] = card
+        out["card_hashes"][n] = hashlib.sha256(card.encode()).hexdigest()[:16]
+        out["card_chars"][n] = len(card)
+        if truncated:
+            out["truncated_cards"] += [n]
+    if not cards:
+        return {**out, "status": "partial",
+                "scores": [{"node": n, "score": None} for n in sorted(built)],
+                "reason": "no candidate card could be built", "ms": round(1000 * (time.monotonic() - start))}
+    scored = g1_api.score_cards(cfg, cards, cfg.get("passes") or 1)
+    per_node = scored["per_node"]
+    if isinstance(out["cache"], dict):
+        for rec in per_node.values():
+            out["cache"]["hits"] += rec["cached"]
+            out["cache"]["misses"] += rec["calls"] - rec["cached"]
+    scores = dict(scored["scores"])
+    for n in built:
+        scores[n] = None
+    api_cut = sorted(n for n, rec in per_node.items() if any(rec["truncated"]))
+    for n in api_cut:
+        if n not in out["truncated_cards"]:
+            out["truncated_cards"] += [n]
+    order = sorted(candidates, key=lambda n: (scores[n] is None, -(scores[n] or 0.0), n))
+    errors = [e for rec in per_node.values() for e in rec["errors"]]
+    partial = any(scores[n] is None for n in candidates)
+    if scored["calls_ok"] == 0 and errors:
+        out.update(status="unavailable", reason=errors[0])
+    else:
+        out.update(status="partial" if partial else "ok")
+    out.update(scores=[{"node": n, "score": scores[n]} for n in order],
+               per_pass={"orders": scored["orders"], "tau": scored["tau"]},
+               per_node=per_node,
+               cost={"tokens_in": scored["tokens_in"], "tokens_out": scored["tokens_out"], "usd": scored["usd"]},
+               calls={"ok": scored["calls_ok"], "failed": scored["calls_failed"]},
+               ms=round(1000 * (time.monotonic() - start)))
+    return out
+
+
 def rank(cfg: dict, candidates: list[str], card_of) -> dict:
     """The artifact's `g1` object. `scores` is in rank order: score high to low, then name; null scores last.
     `card_of(node)` gives (card, truncated); a card that cannot be built gives a null score (C8), never an error."""
     start = time.monotonic()
     cfg = {**DEFAULTS, **cfg}
+    if cfg["backend"] == "api":
+        return _rank_api(cfg, candidates, card_of)
     laya = cfg["backend"] == "laya"
     out = {"backend": cfg["backend"], "status": "skipped", "order_variant": "A", "scores": [], "truncated_cards": [],
            "card_hashes": {}, "card_chars": {}}

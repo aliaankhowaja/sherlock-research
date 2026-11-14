@@ -230,3 +230,63 @@ with the reason and the date, and marked as post-hoc in every table it affects.
   Wilcoxon is degenerate (p = 1.0); the §7 H2 comparison is only informative on the generated half
   (B = 10), where laya is significantly *slower* to first fix than g0 (Holm p = 0.0002, HL shift
   +0.5 trials).
+
+### 14.1 Pre-registration: hosted-LLM G1 experiments E1/E2 (written 2026-11-14, before the runs)
+
+Fixed here, before any hosted run beyond the infrastructure smoke test; nothing below may change
+after the first scored run without a new dated entry. The smoke test (one card, 3 calls, plus two
+partial `--only` pipeline runs at 2 passes) validated transport and plumbing only — no hypothesis,
+population or analysis decision was taken from it. The full runs reuse the smoke calls as cache
+entries because the cards, pass indices and call parameters are identical.
+
+- **Model and call:** `gemini-2.5-flash` on Vertex AI (project `sockt-cloud`, region `us-central1`)
+  via Application Default Credentials. Temperature 0, `thinkingBudget: 0` (thought tokens otherwise
+  consume the output budget), `maxOutputTokens: 256`, request timeout 120 s, 16 concurrent calls,
+  HTTP 429/5xx retried twice with exponential backoff; parse failures are not retried (they are
+  recorded per call, §10). Provider layer `g1_api.py`; providers `vertex` / `gemini_api` /
+  `openai_compat` are configurable via `.env` so a reviewer can re-run with their own key.
+- **Prompt (both variants, one version):** `g1_api_prompt_v1` — the SYSTEM text committed verbatim in
+  every artifact; the card is the user message; no tools. Reply: one JSON object
+  `{"needs_restore": "yes"|"no", "confidence": 0-100}`; the graded score is P(restore) =
+  confidence/100 for "yes", 1 − confidence/100 for "no".
+- **Card variants (the only manipulated variable):**
+  - E1 `small`: `CARD_CHARS = 2400`, `SNIPPET = 200`, no extra fields — byte-identical to the cards
+    the local laya checkpoint was scored on (unit-test pinned to the golden cards; cross-checked
+    against the committed run's derived cards, 10/10 hashes equal on the smoke subset).
+  - E2 `big`: `CARD_CHARS = 12000`, `SNIPPET = 800`, plus fields `GOOD_IN`, `UPSTREAM` (earlier
+    supersteps' outputs, failed run and known-good run when it exists) and `WRITES_ALL` (only when
+    the node ran more than once). Cut priority and schema otherwise identical.
+- **Truncation rule (the §4 mechanism under test):** a card whose prompt exceeds
+  `SHERLOCK_G1_MAX_INPUT_TOKENS` (1,000,000 for this model) gets no score and a `partial` status,
+  exactly as a cut laya card; the builder-side cut at `CARD_CHARS` is recorded separately.
+- **Passes:** planted pipeline = 5 passes per variant on the G1-relevant subset (candidates ≥ 2) and
+  a single pass elsewhere (G1 has nothing to order there); public corpus = 1 pass, matching the
+  committed laya protocol, plus a 200-row subsample scored 5 times for the §6.7 stability statistic.
+  Passes measure across-call agreement of the produced order (mean pairwise Kendall τ), not vote
+  share; pooled scores are the mean P(restore) over passes.
+- **Budgets:** the full budget is run_eval's `Budget()` (40 trials, non-auto) for exact pairing with
+  the committed results; the pre-registered tight budget for the exhaustion metric (§3 B4) is
+  **B = 10**. Trials-to-final-verdict (B2) differences across orders are counted and reported, not
+  asserted (15 such violations already exist on the generated half, §14 above).
+- **Case set and pairing:** `build_cases(SEED 20261014)` = 86 cases + 3 harmless probes, grouped and
+  recorded exactly as `run_eval.py` (shared lab, own lab for the two request-ambiguous cases); the
+  no-G1 diagnosis is re-run in the same lab as each G1 variant (paired). Invariant asserted:
+  AC-G1-1 (G1 reorders trials, never the answer). Expected to be degenerate on planted (G0 is
+  near-optimal, §5): the planted runs contribute the EM-identity invariants, cost and truncation
+  tables; the ordering signal comes from the public corpus (§8).
+- **Tests:** families (ii)/(iii) exactly as §6.3/§6.4 on pooled t_i (mean over the case's passes;
+  pairs with a censored member excluded and counted), exact Wilcoxon + Hodges–Lehmann + rank-biserial
+  + MDE, TOST at δ = 0.25 for variant-vs-variant, Holm within family. The pass@t curve uses the same
+  Kaplan–Meier estimator as `score.py:pass_at` but accumulates events over a window (pooled t_i is a
+  mean over passes and may be fractional); right-censoring at B = 10 unchanged.
+- **Cost:** implied USD at the published price `$0.30`/`$2.50` per 1M input/output tokens (source
+  recorded verbatim in every artifact: "Google Cloud Vertex AI published price for
+  gemini-2.5-flash, 2026-11-14"). Token counts come from the API's usage fields; no estimate.
+- **Reproducibility:** every call is cached under `eval/.g1/api_cache/{variant}/` keyed by (provider,
+  model, prompt version, SYSTEM, card, pass index, call parameters); a re-run from the cache must
+  reproduce the committed artifact minus wall clock and per-call latencies (`--check`, like
+  `run_eval.py`). Card text is never committed; card hashes, character counts, per-pass scores,
+  token counts and truncation flags are.
+- **Not pre-registered (exploratory, labelled as such if reported):** per-team t_i breakdowns, any
+  cost comparison between variants beyond the §4 table, any post-hoc slice of the public corpus.
+

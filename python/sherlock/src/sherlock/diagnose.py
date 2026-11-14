@@ -14,7 +14,7 @@ from pathlib import Path
 from sherlock.cassette import Cassette
 from sherlock.checks import Checks, evaluate
 from sherlock.clues import differs_clues, history_clues, order_candidates, path_check, tool_call_clues
-from sherlock.g1 import node_card
+from sherlock.g1 import CARD_VARIANTS, node_card
 from sherlock.g1 import rank as rank_g1
 from sherlock.g3 import G3Error, history_usable, run_g3
 from sherlock.gates import disabled as g1_disabled
@@ -124,8 +124,9 @@ def _unit(client, thread_id, history, context, checks, cassette_path, budget, cl
         notes.append("the search was limited to the suspects and the nodes a G0 clue widened it with")
     if g1_cfg:  # the G1 scorer sees only the survivors; its order breaks ties inside a G0 score (variant A)
         good = source.history if source else None
+        variant = CARD_VARIANTS.get(g1_cfg.get("card_variant", "small"), CARD_VARIANTS["small"])
         g1 = rank_g1(g1_cfg, pruning.candidates,
-                     lambda n: node_card(n, history, good, checks, g1_cfg.get("mask", False)))
+                     lambda n: node_card(n, history, good, checks, g1_cfg.get("mask", False), **variant))
         nominated = [s["node"] for s in g1["scores"]]
         g1["order_changed"] = (order_candidates(pruning.candidates, unit_clues)
                                != order_candidates(pruning.candidates, unit_clues, nominated))
