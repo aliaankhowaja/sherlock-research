@@ -522,6 +522,213 @@ def public_table(pub):
     return out
 
 
+# --------------------------------------------------------------------------- E1/E2 (hosted G1)
+
+def _pooled_t(case, variant):
+    """The case's pooled t_i (mean over its passes), as pipeline_g1 records it."""
+    vals = [p["t_i"] for p in case["variants"][variant]["passes"] if p["t_i"] is not None]
+    return round(statistics.fmean(vals), 3) if vals else None
+
+
+def _km_pass_at_frac(ts, tight):
+    """Kaplan–Meier pass@t for pooled (possibly fractional) t_i: events accumulate over a window
+    (x <= t minus x <= t-1), right-censoring budget-exhausted rows at the tight budget. Same
+    estimator as `pass_at` above; the window replaces the exact-match step because a pooled t_i
+    is a mean over passes."""
+    n = len(ts)
+    finite = [x for x in ts if x is not None]
+    curve, surv, at_risk, prev = [], 1.0, n, 0
+    for t in range(1, tight + 1):
+        events = sum(1 for x in finite if prev < x <= t)
+        if events:
+            surv *= 1 - events / at_risk
+            at_risk -= events
+        prev = t
+        if t == tight:
+            at_risk -= n - len(finite)
+        curve.append(round(1 - surv, 4))
+    solved = finite
+    median = None
+    if n and len(solved) >= n / 2:
+        reach = [t for t in range(1, tight + 1) if sum(1 for x in solved if x <= t) >= 0.5 * n]
+        median = reach[0] if reach else None
+    return {"pass_at": curve, "median": median, "solved": len(solved), "n": n}
+
+
+def pipeline_tables(pipe):
+    """E1/E2 tables re-derived from the per-case rows of pipeline_g1.json (§10: the scoring layer
+    does not trust the run script's own summary blocks)."""
+    tight = pipe["tight_budget"]
+    variants = tuple(pipe["variants"])
+    cases = pipe["cases"]
+    eff = {}
+    for v in variants:
+        cells = [p for c in cases for p in c["variants"][v]["passes"]]
+        exact = sum(x["outcome"] == "exact" for x in cells)
+        wrong = sum(x["outcome"] == "wrong" for x in cells)
+        ab = sum(x["outcome"] == "abstain" for x in cells)
+        jac = [x["jaccard"] for x in cells if x["outcome"] == "wrong" and x["jaccard"] is not None]
+        eff[v] = {"case_passes": len(cells), "exact": exact, "wrong": wrong, "abstain": ab,
+                  "em": rnd(exact / (len(cells) - ab)) if len(cells) - ab else None,
+                  "em_ci95": wilson(exact, len(cells) - ab) if len(cells) - ab else None,
+                  "mean_j_wrong": rnd(statistics.fmean(jac)) if jac else None}
+    subset = [c for c in cases if c["g1_relevant"]]
+    series = {}
+    efficiency = {}
+    for v in variants:
+        pooled = [_pooled_t(c, v) for c in subset]
+        series[v] = [t if (t is not None and t <= tight) else None for t in pooled]
+        finite, finite_all = [t for t in series[v] if t is not None], [t for t in pooled if t is not None]
+        exh = sum(1 for t in series[v] if t is None)
+        efficiency[v] = {"n": len(subset),
+                         "median_t": rnd(statistics.median(finite)) if finite else None,
+                         "iqr_t": [rnd(q) for q in _iqr(finite)],
+                         "mean_t": rnd(statistics.fmean(finite_all)) if finite_all else None,
+                         "t_ci95": mean_ci(finite, statistics.median) if finite else None,
+                         "pass@B": rnd(len(finite) / len(subset)) if subset else None,
+                         "exhausted": exh, "exhausted_ci95": wilson(exh, len(subset)) if subset else None}
+    cost = {}
+    for v in ("small", "big"):
+        chars, truncated, tokens_in, tokens_out, calls_ok, calls_failed = [], 0, 0, 0, 0, 0
+        for c in cases:
+            g1 = c["variants"][v].get("g1")
+            if not g1:
+                continue
+            cut = set(g1.get("truncated_cards") or [])
+            for n, size in (g1.get("card_chars") or {}).items():
+                chars.append(size)
+                truncated += n in cut
+            tokens_in += (g1.get("cost") or {}).get("tokens_in") or 0
+            tokens_out += (g1.get("cost") or {}).get("tokens_out") or 0
+            calls_ok += (g1.get("calls") or {}).get("ok") or 0
+            calls_failed += (g1.get("calls") or {}).get("failed") or 0
+        usd = None
+        if pipe["config"].get("price_in") and pipe["config"].get("price_out"):
+            usd = round(tokens_in / 1e6 * float(pipe["config"]["price_in"])
+                        + tokens_out / 1e6 * float(pipe["config"]["price_out"]), 4)
+        cost[v] = {"cards": len(chars),
+                   "card_chars_mean": rnd(statistics.fmean(chars)) if chars else None,
+                   "card_chars_max": max(chars) if chars else None, "builder_truncated": truncated,
+                   "tokens_in": tokens_in, "tokens_out": tokens_out, "usd": usd,
+                   "calls_ok": calls_ok, "calls_failed": calls_failed}
+    invars = {"answer_changed": sum(1 for c in cases if c["invariants"]["answer_changed"]),
+              "b2_changed": sum(1 for c in cases if c["invariants"]["b2_changed"]),
+              "violations": sum(1 for c in cases if c["off"]["violations"]
+                                or any(p["violations"] for v in ("small", "big")
+                                       for p in c["variants"][v]["passes"])),
+              "case_passes_total": sum(len(c["variants"][v]["passes"]) for c in cases for v in ("small", "big"))}
+    tests = pipeline_tests(series, tight)
+    return {"config": {k: pipe["config"].get(k) for k in
+                       ("provider", "model", "config_hash", "prompt_version", "price_source")},
+            "seed": pipe["seed"], "passes": pipe["passes"], "tight_budget": tight,
+            "prompt_version": pipe.get("prompt_version"),
+            "stability": pipe.get("stability"),
+            "truncation_by_card_size": pipe.get("truncation_by_card_size"),
+            "effectiveness": eff, "efficiency": efficiency,
+            "pass_at": {v: _km_pass_at_frac(series[v], tight) for v in variants},
+            "cost": cost, "invariants": invars, "tests": tests}
+
+
+def pipeline_tests(series, tight):
+    """Families (ii)/(iii) on the pooled t_i series (censored pairs excluded and counted), the same
+    exact machinery as `efficiency_tests` above."""
+    tests = []
+    for a, b in (("small", "off"), ("big", "off"), ("small", "big")):
+        diffs, censored = [], 0
+        for ta, tb in zip(series[a], series[b]):
+            if ta is None or tb is None:
+                censored += 1
+                continue
+            diffs.append(round(ta - tb, 3))
+        fam = "(ii) G1 variant vs no-G1, t_i" if b == "off" else "(iii) G1 variant vs G1 variant, t_i"
+        row = {"family": fam, "test": f"{a} vs {b} (subset, tight B={tight})"}
+        sr = signed_rank(diffs)
+        if sr is None:
+            row.update(statistic=f"all {len(diffs)} paired differences zero ({censored} censored)",
+                       p_exact=1.0, p_holm=None,
+                       effect="HL shift 0.0 (CI95 [0.0, 0.0]), rank-biserial 0.0", mde=None)
+            if b != "off":
+                row["tost"] = {"delta": TOST_DELTA, "p_lower": 1.0, "p_upper": 1.0,
+                               "equivalent": False, "note": "degenerate: no non-zero differences"}
+            tests.append(row)
+            continue
+        p = wilcoxon_p(sr)
+        hl, hl_ci = hodges_lehmann(sr)
+        row.update(statistic=f"Wilcoxon W+ = {sr['w2'] / 2} over {len(diffs)} pairs ({censored} censored)",
+                   p_exact=rp(p), p_holm=None,
+                   effect=f"HL shift {hl} (CI95 {hl_ci}), rank-biserial {rank_biserial(sr)}",
+                   mde=mde_shift(diffs))
+        if b != "off":
+            p_lo = wilcoxon_p(signed_rank([d + TOST_DELTA for d in diffs]), "ge")
+            p_hi = wilcoxon_p(signed_rank([d - TOST_DELTA for d in diffs]), "le")
+            row["tost"] = {"delta": TOST_DELTA, "p_lower": rnd(p_lo), "p_upper": rnd(p_hi),
+                           "equivalent": bool(p_lo < ALPHA and p_hi < ALPHA)}
+        tests.append(row)
+    for fam in ("(ii)", "(iii)"):
+        grp = [r for r in tests if r["family"].startswith(fam)]
+        for r, hp in zip(grp, holm([t["p_exact"] for t in grp])):
+            r["p_holm"] = hp
+    return tests
+
+
+def public_api_table(pub_api, laya_pub):
+    """Table 5 extended with the hosted G1 orders: paired per-row percentile bootstrap CIs as in
+    `public_table`, plus paired api-vs-laya differences (same corpus rows, same budgets — the
+    pairing is over the corpus, rows aligned by id). The laya means/CIs are re-computed here on
+    the api rows so every cell of the table is paired; the random-order reference is the
+    committed laya artifact's (order-only, model-independent)."""
+    laya_rows = {r["id"]: r for r in laya_pub["rows"]}
+    orders = ("random", "path", "g0", "laya", *(f"api_{v}" for v in pub_api["variants"]))
+
+    def cell(row, m, col):
+        if m in ("random", "path", "g0") or m.startswith("api_"):
+            return row["methods"][m][col]
+        laya_row = laya_rows.get(row["id"])
+        return laya_row["methods"][m][col] if laya_row else None
+
+    rows = pub_api["rows"]
+    n = len(rows)
+    out = {"rows": n, "backend": pub_api["backend"], "seed": pub_api["seed"], "methods": {},
+           "random_ref": laya_pub.get("random_ref")}
+    for m in orders:
+        out["methods"][m] = {"means": {}, "ci95": {}}
+    vals = {m: {col: [cell(r, m, col) for r in rows] for col in PUBLIC_COLS} for m in orders}
+    for col in PUBLIC_COLS:
+        for m in orders:
+            colvals = [v for v in vals[m][col] if v is not None]
+            out["methods"][m]["means"][col] = rnd(statistics.fmean(colvals)) if colvals else None
+        rng = stream()
+        boots = {m: [] for m in orders}
+        for _ in range(BOOTSTRAP):
+            idx = rng.choices(range(n), k=n)
+            for m in orders:
+                v = vals[m][col]
+                boots[m].append(sum(map(v.__getitem__, idx)) / n)
+        for m in orders:
+            out["methods"][m]["ci95"][col] = percentile_ci(boots[m])
+    # paired differences against the laya orders (same corpus rows)
+    diffs_out = {}
+    for a, b in (("api_small", "laya"), ("api_big", "laya"), ("api_big", "api_small")):
+        if a not in vals or b not in vals:
+            continue
+        diffs_out[f"{a} - {b}"] = {}
+        for col in PUBLIC_COLS:
+            pairs = [(va, vb) for va, vb in zip(vals[a][col], vals[b][col])
+                     if va is not None and vb is not None]
+            if not pairs:
+                continue
+            d = [va - vb for va, vb in pairs]
+            rng = stream()
+            boots = []
+            for _ in range(BOOTSTRAP):
+                idx = rng.choices(range(len(d)), k=len(d))
+                boots.append(sum(map(d.__getitem__, idx)) / len(d))
+            diffs_out[f"{a} - {b}"][col] = {"mean": rnd(statistics.fmean(d)), "n": len(d),
+                                            "ci95": percentile_ci(boots)}
+    out["paired_diffs"] = diffs_out
+    return out
+
+
 # --------------------------------------------------------------------------- invariants (§2 A3b)
 
 def invariants(planted):
@@ -561,6 +768,20 @@ def compute(root):
     }
     res["table3_tests"] = res["table1_tests"] + res["table2_planted"]["tests"] \
         + res["table2_generated"]["tests"]
+    # E1/E2 artifacts (hosted G1) are optional: the committed tables above are unchanged without
+    # them, and every block below is re-derived from the per-case rows (§10), never from the run
+    # script's own summary.
+    pipeline_path = root / "pipeline_g1" / "pipeline_g1.json"
+    if pipeline_path.is_file():
+        pipe = json.loads(pipeline_path.read_text())
+        res["meta"]["artifact_sha256"]["pipeline"] = hashlib.sha256(pipeline_path.read_bytes()).hexdigest()[:16]
+        res["table6_pipeline"] = pipeline_tables(pipe)
+        res["table3_tests"] += res["table6_pipeline"]["tests"]
+    public_api_path = root / "public_traces" / "public_g1_api.json"
+    if public_api_path.is_file():
+        pub_api = json.loads(public_api_path.read_text())
+        res["meta"]["artifact_sha256"]["public_api"] = hashlib.sha256(public_api_path.read_bytes()).hexdigest()[:16]
+        res["table5_public_api"] = public_api_table(pub_api, pub)
     return res
 
 
@@ -651,9 +872,57 @@ def render(res):
         parts += ["", "### Random-order reference (100 seeds, mean + percentile 95% CI)", "",
                   table(["metric", "mean", "CI95"],
                         [[k, v["mean"], v["ci95"]] for k, v in r["metrics"].items()])]
-    parts += ["", "G1 wall ms is the per-scoring-pass clock recorded in the artifacts (B5 proxy: "
-              "diagnose-start→verdict stage timing is not in the artifact); tokens/USD are not "
-              "recorded (card_chars/3 is the token stand-in; §14 deviation log)."]
+    if "table6_pipeline" in res:
+        t6 = res["table6_pipeline"]
+        parts += ["", f"## Table 6 — E1/E2, the 4-gate pipeline with the hosted G1 "
+                  f"({t6['config']['provider']} / {t6['config']['model']}, {t6['passes']} passes, "
+                  f"tight B={t6['tight_budget']}; prompt {t6['prompt_version']})", "",
+                  "Effectiveness (every case, every pass; EM = exact / answered):", "",
+                  table(["variant", "case-passes", "exact", "wrong", "abstain", "EM", "EM CI95",
+                         "mean J (wrong)"],
+                        [[v, e["case_passes"], e["exact"], e["wrong"], e["abstain"], e["em"],
+                          e["em_ci95"], e["mean_j_wrong"]] for v, e in t6["effectiveness"].items()]),
+                  "", "Efficiency on the G1-relevant subset (pooled t_i over passes; pass@B at the "
+                      "tight budget; exhaustion on the tight-budget diagnosis):", "",
+                  table(["variant", "n", "median t", "IQR", "mean t", "median CI95", "pass@B",
+                         "exhausted", "exh. CI95"],
+                        [[v, e["n"], e["median_t"], e["iqr_t"], e["mean_t"], e["t_ci95"], e["pass@B"],
+                          e["exhausted"], e["exhausted_ci95"]] for v, e in t6["efficiency"].items()]),
+                  "", "### Figure 1 (data) — pass@t, KM with censoring at the tight budget", "",
+                  table(["variant"] + [f"t={t}" for t in range(1, t6["tight_budget"] + 1)] + ["KM median"],
+                        [[v] + c["pass_at"] + [c["median"]] for v, c in t6["pass_at"].items()]),
+                  "", "Cost (§4; tokens from the API usage fields, USD at the recorded published price):", "",
+                  table(["variant", "cards", "mean chars", "max chars", "builder-cut", "calls ok",
+                         "calls failed", "tokens in", "tokens out", "USD"],
+                        [[v, c["cards"], c["card_chars_mean"], c["card_chars_max"], c["builder_truncated"],
+                          c["calls_ok"], c["calls_failed"], c["tokens_in"], c["tokens_out"], c["usd"]]
+                         for v, c in t6["cost"].items()]),
+                  "", "Invariants: answers changed by G1 "
+                  f"{t6['invariants']['answer_changed']} case(s), B2 changed {t6['invariants']['b2_changed']}, "
+                  f"honesty violations {t6['invariants']['violations']} "
+                  f"(of {t6['invariants']['case_passes_total']} case-passes).",
+                  "", "Across-pass agreement of the produced order (mean pairwise Kendall tau): "
+                  f"{t6['stability']}"]
+    if "table5_public_api" in res:
+        t5a = res["table5_public_api"]
+        parts += ["", f"## Table 5b — public-trace ordering with the hosted G1 "
+                  f"({t5a['backend']}; {t5a['rows']} headline rows, seed {t5a['seed']})", "",
+                  table(["method", "metric", "mean", "CI95"],
+                        [[m, col, t5a["methods"][m]["means"][col], t5a["methods"][m]["ci95"][col]]
+                         for m in t5a["methods"] for col in PUBLIC_COLS]),
+                  "", "Paired differences on the same rows (api order − reference order):", "",
+                  table(["pair", "metric", "mean diff", "n", "CI95"],
+                        [[pair, col, d["mean"], d["n"], d["ci95"]]
+                         for pair, per_col in t5a["paired_diffs"].items() for col, d in per_col.items()])]
+    note = ["", "G1 wall ms is the per-scoring-pass clock recorded in the artifacts (B5 proxy: "
+            "diagnose-start→verdict stage timing is not in the artifact); tokens/USD are not "
+            "recorded (card_chars/3 is the token stand-in; §14 deviation log)."]
+    if "table6_pipeline" in res or "table5_public_api" in res:
+        note = ["", "G1 wall ms is the per-scoring-pass clock of the local backends (B5 proxy); the "
+                "hosted-G1 artifacts record calls, tokens and USD from the API usage fields "
+                "(§14.1), and their truncation flags distinguish the builder-side cut from the "
+                "model-context cut."]
+    parts += note
     return "\n\n".join(parts) + "\n"
 
 

@@ -52,11 +52,45 @@ make g1-eval     # G1 ordering, planted + generated cases (local laya inference;
 make g1-public   # G1 ordering on the public corpus (local laya; SHUTDOWN=0 keeps the machine on)
 ```
 
+Hosted-LLM G1 experiments (E1 = small cards, E2 = big cards; see `docs/eval/metrics-spec.md` §14.1):
+
+```sh
+make g1-api-smoke    # the sample card through the configured provider (3 calls)
+make g1-pipeline     # E1/E2 on the 86 planted cases + 3 probes, paired vs no-G1 (about 1 hour)
+make g1-api-public   # E1/E2 on the public trace corpus (about 30k calls; run overnight)
+```
+
 The planted 3-gate evaluation needs `langgraph-cli` and no network: runs are recorded against a local echo
 stub, then replayed inside a socket trap that forbids every non-loopback connection. G1 runs the open-weight
 `laya` checkpoint **locally** in-process (GPU box recommended; a CPU run works and is only slower): no endpoint,
 no key, and no card text leaves the machine. Answers are cached in `python/sherlock/eval/.g1/` so a re-run
 after a failure only pays for what is missing.
+
+### Run the hosted experiments with your own API key
+
+The hosted G1 backend (`python/sherlock/src/sherlock/g1_api.py`) speaks to any of three provider
+types, configured entirely through a `.env` file at the repository root (template: `.env-example`;
+the file is git-ignored — never commit a key):
+
+```sh
+cp .env-example .env      # then edit; every key is documented there
+make g1-api-smoke         # verify the provider answers before any experiment
+```
+
+- `SHERLOCK_G1_PROVIDER=vertex` — Google Vertex AI with Application Default Credentials
+  (`gcloud auth application-default login`; no key in the file). The paper runs used
+  `gemini-2.5-flash` this way.
+- `SHERLOCK_G1_PROVIDER=gemini_api` — the Generative Language API with `SHERLOCK_G1_API_KEY`.
+- `SHERLOCK_G1_PROVIDER=openai_compat` — any `/chat/completions` endpoint (OpenAI, ollama, Groq,
+  Together, ...) via `SHERLOCK_G1_BASE_URL` (+ optional key).
+
+The same system prompt and reply format are used for every provider and both card variants, so the
+only thing that changes between E1 (small cards) and E2 (big cards) is the card text. Set
+`SHERLOCK_G1_PRICE_IN/OUT/SOURCE` to your model's published per-million-token prices so the cost
+tables are dated and reproducible; `SHERLOCK_G1_MAX_INPUT_TOKENS` is your model's context window
+(a card over it gets no score — the truncation mechanism under test). Every call is cached under
+`python/sherlock/eval/.g1/`, and the experiment scripts exit loudly rather than fall back if the
+endpoint is dead.
 
 ## Datasets
 
