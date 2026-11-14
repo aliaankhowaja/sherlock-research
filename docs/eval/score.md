@@ -58,6 +58,9 @@ Recomputed from the committed artifacts alone (§10). Abstains are excluded from
 | (ii) G1 variant vs no-G1, t_i | laya vs g0 (subset, B=10) | Wilcoxon W+ = 295.0 over 59 pairs (39 censored) | 0.000109 | 0.000218 | HL shift 0.5 (CI95 [-0.5, 3.0]), rank-biserial 0.8154 | 0.7134 | - | - | - |
 | (ii) G1 variant vs no-G1, t_i | laya_masked vs g0 (subset, B=10) | Wilcoxon W+ = 429.0 over 61 pairs (37 censored) | 0.0013 | 0.0013 | HL shift 1.0 (CI95 [0.0, 2.5]), rank-biserial 0.625 | 0.8435 | - | - | - |
 | (iii) G1 variant vs G1 variant, t_i | laya vs laya_masked (subset, B=10) | Wilcoxon W+ = 99.0 over 59 pairs (39 censored) | 0.829 | 0.829 | HL shift 0.0 (CI95 [-2.0, 2.0]), rank-biserial -0.0571 | 0.7067 | 0.016 | 0.0 | True |
+| (ii) G1 variant vs no-G1, t_i | small vs off (subset, tight B=10) | Wilcoxon W+ = 11.5 over 45 pairs (0 censored) | 0.375 | 0.75 | HL shift 0.0 (CI95 [-1.0, 1.0]), rank-biserial 0.5333 | 0.1322 | - | - | - |
+| (ii) G1 variant vs no-G1, t_i | big vs off (subset, tight B=10) | Wilcoxon W+ = 3.0 over 45 pairs (0 censored) | 0.5 | 0.75 | HL shift 0.0 (CI95 [0.0, 0.8]), rank-biserial 1.0 | 0.063 | - | - | - |
+| (iii) G1 variant vs G1 variant, t_i | small vs big (subset, tight B=10) | Wilcoxon W+ = 10.0 over 45 pairs (0 censored) | 0.625 | 0.625 | HL shift 0.0 (CI95 [-1.0, 1.0]), rank-biserial 0.3333 | 0.1147 | 0.0 | 0.0 | True |
 
 ## Table 2 — efficiency + cost, G1-relevant subset, planted (B=2) (43 cases with ≥2 candidates; B2 order-invariance violations: 0)
 
@@ -192,4 +195,63 @@ Recomputed from the committed artifacts alone (§10). Abstains are excluded from
 
 
 
-G1 wall ms is the per-scoring-pass clock recorded in the artifacts (B5 proxy: diagnose-start→verdict stage timing is not in the artifact); tokens/USD are not recorded (card_chars/3 is the token stand-in; §14 deviation log).
+## Table 6 — E1/E2, the 4-gate pipeline with the hosted G1 (vertex / gemini-2.5-flash, 5 passes, tight B=10; prompt g1_api_prompt_v1)
+
+
+
+Effectiveness (every case, every pass; EM = exact / answered):
+
+
+
+| variant | case-passes | exact | wrong | abstain | EM | EM CI95 | mean J (wrong) |
+|---|---|---|---|---|---|---|---|
+| off | 86 | 84 | 0 | 2 | 1.0 | [0.9563, 1.0] | - |
+| small | 266 | 256 | 0 | 10 | 1.0 | [0.9852, 1.0] | - |
+| big | 266 | 256 | 0 | 10 | 1.0 | [0.9852, 1.0] | - |
+
+
+
+Efficiency on the G1-relevant subset (pooled t_i over passes; pass@B at the tight budget; exhaustion on the tight-budget diagnosis):
+
+
+
+| variant | n | median t | IQR | mean t | median CI95 | pass@B | exhausted | exh. CI95 |
+|---|---|---|---|---|---|---|---|---|
+| off | 45 | 1.0 | [1.0, 2.0] | 1.4 | [1.0, 1.0] | 1.0 | 0 | [0.0, 0.0787] |
+| small | 45 | 1.0 | [1.0, 2.0] | 1.4578 | [1.0, 1.0] | 1.0 | 0 | [0.0, 0.0787] |
+| big | 45 | 1.0 | [1.0, 2.0] | 1.4311 | [1.0, 1.0] | 1.0 | 0 | [0.0, 0.0787] |
+
+
+
+### Figure 1 (data) — pass@t, KM with censoring at the tight budget
+
+
+
+| variant | t=1 | t=2 | t=3 | t=4 | t=5 | t=6 | t=7 | t=8 | t=9 | t=10 | KM median |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| off | 0.6667 | 0.9333 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1 |
+| small | 0.6667 | 0.8667 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1 |
+| big | 0.6667 | 0.8889 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1 |
+
+
+
+Cost (§4; tokens from the API usage fields, USD at the recorded published price):
+
+
+
+| variant | cards | mean chars | max chars | builder-cut | calls ok | calls failed | tokens in | tokens out | USD |
+|---|---|---|---|---|---|---|---|---|---|
+| small | 91 | 1407.989 | 2391 | 22 | 455 | 0 | 360965 | 7300 | 0.1265 |
+| big | 91 | 4727.6154 | 11991 | 16 | 455 | 0 | 1057220 | 7353 | 0.3355 |
+
+
+
+Invariants: answers changed by G1 0 case(s), B2 changed 0, honesty violations 0 (of 532 case-passes).
+
+
+
+Across-pass agreement of the produced order (mean pairwise Kendall tau): {'big': {'cases_with_passes': 45, 'mean_tau': 0.8667}, 'small': {'cases_with_passes': 45, 'mean_tau': 0.7689}}
+
+
+
+G1 wall ms is the per-scoring-pass clock of the local backends (B5 proxy); the hosted-G1 artifacts record calls, tokens and USD from the API usage fields (§14.1), and their truncation flags distinguish the builder-side cut from the model-context cut.

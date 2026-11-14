@@ -231,6 +231,14 @@ with the reason and the date, and marked as post-hoc in every table it affects.
   (B = 10), where laya is significantly *slower* to first fix than g0 (Holm p = 0.0002, HL shift
   +0.5 trials).
 
+- **2026-11-14 — the E1/E2 reproducibility gate also excludes wall-derived aggregates.** The first
+  `pipeline_g1 --check` re-run failed on `efficiency.*.wall_median` (median lab wall clock over the
+  case-passes): it is derived from the per-pass `wall_s` fields already excluded, and legitimately
+  varies with replay speed (5.673 s first run vs 3.664 s re-run on the big variant). `canonical()`
+  now strips it as well; it stays in the artifact and in each run's markdown report. No population,
+  budget, test or margin changed; a failed `--check` now also reports the first differing JSON path
+  and writes the fresh canonical projection to `eval/.g1/fresh_check.json` for diffing.
+
 ### 14.1 Pre-registration: hosted-LLM G1 experiments E1/E2 (written 2026-11-14, before the runs)
 
 Fixed here, before any hosted run beyond the infrastructure smoke test; nothing below may change

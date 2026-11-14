@@ -12,6 +12,7 @@
     "artifact_sha256": {
       "g1": "e5687c87bbce6641",
       "g1_gen": "88048a5f83a80ae3",
+      "pipeline": "ee793feb51973979",
       "public": "4961d64978f95a22",
       "results": "53e3281724aa50ce"
     },
@@ -1156,6 +1157,39 @@
         "p_lower": 0.016,
         "p_upper": 0.0
       }
+    },
+    {
+      "effect": "HL shift 0.0 (CI95 [-1.0, 1.0]), rank-biserial 0.5333",
+      "family": "(ii) G1 variant vs no-G1, t_i",
+      "mde": 0.1322,
+      "p_exact": 0.375,
+      "p_holm": 0.75,
+      "statistic": "Wilcoxon W+ = 11.5 over 45 pairs (0 censored)",
+      "test": "small vs off (subset, tight B=10)"
+    },
+    {
+      "effect": "HL shift 0.0 (CI95 [0.0, 0.8]), rank-biserial 1.0",
+      "family": "(ii) G1 variant vs no-G1, t_i",
+      "mde": 0.063,
+      "p_exact": 0.5,
+      "p_holm": 0.75,
+      "statistic": "Wilcoxon W+ = 3.0 over 45 pairs (0 censored)",
+      "test": "big vs off (subset, tight B=10)"
+    },
+    {
+      "effect": "HL shift 0.0 (CI95 [-1.0, 1.0]), rank-biserial 0.3333",
+      "family": "(iii) G1 variant vs G1 variant, t_i",
+      "mde": 0.1147,
+      "p_exact": 0.625,
+      "p_holm": 0.625,
+      "statistic": "Wilcoxon W+ = 10.0 over 45 pairs (0 censored)",
+      "test": "small vs big (subset, tight B=10)",
+      "tost": {
+        "delta": 0.25,
+        "equivalent": true,
+        "p_lower": 0.0,
+        "p_upper": 0.0
+      }
     }
   ],
   "table4_per_team": {
@@ -1776,5 +1810,274 @@
     },
     "rows": 4112,
     "seed": 1
+  },
+  "table6_pipeline": {
+    "config": {
+      "config_hash": "cdda62e3dcb3ebc3",
+      "model": "gemini-2.5-flash",
+      "price_source": "Google Cloud Vertex AI published price for gemini-2.5-flash, 2026-11-14",
+      "prompt_version": "g1_api_prompt_v1",
+      "provider": "vertex"
+    },
+    "cost": {
+      "big": {
+        "builder_truncated": 16,
+        "calls_failed": 0,
+        "calls_ok": 455,
+        "card_chars_max": 11991,
+        "card_chars_mean": 4727.6154,
+        "cards": 91,
+        "tokens_in": 1057220,
+        "tokens_out": 7353,
+        "usd": 0.3355
+      },
+      "small": {
+        "builder_truncated": 22,
+        "calls_failed": 0,
+        "calls_ok": 455,
+        "card_chars_max": 2391,
+        "card_chars_mean": 1407.989,
+        "cards": 91,
+        "tokens_in": 360965,
+        "tokens_out": 7300,
+        "usd": 0.1265
+      }
+    },
+    "effectiveness": {
+      "big": {
+        "abstain": 10,
+        "case_passes": 266,
+        "em": 1.0,
+        "em_ci95": [
+          0.9852,
+          1.0
+        ],
+        "exact": 256,
+        "mean_j_wrong": null,
+        "wrong": 0
+      },
+      "off": {
+        "abstain": 2,
+        "case_passes": 86,
+        "em": 1.0,
+        "em_ci95": [
+          0.9563,
+          1.0
+        ],
+        "exact": 84,
+        "mean_j_wrong": null,
+        "wrong": 0
+      },
+      "small": {
+        "abstain": 10,
+        "case_passes": 266,
+        "em": 1.0,
+        "em_ci95": [
+          0.9852,
+          1.0
+        ],
+        "exact": 256,
+        "mean_j_wrong": null,
+        "wrong": 0
+      }
+    },
+    "efficiency": {
+      "big": {
+        "exhausted": 0,
+        "exhausted_ci95": [
+          0.0,
+          0.0787
+        ],
+        "iqr_t": [
+          1.0,
+          2.0
+        ],
+        "mean_t": 1.4311,
+        "median_t": 1.0,
+        "n": 45,
+        "pass@B": 1.0,
+        "t_ci95": [
+          1.0,
+          1.0
+        ]
+      },
+      "off": {
+        "exhausted": 0,
+        "exhausted_ci95": [
+          0.0,
+          0.0787
+        ],
+        "iqr_t": [
+          1.0,
+          2.0
+        ],
+        "mean_t": 1.4,
+        "median_t": 1.0,
+        "n": 45,
+        "pass@B": 1.0,
+        "t_ci95": [
+          1.0,
+          1.0
+        ]
+      },
+      "small": {
+        "exhausted": 0,
+        "exhausted_ci95": [
+          0.0,
+          0.0787
+        ],
+        "iqr_t": [
+          1.0,
+          2.0
+        ],
+        "mean_t": 1.4578,
+        "median_t": 1.0,
+        "n": 45,
+        "pass@B": 1.0,
+        "t_ci95": [
+          1.0,
+          1.0
+        ]
+      }
+    },
+    "invariants": {
+      "answer_changed": 0,
+      "b2_changed": 0,
+      "case_passes_total": 532,
+      "violations": 0
+    },
+    "pass_at": {
+      "big": {
+        "median": 1,
+        "n": 45,
+        "pass_at": [
+          0.6667,
+          0.8889,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "solved": 45
+      },
+      "off": {
+        "median": 1,
+        "n": 45,
+        "pass_at": [
+          0.6667,
+          0.9333,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "solved": 45
+      },
+      "small": {
+        "median": 1,
+        "n": 45,
+        "pass_at": [
+          0.6667,
+          0.8667,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "solved": 45
+      }
+    },
+    "passes": 5,
+    "prompt_version": "g1_api_prompt_v1",
+    "seed": 20261014,
+    "stability": {
+      "big": {
+        "cases_with_passes": 45,
+        "mean_tau": 0.8667
+      },
+      "small": {
+        "cases_with_passes": 45,
+        "mean_tau": 0.7689
+      }
+    },
+    "tests": [
+      {
+        "effect": "HL shift 0.0 (CI95 [-1.0, 1.0]), rank-biserial 0.5333",
+        "family": "(ii) G1 variant vs no-G1, t_i",
+        "mde": 0.1322,
+        "p_exact": 0.375,
+        "p_holm": 0.75,
+        "statistic": "Wilcoxon W+ = 11.5 over 45 pairs (0 censored)",
+        "test": "small vs off (subset, tight B=10)"
+      },
+      {
+        "effect": "HL shift 0.0 (CI95 [0.0, 0.8]), rank-biserial 1.0",
+        "family": "(ii) G1 variant vs no-G1, t_i",
+        "mde": 0.063,
+        "p_exact": 0.5,
+        "p_holm": 0.75,
+        "statistic": "Wilcoxon W+ = 3.0 over 45 pairs (0 censored)",
+        "test": "big vs off (subset, tight B=10)"
+      },
+      {
+        "effect": "HL shift 0.0 (CI95 [-1.0, 1.0]), rank-biserial 0.3333",
+        "family": "(iii) G1 variant vs G1 variant, t_i",
+        "mde": 0.1147,
+        "p_exact": 0.625,
+        "p_holm": 0.625,
+        "statistic": "Wilcoxon W+ = 10.0 over 45 pairs (0 censored)",
+        "test": "small vs big (subset, tight B=10)",
+        "tost": {
+          "delta": 0.25,
+          "equivalent": true,
+          "p_lower": 0.0,
+          "p_upper": 0.0
+        }
+      }
+    ],
+    "tight_budget": 10,
+    "truncation_by_card_size": {
+      "big": {
+        "1200-2399": {
+          "api_cut": 0,
+          "builder_cut": 0,
+          "cards": 12
+        },
+        "<1200": {
+          "api_cut": 0,
+          "builder_cut": 0,
+          "cards": 28
+        },
+        ">=2400": {
+          "api_cut": 0,
+          "builder_cut": 16,
+          "cards": 51
+        }
+      },
+      "small": {
+        "1200-2399": {
+          "api_cut": 0,
+          "builder_cut": 22,
+          "cards": 53
+        },
+        "<1200": {
+          "api_cut": 0,
+          "builder_cut": 0,
+          "cards": 38
+        }
+      }
+    }
   }
 }

@@ -467,15 +467,43 @@ def _config_block(cfg):
             "client_version": __version__, "prompt_version": g1_api.PROMPT_VERSION}
 
 
+def _first_diff(want, got, path="$"):
+    """First path where two canonical artifacts disagree, so a failed --check says where."""
+    if type(want) is not type(got):
+        return f"{path}: type {type(want).__name__} vs {type(got).__name__}"
+    if isinstance(want, dict):
+        for k in sorted(set(want) | set(got)):
+            if k not in want:
+                return f"{path}.{k}: only in the fresh run ({str(got[k])[:120]})"
+            if k not in got:
+                return f"{path}.{k}: only in the committed artifact ({str(want[k])[:120]})"
+            found = _first_diff(want[k], got[k], f"{path}.{k}")
+            if found:
+                return found
+        return None
+    if isinstance(want, list):
+        if len(want) != len(got):
+            return f"{path}: list length {len(want)} vs {len(got)}"
+        for i, (w, g) in enumerate(zip(want, got)):
+            found = _first_diff(w, g, f"{path}[{i}]")
+            if found:
+                return found
+        return None
+    return None if want == got else f"{path}: {str(want)[:120]!r} vs {str(got)[:120]!r}"
+
+
 def canonical(res):
     """The artifact minus the fields that legitimately differ run to run (wall clock, latencies, cache
-    bookkeeping, the timestamp). Everything the tables are built from stays in; a re-run from the API
-    cache must reproduce it byte for byte."""
+    bookkeeping, the timestamp, and aggregates derived from wall clock). Everything the tables are built
+    from — outcomes, t_i, tokens, truncation, tau, tests — stays in; a re-run from the API cache must
+    reproduce it byte for byte. `wall_median` is reported in the markdown of each run but is replay-speed
+    noise, not a reproducible quantity."""
     out = json.loads(json.dumps(res))
 
     def strip(v):
         if isinstance(v, dict):
-            for k in ("wall_s", "elapsed_s", "ms", "ms_total", "created", "cache", "cache_hits_total"):
+            for k in ("wall_s", "elapsed_s", "wall_median", "ms", "ms_total", "created", "cache",
+                      "cache_hits_total"):
                 v.pop(k, None)
             for c in v.values():
                 strip(c)
@@ -646,10 +674,15 @@ def main() -> int:
         (args.out / "pipeline_g1.md").write_text(report(res), encoding="utf-8", newline="\n")
     if args.check:
         want = canonical(json.loads(Path(args.check).read_text(encoding="utf-8")))
-        fresh = json.dumps(canonical(res), indent=2, sort_keys=True) + "\n"
-        if json.dumps(want, indent=2, sort_keys=True) + "\n" != fresh:
+        got = canonical(res)
+        if json.dumps(want, indent=2, sort_keys=True) + "\n" != json.dumps(got, indent=2, sort_keys=True) + "\n":
+            diff = _first_diff(want, got) or "(values differ somewhere the walk could not localize)"
             print("pipeline_g1: results differ from", args.check, "(not reproducible, or the code changed)",
                   file=sys.stderr)
+            print(f"pipeline_g1: first difference: {diff}", file=sys.stderr)
+            dump = HERE / ".g1" / "fresh_check.json"
+            dump.write_text(json.dumps(got, indent=2, sort_keys=True) + "\n", encoding="utf-8", newline="\n")
+            print(f"pipeline_g1: the fresh canonical projection was written to {dump} for diffing", file=sys.stderr)
             return 1
         print("pipeline_g1: results identical to", args.check)
     for f in res["failures"]:

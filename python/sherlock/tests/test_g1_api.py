@@ -167,13 +167,17 @@ def test_rank_api_reports_a_dead_endpoint_as_unavailable_with_the_reason():
 
 
 def test_rank_api_partials_when_calls_fail_and_names_are_forgiven():
-    # the stub repeats its last reply, so the last three nodes alphabetically fail both passes
-    replies = ['{"needs_restore": "yes", "confidence": 50}'] * (len(NODES) - 3) + ["not json at all"]
+    # max_workers=1 makes arrival order deterministic (the stub hands out replies in arrival order,
+    # so a concurrent run would be a thread-scheduling lottery). Three good replies: extractor scores
+    # on both passes, retriever on one (pooled 0.5, not null), the rest fail every pass.
+    replies = ['{"needs_restore": "yes", "confidence": 50}'] * 3 + ["not json at all"]
     with ChatStub(replies=replies) as stub:
-        r = rank(api_cfg(stub.url), NODES, CARD)
+        r = rank(api_cfg(stub.url, max_workers=1), NODES, CARD)
     assert r["status"] == "partial" and any(s["score"] is None for s in r["scores"])
-    assert r["calls"]["failed"] == 8 and r["calls"]["ok"] == 2  # 5 replies only cover the first two nodes' passes
+    assert r["calls"]["failed"] == 7 and r["calls"]["ok"] == 3  # 3 good replies cover 3 of 10 calls
     assert [s["node"] for s in r["scores"] if s["score"] is None] == ["reviewer", "router", "writer"]  # nulls last, name order
+    assert next(s["score"] for s in r["scores"] if s["node"] == "retriever") == 0.5  # one pass, pooled
+    assert next(s["score"] for s in r["scores"] if s["node"] == "extractor") == 0.5  # both passes, pooled
 
 
 def test_rank_api_skips_single_candidate_and_unbuildable_cards():
