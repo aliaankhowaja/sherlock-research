@@ -31,6 +31,48 @@ def main():
     print()
     print("Retry check (retry): %d runs per case; cases where a retry passed: %d."
           % (d["retry"]["runs_per_case"], d["retry"]["cases_where_a_retry_passed"]))
+    # Hosted-LLM G1 experiments (E1/E2): optional artifacts, printed only when committed.
+    pipeline_path = os.path.join(ROOT, "docs", "eval", "pipeline_g1", "pipeline_g1.json")
+    if os.path.isfile(pipeline_path):
+        with open(pipeline_path, encoding="utf-8") as f:
+            p = json.load(f)
+        print()
+        print("Hosted G1 pipeline (E1/E2; %s / %s, %s passes, tight B=%s):" %
+              (p["config"]["provider"], p["config"]["model"], p["passes"], p["tight_budget"]))
+        print()
+        print("| Variant | Case-passes | Exact | Wrong | Abstain | EM |")
+        print("|---|---|---|---|---|---|")
+        for v in p["variants"]:
+            s = p["summary"][v]
+            print("| %s | %d | %d | %d | %d | %s |" %
+                  (v, s["case_passes"], s["exact"], s["wrong"], s["abstain"], s["em"]))
+        inv = p["invariants"]
+        print()
+        print("Invariants: G1 changed the answer on %d of %d case-passes; B2 changed %d; honesty violations %d."
+              % (inv["answer_changed_total"], inv["case_passes_total"], inv["b2_changed_total"],
+                 inv["violations_total"]))
+        for v in ("small", "big"):
+            c = p["cost"][v]
+            print("Cost %s: %d cards (mean %s chars), %d builder-cut, %s tokens in / %s out, USD %s."
+                  % (v, c["cards"], c["card_chars_mean"], c["builder_truncated"], c["tokens_in"],
+                     c["tokens_out"], c["usd"]))
+    public_api_path = os.path.join(ROOT, "docs", "eval", "public_traces", "public_g1_api.json")
+    if os.path.isfile(public_api_path):
+        with open(public_api_path, encoding="utf-8") as f:
+            a = json.load(f)
+        print()
+        print("Hosted G1 public corpus (%s headline rows, seed %s):" % (a["methods"]["g0"]["rows"], a["seed"]))
+        print()
+        print("| Method | Rank | MRR | recall@3 | NDCG@3 | trials-to-label |")
+        print("|---|---|---|---|---|---|")
+        for m in a["methods"]:
+            s = a["methods"][m]
+            print("| %s | %s | %s | %s | %s | %s |" %
+                  (m, s["rank"], s["reciprocal rank"], s["recall@3"], s["ndcg@3"], s["trials_to_label"]))
+        if a.get("stability"):
+            print()
+            print("Stability (200-row subsample, 5 passes, mean pairwise Kendall tau of the produced order): %s."
+                  % a["stability"]["summary"]["mean_tau"])
 
 
 if __name__ == "__main__":
