@@ -43,7 +43,6 @@ from sherlock.g1 import CARD_VARIANTS, node_card, rank  # noqa: E402
 
 from sherlock import __version__, envfile, g1_api  # noqa: E402
 
-API_METHODS = ("api_small", "api_big")
 RECORD_CONCURRENCY = 4   # rows scored at once (each row's own calls are already parallel, 16 wide)
 
 
@@ -66,7 +65,7 @@ def _api_orders(record: dict, seed: int, cfg: dict, variants: tuple[str, ...]):
     g1s, failed = {}, []
     for v in variants:
         deck = {n: node_card(n, history, None, checks, **CARD_VARIANTS[v]) for n in on_path}
-        g1 = rank({**cfg, "backend": "api", "card_variant": v,
+        g1 = rank({**cfg, "backend": "api", "card_variant": v, "passes": 1,
                    "cache_dir": str(Path(cfg["cache_dir"]) / v)},
                   on_path, lambda n, deck=deck: tuple(deck[n]))
         if g1["status"] == "unavailable":
@@ -274,7 +273,10 @@ def render(res: dict) -> str:
              "mathchat rows tagged `two_role` are not in these means. The random-order reference is the "
              "committed `public_g1.json` one (100 seeds); no new shuffle was run. `api_small` = the laya "
              "card budget; `api_big` = 8x budget + GOOD_IN/UPSTREAM/WRITES_ALL where a known-good run "
-             "exists (on this corpus it never does, so those fields are absent).", "",
+             "exists (on this corpus it never does, so those fields are absent).",
+             *(["`api_full` = no card budget at all: every field in full, no per-field DIFF cap; the only "
+               "truncation left is the model's own context window (§14 amendment: E3).",] if "full" in res["variants"] else []),
+             "",
              "## Methods", "", _method_table(res["methods"]), ""]
     for source, summary in res["by_source"].items():
         parts += [f"## {source}", "", _method_table(summary), ""]
@@ -317,6 +319,8 @@ def main() -> int:
                     help="headline rows scored 5 times for the §6.7 agreement (0 disables)")
     ap.add_argument("--stability-passes", type=int, default=5)
     ap.add_argument("--limit", type=int, help="score only the first N rows (a quick partial run)")
+    ap.add_argument("--variants", default="small,big",
+                    help="comma-separated card variants to score (default small,big; E3 adds full)")
     args = ap.parse_args()
     if not args.cases:
         sys.exit("public_g1_api: no --cases file given and none found")
@@ -331,7 +335,10 @@ def main() -> int:
     headline = [r for r in records if "two_role" not in r.get("tags", [])]
     if args.limit:
         headline = headline[:args.limit]
-    variants = ("small", "big")
+    variants = tuple(v.strip() for v in args.variants.split(","))
+    unknown = [v for v in variants if v not in CARD_VARIANTS]
+    if unknown:
+        sys.exit(f"public_g1_api: unknown card variant(s): {', '.join(unknown)}; known: {', '.join(CARD_VARIANTS)}")
     res = evaluate(headline, args.seed, cfg, variants, args.stability, args.stability_passes)
     res["variants"] = list(variants)
     res["created"] = time.strftime("%Y-%m-%dT%H:%M:%S%z")

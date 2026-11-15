@@ -58,7 +58,7 @@ from sherlock.g1 import CARD_VARIANTS  # noqa: E402
 from sherlock.g3 import Client  # noqa: E402
 from sherlock.search import Budget  # noqa: E402
 
-VARIANTS = ("off", "small", "big")
+VARIANTS = ("off", "small", "big", "full")
 TIGHT = 10          # pre-registered tight budget (metrics spec §3 B4); the full budget stays run_eval's Budget()
 B2_COUNTED_NOT_ASSUMED = True   # trials to the final verdict may legitimately differ across orders; counted
 
@@ -140,7 +140,9 @@ def _case_invariants(off, variants):
     changed, b2 = [], []
     base = run_eval.answer(off)
     base_t2 = (off.get("budget") or {}).get("trials_used")
-    for v in ("small", "big"):
+    for v in variants:
+        if v == "off":
+            continue
         for i, p in enumerate(variants[v]["passes"]):
             got = run_eval.answer({"minimal_sets": p["minimal_sets"], "unverified_sets": p["unverified_sets"],
                                    "status": p["status"], "reason_code": p["reason_code"]})
@@ -175,7 +177,7 @@ def _case_rows(client, cases, good, failed, work, cfg, passes, tight):
         n_passes = passes if relevant else 1
         variants = {"off": {"passes": [_pass_row(off, c.gold, gold_sets, off_wall)],
                             "tight": _tight_row(off_tight, gold_sets)}}
-        for v in ("small", "big"):
+        for v in VARIANTS[1:]:
             g1_base = {**cfg, "backend": "api", "card_variant": v,
                        "cache_dir": str(Path(cfg["cache_dir"]) / v)}
             per_pass, g1s, tight_row = [], [], None
@@ -284,7 +286,7 @@ def summarize(rows):
 def cost_summary(rows, cfg):
     """§4: calls, tokens, USD, truncation against card size, per variant."""
     out = {}
-    for v in ("small", "big"):
+    for v in VARIANTS[1:]:
         chars, truncated, statuses = [], 0, {}
         tokens_in = tokens_out = calls_ok = calls_failed = 0
         for r in rows:
@@ -316,7 +318,7 @@ def cost_summary(rows, cfg):
 def truncation_by_card_size(rows):
     """§4's 'is context length the issue' table: builder-truncation and API-context truncation by size bucket."""
     out = {}
-    for v in ("small", "big"):
+    for v in VARIANTS[1:]:
         buckets = {}
         for r in rows:
             g1 = r["variants"][v]["g1"]
@@ -337,7 +339,7 @@ def truncation_by_card_size(rows):
 def stability(rows):
     """§6.7: across-pass agreement of the produced order (mean pairwise Kendall tau), per variant."""
     out = {}
-    for v in ("small", "big"):
+    for v in VARIANTS[1:]:
         taus, cases_with = [], 0
         for r in rows:
             if not r["g1_relevant"]:
@@ -376,7 +378,10 @@ def _tests(rows, tight):
     subset = [r for r in rows if r["g1_relevant"]]
     series = {v: [_censored_t(r, v, tight) for r in subset] for v in VARIANTS}
     tests = []
-    for a, b in (("small", "off"), ("big", "off"), ("small", "big")):
+    api_variants = VARIANTS[1:]
+    pairs = ([(v, "off") for v in api_variants]                                  # family (ii)
+             + [(a, b) for i, a in enumerate(api_variants) for b in api_variants[i + 1:]])  # family (iii)
+    for a, b in pairs:
         diffs, censored = [], 0
         for ta, tb in zip(series[a], series[b]):
             if ta is None or tb is None:
@@ -418,7 +423,7 @@ def _invariant_summary(rows):
     changed = [f"{r['id']}:{x}" for r in rows for x in r["invariants"]["answer_changed"]]
     b2 = [f"{r['id']}:{x}" for r in rows for x in r["invariants"]["b2_changed"]]
     violations = [r["id"] for r in rows if r["off"]["violations"]
-                  or any(p["violations"] for v in ("small", "big") for p in r["variants"][v]["passes"])]
+                  or any(p["violations"] for v in VARIANTS[1:] for p in r["variants"][v]["passes"])]
     abstain_cases = [r for r in rows if r["expect_abstain"]]
     abstain_ok = sum(all(p["outcome"] == "abstain" for v in VARIANTS for p in r["variants"][v]["passes"])
                      for r in abstain_cases)
@@ -427,7 +432,7 @@ def _invariant_summary(rows):
     return {"answer_changed_total": len(changed), "answer_changed": changed,
             "b2_changed_total": len(b2), "b2_changed": b2,
             "violations_total": len(violations), "violations": violations,
-            "case_passes_total": sum(len(r["variants"][v]["passes"]) for r in rows for v in ("small", "big")),
+            "case_passes_total": sum(len(r["variants"][v]["passes"]) for r in rows for v in VARIANTS[1:]),
             "abstain_cases": len(abstain_cases), "abstain_ok": abstain_ok,
             "unexpected_abstains": unexpected}
 
@@ -447,7 +452,7 @@ def _expectations(res):
     for p in res["probes"]:
         if not p["ok"]:
             bad.append(f"probe {p['case']}: expected already_passes, got {p['status']} {p['reason_code']}")
-    for v in ("small", "big"):
+    for v in VARIANTS[1:]:
         if res["cost"][v]["calls_failed"]:
             bad.append(f"{v}: {res['cost'][v]['calls_failed']} failed G1 call(s)")
     if res["stability"]["small"]["mean_tau"] is None and res["stability"]["small"]["cases_with_passes"]:
@@ -561,15 +566,15 @@ def report(res):
                     "tokens in", "tokens out", "USD"],
                    [[v, cost[v]["cards"], cost[v]["card_chars_mean"], cost[v]["card_chars_max"],
                      cost[v]["builder_truncated"], cost[v]["calls_ok"], cost[v]["calls_failed"],
-                     cost[v]["tokens_in"], cost[v]["tokens_out"], cost[v]["usd"]] for v in ("small", "big")]), "",
+                     cost[v]["tokens_in"], cost[v]["tokens_out"], cost[v]["usd"]] for v in VARIANTS[1:]]), "",
              "### Truncation by card size", "",
              table(["variant", "bucket", "cards", "builder-cut", "api-context-cut"],
                    [[v, b, a["cards"], a["builder_cut"], a["api_cut"]]
-                    for v in ("small", "big") for b, a in res["truncation_by_card_size"][v].items()]), "",
+                    for v in VARIANTS[1:] for b, a in res["truncation_by_card_size"][v].items()]), "",
              "## Stability (§6.7): across-pass agreement of the produced order", "",
              table(["variant", "cases with passes", "mean pairwise Kendall tau"],
                    [[v, res["stability"][v]["cases_with_passes"], res["stability"][v]["mean_tau"]]
-                    for v in ("small", "big")]), "",
+                    for v in VARIANTS[1:]]), "",
              "## Tests (§6.2–§6.4, pre-registered families only)", "",
              table(["family", "test", "statistic", "p (exact)", "p (Holm)", "effect", "MDE", "TOST"],
                    [[t["family"].split(")")[0] + ")", t["test"], t["statistic"], t["p_exact"], t["p_holm"],
@@ -645,7 +650,7 @@ def main() -> int:
                 pass
             import shutil
             shutil.rmtree(work, ignore_errors=True)
-    down = [(r["id"], v) for r in all_rows for v in ("small", "big")
+    down = [(r["id"], v) for r in all_rows for v in VARIANTS[1:]
             if (r["variants"][v]["g1"] or {}).get("status") == "unavailable"]
     if down:
         print(f"pipeline_g1: the G1 API was unavailable on {len(down)} case-variant(s), first: {down[0]} "

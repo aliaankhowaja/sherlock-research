@@ -37,7 +37,12 @@ SNIPPET = 200
 # duplicates IN_FAILED/OUT_FAILED). The schema, field order and priorities are otherwise identical, so
 # the only manipulated variables are the context budget and the three fields.
 CARD_VARIANTS = {"small": {"card_chars": CARD_CHARS, "snippet": SNIPPET, "extra_fields": False},
-                 "big": {"card_chars": 12000, "snippet": 800, "extra_fields": True}}
+                 "big": {"card_chars": 12000, "snippet": 800, "extra_fields": True},
+                 # E3 (pre-registered 2026-11-15): nothing is cut at all. `None` budget = every field
+                 # in full (the per-field DIFF cut is lifted too, via snippet=None). E1/E2 note: the
+                 # `snippet` parameter was inert there (the DIFF field was cut at the module-level
+                 # SNIPPET in every variant) — fixed when full landed; small/big cards are unchanged.
+                 "full": {"card_chars": None, "snippet": None, "extra_fields": True}}
 LOCAL_TOTAL_TIMEOUT_MS = 600000  # slow on CPU, fast on GPU; still bounded
 _LOCAL_AGENTS: dict[str, object] = {}
 DEFAULTS = {"model": "typed-decisions", "total_timeout_ms": LOCAL_TOTAL_TIMEOUT_MS}
@@ -90,8 +95,9 @@ def _cut(text: str, keep: int) -> str:
     return f"{text[:head]}[...{len(text) - keep} chars cut...]{text[len(text) - (keep - head):]}"
 
 
-def _diff(failed, good) -> str:
-    """Word-level over the values: what the good output has that the failed one lacks (removed), and the reverse."""
+def _diff(failed, good, snippet: int | None = SNIPPET) -> str:
+    """Word-level over the values: what the good output has that the failed one lacks (removed), and the reverse.
+    `snippet=None` (the full card variant) leaves the sides uncut."""
     a, b = _words(_redacted(good)), _words(_redacted(failed))
     removed, added = [], []
     for op, i1, i2, j1, j2 in difflib.SequenceMatcher(None, a, b, autojunk=False).get_opcodes():
@@ -100,7 +106,10 @@ def _diff(failed, good) -> str:
             added += [" ".join(b[j1:j2])] if j2 > j1 else []
     if not removed + added:
         return "none"
-    side = lambda parts: json.dumps(_cut(" ... ".join(parts), SNIPPET), ensure_ascii=False)  # noqa: E731
+    if snippet is None:
+        side = lambda parts: json.dumps(" ... ".join(parts), ensure_ascii=False)  # noqa: E731
+    else:
+        side = lambda parts: json.dumps(_cut(" ... ".join(parts), snippet), ensure_ascii=False)  # noqa: E731
     return f"removed {side(removed)} | added {side(added)}"
 
 
@@ -118,10 +127,11 @@ def _first_runs(history: list[dict]) -> tuple[dict, dict, dict]:
 
 
 def node_card(node: str, history: list[dict], good_history: list[dict] | None, checks, mask: bool = False,
-              card_chars: int = CARD_CHARS, snippet: int = SNIPPET, extra_fields: bool = False):
+              card_chars: int | None = CARD_CHARS, snippet: int | None = SNIPPET, extra_fields: bool = False):
     """(card text, truncated). A pure function of its inputs: the same run gives the same card, byte for byte.
     `card_chars`/`snippet`/`extra_fields` are the card variant (CARD_VARIANTS); the defaults are the small
-    card the laya checkpoint was scored on, so every committed artifact is unaffected."""
+    card the laya checkpoint was scored on, so every committed artifact is unaffected. `None` budget or
+    snippet (the `full` variant) cuts nothing."""
     step, before, error = _first_runs(history)
     out = node_outputs(history)
     good_out = node_outputs(good_history) if good_history else {}
@@ -139,7 +149,7 @@ def node_card(node: str, history: list[dict], good_history: list[dict] | None, c
         (0, f"FLAGS: output_same_as_good={yn(same_out)} input_same_as_good={yn(same_in)} "
             f"errored={yn(node in error)} upstream_differs={upstream}"),
         (1, "CHECK: " + "; ".join(f"{a.get('type')} {_flat(a.get('value'))}" for a in checks.assertions)),
-        *([(1, "DIFF: " + _diff(one(out[node]), one(good_out[node])))] if node in good_out else []),
+        *([(1, "DIFF: " + _diff(one(out[node]), one(good_out[node]), snippet))] if node in good_out else []),
         *([(1, f"ERROR: {error[node]}")] if node in error else []),
         (2, f"OUT_FAILED: {_flat(one(out.get(node, [])))}"),
         *([(2, f"OUT_GOOD: {_flat(one(good_out[node]))}")] if node in good_out else []),
@@ -157,9 +167,9 @@ def node_card(node: str, history: list[dict], good_history: list[dict] | None, c
         for n in sorted(out, key=len, reverse=True):
             alias = "node_" + hashlib.sha256(n.encode()).hexdigest()[:6]
             fields = [(p, re.sub(rf"(?<![\w-]){re.escape(n)}(?![\w-])", alias, line)) for p, line in fields]
-    over = sum(len(line) + 1 for _, line in fields) - card_chars
+    over = 0 if card_chars is None else sum(len(line) + 1 for _, line in fields) - card_chars
     truncated = over > 0
-    for prio in (4, 3, 2, 1):
+    for prio in (() if card_chars is None else (4, 3, 2, 1)):
         for i in reversed(range(len(fields))):
             p, line = fields[i]
             if over > 0 and p == prio and len(line) > 40:

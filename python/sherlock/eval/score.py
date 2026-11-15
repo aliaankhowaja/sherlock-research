@@ -588,7 +588,8 @@ def pipeline_tables(pipe):
                          "pass@B": rnd(len(finite) / len(subset)) if subset else None,
                          "exhausted": exh, "exhausted_ci95": wilson(exh, len(subset)) if subset else None}
     cost = {}
-    for v in ("small", "big"):
+    api_variants = tuple(v for v in variants if v != "off")
+    for v in api_variants:
         chars, truncated, tokens_in, tokens_out, calls_ok, calls_failed = [], 0, 0, 0, 0, 0
         for c in cases:
             g1 = c["variants"][v].get("g1")
@@ -614,10 +615,10 @@ def pipeline_tables(pipe):
     invars = {"answer_changed": sum(1 for c in cases if c["invariants"]["answer_changed"]),
               "b2_changed": sum(1 for c in cases if c["invariants"]["b2_changed"]),
               "violations": sum(1 for c in cases if c["off"]["violations"]
-                                or any(p["violations"] for v in ("small", "big")
+                                or any(p["violations"] for v in api_variants
                                        for p in c["variants"][v]["passes"])),
-              "case_passes_total": sum(len(c["variants"][v]["passes"]) for c in cases for v in ("small", "big"))}
-    tests = pipeline_tests(series, tight)
+              "case_passes_total": sum(len(c["variants"][v]["passes"]) for c in cases for v in api_variants)}
+    tests = pipeline_tests(series, tight, api_variants)
     return {"config": {k: pipe["config"].get(k) for k in
                        ("provider", "model", "config_hash", "prompt_version", "price_source")},
             "seed": pipe["seed"], "passes": pipe["passes"], "tight_budget": tight,
@@ -629,11 +630,14 @@ def pipeline_tables(pipe):
             "cost": cost, "invariants": invars, "tests": tests}
 
 
-def pipeline_tests(series, tight):
+def pipeline_tests(series, tight, api_variants=("small", "big")):
     """Families (ii)/(iii) on the pooled t_i series (censored pairs excluded and counted), the same
-    exact machinery as `efficiency_tests` above."""
+    exact machinery as `efficiency_tests` above. Family (ii) is every card variant vs no-G1; family
+    (iii) is every pair of card variants (in CARD_VARIANTS order)."""
     tests = []
-    for a, b in (("small", "off"), ("big", "off"), ("small", "big")):
+    pairs = ([(v, "off") for v in api_variants]
+             + [(a, b) for i, a in enumerate(api_variants) for b in api_variants[i + 1:]])
+    for a, b in pairs:
         diffs, censored = [], 0
         for ta, tb in zip(series[a], series[b]):
             if ta is None or tb is None:
@@ -706,9 +710,13 @@ def public_api_table(pub_api, laya_pub):
                 boots[m].append(sum(map(v.__getitem__, idx)) / n)
         for m in orders:
             out["methods"][m]["ci95"][col] = percentile_ci(boots[m])
-    # paired differences against the laya orders (same corpus rows)
+    # paired differences against the laya orders (same corpus rows), and every api-variant pair
+    # (larger-budget variant minus smaller, the committed convention: "api_big - api_small")
+    api_methods = [m for m in orders if m.startswith("api_")]
+    pairs = [(m, "laya") for m in api_methods]
+    pairs += [(b, a) for i, a in enumerate(api_methods) for b in api_methods[i + 1:]]
     diffs_out = {}
-    for a, b in (("api_small", "laya"), ("api_big", "laya"), ("api_big", "api_small")):
+    for a, b in pairs:
         if a not in vals or b not in vals:
             continue
         diffs_out[f"{a} - {b}"] = {}

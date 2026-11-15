@@ -239,6 +239,44 @@ with the reason and the date, and marked as post-hoc in every table it affects.
   budget, test or margin changed; a failed `--check` now also reports the first differing JSON path
   and writes the fresh canonical projection to `eval/.g1/fresh_check.json` for diffing.
 
+- **2026-11-15 — disclosure: the E1/E2 `snippet` parameter was inert.** `node_card` accepted a
+  per-variant `snippet` argument but never used it: the `DIFF` field was cut at the module-level
+  SNIPPET (200 chars per side) in every variant, and no other field is snippet-capped (values are
+  full; the character budget is the only other cut). The E2 pre-registration above says
+  `SNIPPET = 800` — that parameter changed nothing; the committed small/big cards are byte-identical
+  to what was scored (golden-card test). The parameter is now threaded into the DIFF cut, and
+  `snippet=None` (the E3 `full` variant) leaves the DIFF sides uncut.
+- **2026-11-15 — disclosure and correction: the first public-corpus run scored 5 passes per card,
+  not the pre-registered 1.** `SHERLOCK_G1_PASSES=5` (set for the planted leg, where 5 passes are
+  pre-registered) leaked into `public_g1_api.py`, whose headline path never pinned `passes`; every
+  headline card was scored 5 times and the pooled score is the mean over 5 passes. The committed
+  `public_g1_api.json` says "one scored pass per row" — that claim is wrong; the recorded tokens and
+  USD ($21.76/$75.64) are the honest record of what was actually sent. Consequences and actions:
+  the artifact is superseded by a protocol-conformant 1-pass re-derivation whose calls are already
+  fully cached (pass index 0), the superseded 5-pass artifact stays in git history, and the
+  accidental 5 passes over all 4,112 rows are retained as a free full-corpus stability record
+  (exploratory; the pre-registered 200-row × 5-pass subsample stays the headline statistic). The
+  1-pass orders may differ slightly from the 5-pass pooled ones; the pre-registered protocol is 1
+  pass, matching the committed laya protocol it is paired against.
+- **2026-11-15 — pre-registration: experiment E3, the `full` card variant (written before any E3
+  scored call).** The same layer, prompt, model and call parameters as E1/E2; the card is uncut:
+  `card_chars = None` (no character budget — measured public-corpus distribution: mean 39,196
+  chars, p99 256,511, max 3,736,765) and `snippet = None` (no per-field DIFF cap). Everything else
+  is as `big` (GOOD_IN/UPSTREAM/WRITES_ALL where defined). Protocol: planted leg as §14.1 (5 passes
+  on the G1-relevant subset, 1 elsewhere); public corpus 1 scored pass per row (pinned after the
+  deviation above) plus the pre-registered 200-row × 5-pass stability subsample; the random
+  reference and laya rows are the committed ones, reused. Truncation rule unchanged: the only cut
+  left is the model's 1,000,000-token prompt window, and a card over it gets no score exactly as
+  for laya (recorded as `api-context-cut`; expected for the largest tail cards — a 3.7M-char card
+  is ~7M tokens). Test families grow with the variant: family (ii) is every card variant vs no-G1
+  (3 tests), family (iii) every pair of variants (3 tests), Holm within family as before — the
+  previously committed Holm-adjusted planted p-values are recomputed under the larger families
+  (exact p-values unchanged). Measured cost estimate from the committed run's own token records
+  (0.327 tokens/char over 26 direct card↔usage pairs): ≈ $70 for the public leg (headline + full
+  stability) and ≈ $2 for the planted leg. Artifact policy: `public_g1_api.json` and
+  `pipeline_g1.json` are regenerated as supersets (all variants; the earlier variants' rows come
+  from the cache and must reproduce their committed values).
+
 ### 14.1 Pre-registration: hosted-LLM G1 experiments E1/E2 (written 2026-11-14, before the runs)
 
 Fixed here, before any hosted run beyond the infrastructure smoke test; nothing below may change

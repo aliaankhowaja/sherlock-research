@@ -124,6 +124,20 @@ def test_big_card_cuts_the_lowest_priority_fields_first():
     assert small.splitlines()[1].startswith("FLAGS: ")  # P0 flags are never cut
 
 
+def test_full_card_cuts_nothing():
+    long_tail = "y" * 9000
+    history = [dict(s, tasks=[dict(t, result={**(t.get("result") or {}), "note": long_tail})
+                              for t in s.get("tasks") or []]) for s in HISTORY]
+    full, truncated = node_card("extractor", history, good_history(), CHECKS, **CARD_VARIANTS["full"])
+    big, big_truncated = node_card("extractor", history, good_history(), CHECKS, **CARD_VARIANTS["big"])
+    assert big_truncated and not truncated  # the budget that cuts big does not exist for full
+    assert len(full) > len(big)             # full carries what big had to cut
+    assert "chars cut" not in full          # no snippet cap on the DIFF field either
+    assert "WRITES_ALL" not in full  # still only for multi-run nodes (variant change, not schema change)
+    for line in big.splitlines():  # full contains everything big shows, uncut
+        assert line.split(":")[0] in {ln.split(":")[0] for ln in full.splitlines()}
+
+
 # --- scoring through the stub ---------------------------------------------------------------------------------------
 
 def test_rank_api_scores_orders_pools_and_agrees_over_passes():
