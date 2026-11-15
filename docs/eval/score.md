@@ -58,9 +58,12 @@ Recomputed from the committed artifacts alone (§10). Abstains are excluded from
 | (ii) G1 variant vs no-G1, t_i | laya vs g0 (subset, B=10) | Wilcoxon W+ = 295.0 over 59 pairs (39 censored) | 0.000109 | 0.000218 | HL shift 0.5 (CI95 [-0.5, 3.0]), rank-biserial 0.8154 | 0.7134 | - | - | - |
 | (ii) G1 variant vs no-G1, t_i | laya_masked vs g0 (subset, B=10) | Wilcoxon W+ = 429.0 over 61 pairs (37 censored) | 0.0013 | 0.0013 | HL shift 1.0 (CI95 [0.0, 2.5]), rank-biserial 0.625 | 0.8435 | - | - | - |
 | (iii) G1 variant vs G1 variant, t_i | laya vs laya_masked (subset, B=10) | Wilcoxon W+ = 99.0 over 59 pairs (39 censored) | 0.829 | 0.829 | HL shift 0.0 (CI95 [-2.0, 2.0]), rank-biserial -0.0571 | 0.7067 | 0.016 | 0.0 | True |
-| (ii) G1 variant vs no-G1, t_i | small vs off (subset, tight B=10) | Wilcoxon W+ = 11.5 over 45 pairs (0 censored) | 0.375 | 0.75 | HL shift 0.0 (CI95 [-1.0, 1.0]), rank-biserial 0.5333 | 0.1322 | - | - | - |
-| (ii) G1 variant vs no-G1, t_i | big vs off (subset, tight B=10) | Wilcoxon W+ = 3.0 over 45 pairs (0 censored) | 0.5 | 0.75 | HL shift 0.0 (CI95 [0.0, 0.8]), rank-biserial 1.0 | 0.063 | - | - | - |
-| (iii) G1 variant vs G1 variant, t_i | small vs big (subset, tight B=10) | Wilcoxon W+ = 10.0 over 45 pairs (0 censored) | 0.625 | 0.625 | HL shift 0.0 (CI95 [-1.0, 1.0]), rank-biserial 0.3333 | 0.1147 | 0.0 | 0.0 | True |
+| (ii) G1 variant vs no-G1, t_i | small vs off (subset, tight B=10) | Wilcoxon W+ = 11.5 over 45 pairs (0 censored) | 0.375 | 1.0 | HL shift 0.0 (CI95 [-1.0, 1.0]), rank-biserial 0.5333 | 0.1322 | - | - | - |
+| (ii) G1 variant vs no-G1, t_i | big vs off (subset, tight B=10) | Wilcoxon W+ = 3.0 over 45 pairs (0 censored) | 0.5 | 1.0 | HL shift 0.0 (CI95 [0.0, 0.8]), rank-biserial 1.0 | 0.063 | - | - | - |
+| (ii) G1 variant vs no-G1, t_i | full vs off (subset, tight B=10) | Wilcoxon W+ = 4.0 over 45 pairs (0 censored) | 0.75 | 1.0 | HL shift 0.0 (CI95 [-0.4, 0.8]), rank-biserial 0.3333 | 0.0588 | - | - | - |
+| (iii) G1 variant vs G1 variant, t_i | small vs big (subset, tight B=10) | Wilcoxon W+ = 10.0 over 45 pairs (0 censored) | 0.625 | 1.0 | HL shift 0.0 (CI95 [-1.0, 1.0]), rank-biserial 0.3333 | 0.1147 | 0.0 | 0.0 | True |
+| (iii) G1 variant vs G1 variant, t_i | small vs full (subset, tight B=10) | Wilcoxon W+ = 12.0 over 45 pairs (0 censored) | 0.312 | 0.936 | HL shift 0.0 (CI95 [-0.6, 1.0]), rank-biserial 0.6 | 0.1013 | 0.0 | 0.0 | True |
+| (iii) G1 variant vs G1 variant, t_i | big vs full (subset, tight B=10) | Wilcoxon W+ = 5.0 over 45 pairs (0 censored) | 0.5 | 1.0 | HL shift 0.0 (CI95 [-0.2, 0.6]), rank-biserial 0.6667 | 0.0476 | 0.0 | 0.0 | True |
 
 ## Table 2 — efficiency + cost, G1-relevant subset, planted (B=2) (43 cases with ≥2 candidates; B2 order-invariance violations: 0)
 
@@ -208,6 +211,7 @@ Effectiveness (every case, every pass; EM = exact / answered):
 | off | 86 | 84 | 0 | 2 | 1.0 | [0.9563, 1.0] | - |
 | small | 266 | 256 | 0 | 10 | 1.0 | [0.9852, 1.0] | - |
 | big | 266 | 256 | 0 | 10 | 1.0 | [0.9852, 1.0] | - |
+| full | 266 | 256 | 0 | 10 | 1.0 | [0.9852, 1.0] | - |
 
 
 
@@ -220,6 +224,7 @@ Efficiency on the G1-relevant subset (pooled t_i over passes; pass@B at the tigh
 | off | 45 | 1.0 | [1.0, 2.0] | 1.4 | [1.0, 1.0] | 1.0 | 0 | [0.0, 0.0787] |
 | small | 45 | 1.0 | [1.0, 2.0] | 1.4578 | [1.0, 1.0] | 1.0 | 0 | [0.0, 0.0787] |
 | big | 45 | 1.0 | [1.0, 2.0] | 1.4311 | [1.0, 1.0] | 1.0 | 0 | [0.0, 0.0787] |
+| full | 45 | 1.0 | [1.0, 2.0] | 1.4133 | [1.0, 1.0] | 1.0 | 0 | [0.0, 0.0787] |
 
 
 
@@ -232,6 +237,7 @@ Efficiency on the G1-relevant subset (pooled t_i over passes; pass@B at the tigh
 | off | 0.6667 | 0.9333 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1 |
 | small | 0.6667 | 0.8667 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1 |
 | big | 0.6667 | 0.8889 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1 |
+| full | 0.6667 | 0.8889 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1 |
 
 
 
@@ -242,15 +248,16 @@ Cost (§4; tokens from the API usage fields, USD at the recorded published price
 | variant | cards | mean chars | max chars | builder-cut | calls ok | calls failed | tokens in | tokens out | USD |
 |---|---|---|---|---|---|---|---|---|---|
 | small | 91 | 1407.989 | 2391 | 22 | 455 | 0 | 360965 | 7300 | 0.1265 |
-| big | 91 | 4727.6154 | 11991 | 16 | 455 | 0 | 1057220 | 7353 | 0.3355 |
+| big | 91 | 4727.6154 | 11991 | 16 | 455 | 0 | 1057215 | 7353 | 0.3355 |
+| full | 91 | 6911.1319 | 31436 | 0 | 455 | 0 | 1546845 | 7284 | 0.4823 |
 
 
 
-Invariants: answers changed by G1 0 case(s), B2 changed 0, honesty violations 0 (of 532 case-passes).
+Invariants: answers changed by G1 0 case(s), B2 changed 0, honesty violations 0 (of 798 case-passes).
 
 
 
-Across-pass agreement of the produced order (mean pairwise Kendall tau): {'big': {'cases_with_passes': 45, 'mean_tau': 0.8667}, 'small': {'cases_with_passes': 45, 'mean_tau': 0.7689}}
+Across-pass agreement of the produced order (mean pairwise Kendall tau): {'big': {'cases_with_passes': 45, 'mean_tau': 0.8667}, 'full': {'cases_with_passes': 45, 'mean_tau': 0.8133}, 'small': {'cases_with_passes': 45, 'mean_tau': 0.7689}}
 
 
 
@@ -260,36 +267,41 @@ Across-pass agreement of the produced order (mean pairwise Kendall tau): {'big':
 
 | method | metric | mean | CI95 |
 |---|---|---|---|
-| random | rank | 1.6792 | [1.653, 1.705] |
-| random | reciprocal rank | 0.7318 | [0.7228, 0.7404] |
-| random | recall@3 | 0.8665 | [0.8588, 0.874] |
-| random | ndcg@3 | 0.7314 | [0.7236, 0.7393] |
-| random | trials_to_label | 6.5182 | [6.3548, 6.6885] |
+| random | rank | 1.6792 | [1.6542, 1.7055] |
+| random | reciprocal rank | 0.7318 | [0.7228, 0.7408] |
+| random | recall@3 | 0.8665 | [0.859, 0.8741] |
+| random | ndcg@3 | 0.7314 | [0.7235, 0.7394] |
+| random | trials_to_label | 6.5182 | [6.3529, 6.6831] |
 | path | rank | 1.6274 | [1.6026, 1.6525] |
-| path | reciprocal rank | 0.7473 | [0.7386, 0.7557] |
+| path | reciprocal rank | 0.7473 | [0.7388, 0.7557] |
 | path | recall@3 | 0.8553 | [0.8476, 0.863] |
-| path | ndcg@3 | 0.7471 | [0.7388, 0.7553] |
-| path | trials_to_label | 6.098 | [5.9606, 6.2376] |
-| g0 | rank | 1.6564 | [1.6304, 1.6821] |
-| g0 | reciprocal rank | 0.7453 | [0.7363, 0.754] |
+| path | ndcg@3 | 0.7471 | [0.7389, 0.7552] |
+| path | trials_to_label | 6.098 | [5.9596, 6.2359] |
+| g0 | rank | 1.6564 | [1.6306, 1.6821] |
+| g0 | reciprocal rank | 0.7453 | [0.7365, 0.754] |
 | g0 | recall@3 | 0.854 | [0.8463, 0.8618] |
 | g0 | ndcg@3 | 0.7451 | [0.7365, 0.7536] |
-| g0 | trials_to_label | 6.3281 | [6.1712, 6.4903] |
-| laya | rank | 1.634 | [1.6072, 1.6607] |
-| laya | reciprocal rank | 0.759 | [0.7501, 0.7676] |
-| laya | recall@3 | 0.8502 | [0.842, 0.8586] |
-| laya | ndcg@3 | 0.7447 | [0.7362, 0.7532] |
-| laya | trials_to_label | 6.7449 | [6.5647, 6.9295] |
-| api_small | rank | 1.5654 | [1.5401, 1.5905] |
-| api_small | reciprocal rank | 0.7795 | [0.7709, 0.7881] |
-| api_small | recall@3 | 0.8762 | [0.8689, 0.8836] |
-| api_small | ndcg@3 | 0.7742 | [0.7665, 0.7823] |
-| api_small | trials_to_label | 6.1736 | [6.0088, 6.34] |
-| api_big | rank | 1.5562 | [1.5316, 1.5805] |
-| api_big | reciprocal rank | 0.7793 | [0.7707, 0.7878] |
-| api_big | recall@3 | 0.8774 | [0.87, 0.8847] |
-| api_big | ndcg@3 | 0.7768 | [0.7688, 0.7847] |
-| api_big | trials_to_label | 6.0834 | [5.9212, 6.2478] |
+| g0 | trials_to_label | 6.3281 | [6.1697, 6.4878] |
+| laya | rank | 1.634 | [1.608, 1.6607] |
+| laya | reciprocal rank | 0.759 | [0.7504, 0.7678] |
+| laya | recall@3 | 0.8502 | [0.8421, 0.8584] |
+| laya | ndcg@3 | 0.7447 | [0.7362, 0.7533] |
+| laya | trials_to_label | 6.7449 | [6.5649, 6.9302] |
+| api_small | rank | 1.6265 | [1.6007, 1.653] |
+| api_small | reciprocal rank | 0.7595 | [0.7506, 0.7681] |
+| api_small | recall@3 | 0.8584 | [0.8506, 0.8664] |
+| api_small | ndcg@3 | 0.7524 | [0.7439, 0.7607] |
+| api_small | trials_to_label | 6.5199 | [6.3397, 6.6967] |
+| api_big | rank | 1.6068 | [1.5815, 1.6325] |
+| api_big | reciprocal rank | 0.7624 | [0.7537, 0.7713] |
+| api_big | recall@3 | 0.8635 | [0.8559, 0.8712] |
+| api_big | ndcg@3 | 0.7588 | [0.7503, 0.7669] |
+| api_big | trials_to_label | 6.3745 | [6.2021, 6.5464] |
+| api_full | rank | 1.6107 | [1.5861, 1.6352] |
+| api_full | reciprocal rank | 0.7578 | [0.7491, 0.7668] |
+| api_full | recall@3 | 0.866 | [0.8586, 0.8735] |
+| api_full | ndcg@3 | 0.757 | [0.7488, 0.765] |
+| api_full | trials_to_label | 6.3794 | [6.204, 6.5542] |
 
 
 
@@ -299,21 +311,36 @@ Paired differences on the same rows (api order − reference order):
 
 | pair | metric | mean diff | n | CI95 |
 |---|---|---|---|---|
-| api_small - laya | rank | -0.0686 | 4112 | [-0.0975, -0.0389] |
-| api_small - laya | reciprocal rank | 0.0205 | 4112 | [0.0106, 0.0306] |
-| api_small - laya | recall@3 | 0.026 | 4112 | [0.0181, 0.0342] |
-| api_small - laya | ndcg@3 | 0.0296 | 4112 | [0.0206, 0.0388] |
-| api_small - laya | trials_to_label | -0.5713 | 4112 | [-0.6873, -0.4565] |
-| api_big - laya | rank | -0.0778 | 4112 | [-0.1077, -0.0479] |
-| api_big - laya | reciprocal rank | 0.0203 | 4112 | [0.0105, 0.0303] |
-| api_big - laya | recall@3 | 0.0271 | 4112 | [0.0188, 0.0353] |
-| api_big - laya | ndcg@3 | 0.0321 | 4112 | [0.0233, 0.0409] |
-| api_big - laya | trials_to_label | -0.6615 | 4112 | [-0.777, -0.5479] |
-| api_big - api_small | rank | -0.0092 | 4112 | [-0.0294, 0.0119] |
-| api_big - api_small | reciprocal rank | -0.0002 | 4112 | [-0.0076, 0.0071] |
-| api_big - api_small | recall@3 | 0.0012 | 4112 | [-0.0046, 0.007] |
-| api_big - api_small | ndcg@3 | 0.0026 | 4112 | [-0.0038, 0.009] |
-| api_big - api_small | trials_to_label | -0.0902 | 4112 | [-0.1792, -0.0012] |
+| api_small - laya | rank | -0.0075 | 4112 | [-0.037, 0.0216] |
+| api_small - laya | reciprocal rank | 0.0005 | 4112 | [-0.0093, 0.01] |
+| api_small - laya | recall@3 | 0.0082 | 4112 | [0.0003, 0.0163] |
+| api_small - laya | ndcg@3 | 0.0077 | 4112 | [-0.0007, 0.0165] |
+| api_small - laya | trials_to_label | -0.225 | 4112 | [-0.3307, -0.1155] |
+| api_big - laya | rank | -0.0272 | 4112 | [-0.0562, 0.0017] |
+| api_big - laya | reciprocal rank | 0.0035 | 4112 | [-0.0063, 0.0133] |
+| api_big - laya | recall@3 | 0.0133 | 4112 | [0.0054, 0.0212] |
+| api_big - laya | ndcg@3 | 0.0141 | 4112 | [0.0056, 0.0229] |
+| api_big - laya | trials_to_label | -0.3704 | 4112 | [-0.4803, -0.2624] |
+| api_full - laya | rank | -0.0233 | 4112 | [-0.0511, 0.0049] |
+| api_full - laya | reciprocal rank | -0.0011 | 4112 | [-0.0107, 0.0084] |
+| api_full - laya | recall@3 | 0.0158 | 4112 | [0.0079, 0.0238] |
+| api_full - laya | ndcg@3 | 0.0124 | 4112 | [0.0041, 0.0209] |
+| api_full - laya | trials_to_label | -0.3655 | 4112 | [-0.473, -0.2605] |
+| api_big - api_small | rank | -0.0197 | 4112 | [-0.0399, 0.0] |
+| api_big - api_small | reciprocal rank | 0.003 | 4112 | [-0.0042, 0.0101] |
+| api_big - api_small | recall@3 | 0.0051 | 4112 | [-0.0005, 0.0107] |
+| api_big - api_small | ndcg@3 | 0.0064 | 4112 | [0.0003, 0.0126] |
+| api_big - api_small | trials_to_label | -0.1454 | 4112 | [-0.2301, -0.062] |
+| api_full - api_small | rank | -0.0158 | 4112 | [-0.0355, 0.0036] |
+| api_full - api_small | reciprocal rank | -0.0016 | 4112 | [-0.0088, 0.0053] |
+| api_full - api_small | recall@3 | 0.0076 | 4112 | [0.0021, 0.0132] |
+| api_full - api_small | ndcg@3 | 0.0046 | 4112 | [-0.0014, 0.0106] |
+| api_full - api_small | trials_to_label | -0.1406 | 4112 | [-0.2232, -0.0589] |
+| api_full - api_big | rank | 0.0039 | 4112 | [-0.0109, 0.0185] |
+| api_full - api_big | reciprocal rank | -0.0046 | 4112 | [-0.0101, 0.0007] |
+| api_full - api_big | recall@3 | 0.0025 | 4112 | [-0.0019, 0.007] |
+| api_full - api_big | ndcg@3 | -0.0018 | 4112 | [-0.0065, 0.0028] |
+| api_full - api_big | trials_to_label | 0.0049 | 4112 | [-0.0608, 0.07] |
 
 
 

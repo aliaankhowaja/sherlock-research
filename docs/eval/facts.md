@@ -17,26 +17,29 @@ Trials on cases where Sherlock found an answer (trials): 174 used against 158913
 
 Retry check (retry): 3 runs per case; cases where a retry passed: 0.
 
-Hosted G1 pipeline (E1/E2; vertex / gemini-2.5-flash, 5 passes, tight B=10):
+Hosted G1 pipeline (E1/E2/E3; vertex / gemini-2.5-flash, 5 passes, tight B=10):
 
 | Variant | Case-passes | Exact | Wrong | Abstain | EM |
 |---|---|---|---|---|---|
 | off | 86 | 84 | 0 | 2 | 1.0 |
 | small | 266 | 256 | 0 | 10 | 1.0 |
 | big | 266 | 256 | 0 | 10 | 1.0 |
+| full | 266 | 256 | 0 | 10 | 1.0 |
 
-Invariants: G1 changed the answer on 0 of 532 case-passes; B2 changed 0; honesty violations 0.
+Invariants: G1 changed the answer on 0 of 798 case-passes; B2 changed 0; honesty violations 0.
 Cost small: 91 cards (mean 1408.0 chars), 22 builder-cut, 360965 tokens in / 7300 out, USD 0.1265.
-Cost big: 91 cards (mean 4727.6 chars), 16 builder-cut, 1057220 tokens in / 7353 out, USD 0.3355.
+Cost big: 91 cards (mean 4727.6 chars), 16 builder-cut, 1057215 tokens in / 7353 out, USD 0.3355.
+Cost full: 91 cards (mean 6911.1 chars), 0 builder-cut, 1546845 tokens in / 7284 out, USD 0.4823.
 
 Hosted G1 public corpus (4112 headline rows, seed 1):
 
 | Method | Rank | MRR | recall@3 | NDCG@3 | trials-to-label |
 |---|---|---|---|---|---|
-| api_big | 1.556 | 0.779 | 0.877 | 0.777 | 6.083 |
-| api_small | 1.565 | 0.779 | 0.876 | 0.774 | 6.174 |
+| api_big | 1.607 | 0.762 | 0.864 | 0.759 | 6.375 |
+| api_full | 1.611 | 0.758 | 0.866 | 0.757 | 6.379 |
+| api_small | 1.626 | 0.759 | 0.858 | 0.752 | 6.52 |
 | g0 | 1.656 | 0.745 | 0.854 | 0.745 | 6.328 |
 | path | 1.627 | 0.747 | 0.855 | 0.747 | 6.098 |
 | random | 1.679 | 0.732 | 0.866 | 0.731 | 6.518 |
 
-Stability (200-row subsample, 5 passes, mean pairwise Kendall tau of the produced order): {'big': 0.8772, 'small': 0.8037}.
+Stability (200-row subsample, 5 passes, mean pairwise Kendall tau of the produced order): {'big': 0.8772, 'full': 0.8736, 'small': 0.8037}.

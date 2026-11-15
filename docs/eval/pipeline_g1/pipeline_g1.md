@@ -19,6 +19,7 @@ E1 = small cards (the laya card budget), E2 = big cards (8x budget, GOOD_IN/UPST
 | off | 86 | 84 | 0 | 2 | 1.0 | - | {'unrecorded_call': 2} |
 | small | 266 | 256 | 0 | 10 | 1.0 | - | {'unrecorded_call': 10} |
 | big | 266 | 256 | 0 | 10 | 1.0 | - | {'unrecorded_call': 10} |
+| full | 266 | 256 | 0 | 10 | 1.0 | - | {'unrecorded_call': 10} |
 
 
 
@@ -26,7 +27,7 @@ E1 = small cards (the laya card budget), E2 = big cards (8x budget, GOOD_IN/UPST
 
 
 
-- answers changed vs no-G1: 0 case-passes (of 532)
+- answers changed vs no-G1: 0 case-passes (of 798)
 
 - trials to final verdict (B2) changed: 0 (counted, not assumed: reordering changes which supersets are pruned)
 
@@ -42,9 +43,10 @@ E1 = small cards (the laya card budget), E2 = big cards (8x budget, GOOD_IN/UPST
 
 | variant | cases | median t_i | IQR | mean t_i | pass@tight-B | exhausted (tight) | wall s median |
 |---|---|---|---|---|---|---|---|
-| off | 45 | 1.0 | 1.0–2.0 | 1.4 | 1.0 | 0 | 3.171 |
-| small | 45 | 1.0 | 1.0–2.0 | 1.458 | 1.0 | 0 | 5.624 |
-| big | 45 | 1.0 | 1.0–2.0 | 1.431 | 1.0 | 0 | 5.673 |
+| off | 45 | 1.0 | 1.0–2.0 | 1.4 | 1.0 | 0 | 3.654 |
+| small | 45 | 1.0 | 1.0–2.0 | 1.458 | 1.0 | 0 | 3.831 |
+| big | 45 | 1.0 | 1.0–2.0 | 1.431 | 1.0 | 0 | 3.803 |
+| full | 45 | 1.0 | 1.0–2.0 | 1.413 | 1.0 | 0 | 6.165 |
 
 
 
@@ -57,6 +59,7 @@ E1 = small cards (the laya card budget), E2 = big cards (8x budget, GOOD_IN/UPST
 | off | 0.6667 | 0.9333 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1 |
 | small | 0.6667 | 0.8667 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1 |
 | big | 0.6667 | 0.8889 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1 |
+| full | 0.6667 | 0.8889 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1 |
 
 
 
@@ -67,7 +70,8 @@ E1 = small cards (the laya card budget), E2 = big cards (8x budget, GOOD_IN/UPST
 | variant | cards | mean chars | max chars | builder-cut | calls ok | calls failed | tokens in | tokens out | USD |
 |---|---|---|---|---|---|---|---|---|---|
 | small | 91 | 1408.0 | 2391 | 22 | 455 | 0 | 360965 | 7300 | 0.1265 |
-| big | 91 | 4727.6 | 11991 | 16 | 455 | 0 | 1057220 | 7353 | 0.3355 |
+| big | 91 | 4727.6 | 11991 | 16 | 455 | 0 | 1057215 | 7353 | 0.3355 |
+| full | 91 | 6911.1 | 31436 | 0 | 455 | 0 | 1546845 | 7284 | 0.4823 |
 
 
 
@@ -82,6 +86,9 @@ E1 = small cards (the laya card budget), E2 = big cards (8x budget, GOOD_IN/UPST
 | big | 1200-2399 | 12 | 0 | 0 |
 | big | <1200 | 28 | 0 | 0 |
 | big | >=2400 | 51 | 16 | 0 |
+| full | 1200-2399 | 12 | 0 | 0 |
+| full | <1200 | 28 | 0 | 0 |
+| full | >=2400 | 51 | 0 | 0 |
 
 
 
@@ -93,6 +100,7 @@ E1 = small cards (the laya card budget), E2 = big cards (8x budget, GOOD_IN/UPST
 |---|---|---|
 | small | 45 | 0.7689 |
 | big | 45 | 0.8667 |
+| full | 45 | 0.8133 |
 
 
 
@@ -102,9 +110,12 @@ E1 = small cards (the laya card budget), E2 = big cards (8x budget, GOOD_IN/UPST
 
 | family | test | statistic | p (exact) | p (Holm) | effect | MDE | TOST |
 |---|---|---|---|---|---|---|---|
-| (ii) | small vs off (subset, tight B=10) | Wilcoxon W+ = 11.5 over 45 pairs (0 censored) | 0.375 | 0.75 | HL shift 0.0 (CI95 [-1.0, 1.0]), rank-biserial 0.5333 | 0.1322 | - |
-| (ii) | big vs off (subset, tight B=10) | Wilcoxon W+ = 3.0 over 45 pairs (0 censored) | 0.5 | 0.75 | HL shift 0.0 (CI95 [0.0, 0.8]), rank-biserial 1.0 | 0.063 | - |
-| (iii) | small vs big (subset, tight B=10) | Wilcoxon W+ = 10.0 over 45 pairs (0 censored) | 0.625 | 0.625 | HL shift 0.0 (CI95 [-1.0, 1.0]), rank-biserial 0.3333 | 0.1147 | True |
+| (ii) | small vs off (subset, tight B=10) | Wilcoxon W+ = 11.5 over 45 pairs (0 censored) | 0.375 | 1.0 | HL shift 0.0 (CI95 [-1.0, 1.0]), rank-biserial 0.5333 | 0.1322 | - |
+| (ii) | big vs off (subset, tight B=10) | Wilcoxon W+ = 3.0 over 45 pairs (0 censored) | 0.5 | 1.0 | HL shift 0.0 (CI95 [0.0, 0.8]), rank-biserial 1.0 | 0.063 | - |
+| (ii) | full vs off (subset, tight B=10) | Wilcoxon W+ = 4.0 over 45 pairs (0 censored) | 0.75 | 1.0 | HL shift 0.0 (CI95 [-0.4, 0.8]), rank-biserial 0.3333 | 0.0588 | - |
+| (iii) | small vs big (subset, tight B=10) | Wilcoxon W+ = 10.0 over 45 pairs (0 censored) | 0.625 | 1.0 | HL shift 0.0 (CI95 [-1.0, 1.0]), rank-biserial 0.3333 | 0.1147 | True |
+| (iii) | small vs full (subset, tight B=10) | Wilcoxon W+ = 12.0 over 45 pairs (0 censored) | 0.312 | 0.936 | HL shift 0.0 (CI95 [-0.6, 1.0]), rank-biserial 0.6 | 0.1013 | True |
+| (iii) | big vs full (subset, tight B=10) | Wilcoxon W+ = 5.0 over 45 pairs (0 censored) | 0.5 | 1.0 | HL shift 0.0 (CI95 [-0.2, 0.6]), rank-biserial 0.6667 | 0.0476 | True |
 
 
 

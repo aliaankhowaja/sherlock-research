@@ -52,12 +52,12 @@ make g1-eval     # G1 ordering, planted + generated cases (local laya inference;
 make g1-public   # G1 ordering on the public corpus (local laya; SHUTDOWN=0 keeps the machine on)
 ```
 
-Hosted-LLM G1 experiments (E1 = small cards, E2 = big cards; see `docs/eval/metrics-spec.md` §14.1):
+Hosted-LLM G1 experiments (E1 = small cards, E2 = big cards, E3 = uncut cards; see `docs/eval/metrics-spec.md` §14):
 
 ```sh
 make g1-api-smoke    # the sample card through the configured provider (3 calls)
-make g1-pipeline     # E1/E2 on the 86 planted cases + 3 probes, paired vs no-G1 (about 1 hour)
-make g1-api-public   # E1/E2 on the public trace corpus (about 30k calls; run overnight)
+make g1-pipeline     # E1/E2/E3 on the 86 planted cases + 3 probes, paired vs no-G1 (about 1 hour)
+make g1-api-public   # E1/E2/E3 on the public trace corpus (about 45k calls; run overnight)
 ```
 
 The planted 3-gate evaluation needs `langgraph-cli` and no network: runs are recorded against a local echo

@@ -37,7 +37,7 @@ def main():
         with open(pipeline_path, encoding="utf-8") as f:
             p = json.load(f)
         print()
-        print("Hosted G1 pipeline (E1/E2; %s / %s, %s passes, tight B=%s):" %
+        print("Hosted G1 pipeline (E1/E2/E3; %s / %s, %s passes, tight B=%s):" %
               (p["config"]["provider"], p["config"]["model"], p["passes"], p["tight_budget"]))
         print()
         print("| Variant | Case-passes | Exact | Wrong | Abstain | EM |")
@@ -51,7 +51,7 @@ def main():
         print("Invariants: G1 changed the answer on %d of %d case-passes; B2 changed %d; honesty violations %d."
               % (inv["answer_changed_total"], inv["case_passes_total"], inv["b2_changed_total"],
                  inv["violations_total"]))
-        for v in ("small", "big"):
+        for v in p["variants"][1:]:  # card variants (skip "off": no hosted calls to cost)
             c = p["cost"][v]
             print("Cost %s: %d cards (mean %s chars), %d builder-cut, %s tokens in / %s out, USD %s."
                   % (v, c["cards"], c["card_chars_mean"], c["builder_truncated"], c["tokens_in"],

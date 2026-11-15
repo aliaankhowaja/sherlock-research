@@ -277,6 +277,30 @@ with the reason and the date, and marked as post-hoc in every table it affects.
   `pipeline_g1.json` are regenerated as supersets (all variants; the earlier variants' rows come
   from the cache and must reproduce their committed values).
 
+- **2026-11-15 — post-hoc note on the E3 truncation rule: the server truncates silently.** The
+  pre-registered rule ("a card whose prompt exceeds the 1,000,000-token window gets no score")
+  assumes an over-limit prompt is refused or reported; Vertex instead silently drops input beyond
+  the window and answers normally (measured: a 3,736,765-char card returned `prompt_tokens = 935,308`,
+  `finish STOP` — the model saw roughly the last ~935k tokens' worth). The no-score path therefore
+  never fired and the artifact records 0 `api-context-cut` cards, which means "the server never
+  refused", not "every card was fully visible". The affected tail is tiny and identified: 3 cards of
+  14,367 (rows magentic_one_21/MagenticOneOrchestrator 3.74M chars, smoagents_30/Searcher 2.97M,
+  magentic_one_17/MagenticOneOrchestrator 2.69M); the first two returned ~936k prompt tokens (the
+  window ceiling — truncated), the third 569k (likely full). Effect on the aggregate: at most 2 rows
+  of 4,112; no re-classification of scored rows is made, and the `full`-variant claims treat these 3
+  cards as window-limited.
+
+- **2026-11-15 — post-hoc note and correction: the first E3 public run swallowed a rate-limit burst
+  into null stability rows.** During the run's stability phase, 8 consecutive rows' `full` passes
+  (indices 106–113 of the pre-registered subsample) failed after their retries — a transient burst;
+  `small`/`big` were cache-served and immune — and `_stability_row` recorded `null` mean tau and
+  carried on, while the artifact text promised full rows. Failed calls are not cached, so the
+  `--check` replay re-issued them and produced floats — the gate caught it. The run semantics are
+  now abort-on-any-failure (headline or stability; a failed call would make the run unreproducible
+  anyway). The artifact is regenerated from the cache (the re-issued calls succeeded during the
+  check replay and are now cached): `full` stability tau 0.876 → 0.8736, and rows 106–113 carry
+  real values. Headline rows were unaffected (all 4,112 fully scored in both runs).
+
 ### 14.1 Pre-registration: hosted-LLM G1 experiments E1/E2 (written 2026-11-14, before the runs)
 
 Fixed here, before any hosted run beyond the infrastructure smoke test; nothing below may change

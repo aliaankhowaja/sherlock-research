@@ -12,9 +12,9 @@
     "artifact_sha256": {
       "g1": "e5687c87bbce6641",
       "g1_gen": "88048a5f83a80ae3",
-      "pipeline": "ee793feb51973979",
+      "pipeline": "a47cf2e75d339aae",
       "public": "4961d64978f95a22",
-      "public_api": "188f44ccf0e7b426",
+      "public_api": "b017f559ad2fd5f6",
       "results": "53e3281724aa50ce"
     },
     "bootstrap": 10000,
@@ -1164,7 +1164,7 @@
       "family": "(ii) G1 variant vs no-G1, t_i",
       "mde": 0.1322,
       "p_exact": 0.375,
-      "p_holm": 0.75,
+      "p_holm": 1.0,
       "statistic": "Wilcoxon W+ = 11.5 over 45 pairs (0 censored)",
       "test": "small vs off (subset, tight B=10)"
     },
@@ -1173,18 +1173,57 @@
       "family": "(ii) G1 variant vs no-G1, t_i",
       "mde": 0.063,
       "p_exact": 0.5,
-      "p_holm": 0.75,
+      "p_holm": 1.0,
       "statistic": "Wilcoxon W+ = 3.0 over 45 pairs (0 censored)",
       "test": "big vs off (subset, tight B=10)"
+    },
+    {
+      "effect": "HL shift 0.0 (CI95 [-0.4, 0.8]), rank-biserial 0.3333",
+      "family": "(ii) G1 variant vs no-G1, t_i",
+      "mde": 0.0588,
+      "p_exact": 0.75,
+      "p_holm": 1.0,
+      "statistic": "Wilcoxon W+ = 4.0 over 45 pairs (0 censored)",
+      "test": "full vs off (subset, tight B=10)"
     },
     {
       "effect": "HL shift 0.0 (CI95 [-1.0, 1.0]), rank-biserial 0.3333",
       "family": "(iii) G1 variant vs G1 variant, t_i",
       "mde": 0.1147,
       "p_exact": 0.625,
-      "p_holm": 0.625,
+      "p_holm": 1.0,
       "statistic": "Wilcoxon W+ = 10.0 over 45 pairs (0 censored)",
       "test": "small vs big (subset, tight B=10)",
+      "tost": {
+        "delta": 0.25,
+        "equivalent": true,
+        "p_lower": 0.0,
+        "p_upper": 0.0
+      }
+    },
+    {
+      "effect": "HL shift 0.0 (CI95 [-0.6, 1.0]), rank-biserial 0.6",
+      "family": "(iii) G1 variant vs G1 variant, t_i",
+      "mde": 0.1013,
+      "p_exact": 0.312,
+      "p_holm": 0.936,
+      "statistic": "Wilcoxon W+ = 12.0 over 45 pairs (0 censored)",
+      "test": "small vs full (subset, tight B=10)",
+      "tost": {
+        "delta": 0.25,
+        "equivalent": true,
+        "p_lower": 0.0,
+        "p_upper": 0.0
+      }
+    },
+    {
+      "effect": "HL shift 0.0 (CI95 [-0.2, 0.6]), rank-biserial 0.6667",
+      "family": "(iii) G1 variant vs G1 variant, t_i",
+      "mde": 0.0476,
+      "p_exact": 0.5,
+      "p_holm": 1.0,
+      "statistic": "Wilcoxon W+ = 5.0 over 45 pairs (0 censored)",
+      "test": "big vs full (subset, tight B=10)",
       "tost": {
         "delta": 0.25,
         "equivalent": true,
@@ -1818,63 +1857,94 @@
       "api_big": {
         "ci95": {
           "ndcg@3": [
-            0.7688,
-            0.7847
+            0.7503,
+            0.7669
           ],
           "rank": [
-            1.5316,
-            1.5805
+            1.5815,
+            1.6325
           ],
           "recall@3": [
-            0.87,
-            0.8847
+            0.8559,
+            0.8712
           ],
           "reciprocal rank": [
-            0.7707,
-            0.7878
+            0.7537,
+            0.7713
           ],
           "trials_to_label": [
-            5.9212,
-            6.2478
+            6.2021,
+            6.5464
           ]
         },
         "means": {
-          "ndcg@3": 0.7768,
-          "rank": 1.5562,
-          "recall@3": 0.8774,
-          "reciprocal rank": 0.7793,
-          "trials_to_label": 6.0834
+          "ndcg@3": 0.7588,
+          "rank": 1.6068,
+          "recall@3": 0.8635,
+          "reciprocal rank": 0.7624,
+          "trials_to_label": 6.3745
+        }
+      },
+      "api_full": {
+        "ci95": {
+          "ndcg@3": [
+            0.7488,
+            0.765
+          ],
+          "rank": [
+            1.5861,
+            1.6352
+          ],
+          "recall@3": [
+            0.8586,
+            0.8735
+          ],
+          "reciprocal rank": [
+            0.7491,
+            0.7668
+          ],
+          "trials_to_label": [
+            6.204,
+            6.5542
+          ]
+        },
+        "means": {
+          "ndcg@3": 0.757,
+          "rank": 1.6107,
+          "recall@3": 0.866,
+          "reciprocal rank": 0.7578,
+          "trials_to_label": 6.3794
         }
       },
       "api_small": {
         "ci95": {
           "ndcg@3": [
-            0.7665,
-            0.7823
+            0.7439,
+            0.7607
           ],
           "rank": [
-            1.5401,
-            1.5905
+            1.6007,
+            1.653
           ],
           "recall@3": [
-            0.8689,
-            0.8836
+            0.8506,
+            0.8664
           ],
           "reciprocal rank": [
-            0.7709,
-            0.7881
+            0.7506,
+            0.7681
           ],
           "trials_to_label": [
-            6.0088,
-            6.34
+            6.3397,
+            6.6967
           ]
         },
         "means": {
-          "ndcg@3": 0.7742,
-          "rank": 1.5654,
-          "recall@3": 0.8762,
-          "reciprocal rank": 0.7795,
-          "trials_to_label": 6.1736
+          "ndcg@3": 0.7524,
+          "rank": 1.6265,
+          "recall@3": 0.8584,
+          "reciprocal rank": 0.7595,
+          "trials_to_label": 6.5199
         }
       },
       "g0": {
@@ -1884,7 +1954,7 @@
             0.7536
           ],
           "rank": [
-            1.6304,
+            1.6306,
             1.6821
           ],
           "recall@3": [
@@ -1892,12 +1962,12 @@
             0.8618
           ],
           "reciprocal rank": [
-            0.7363,
+            0.7365,
             0.754
           ],
           "trials_to_label": [
-            6.1712,
-            6.4903
+            6.1697,
+            6.4878
           ]
         },
         "means": {
@@ -1912,23 +1982,23 @@
         "ci95": {
           "ndcg@3": [
             0.7362,
-            0.7532
+            0.7533
           ],
           "rank": [
-            1.6072,
+            1.608,
             1.6607
           ],
           "recall@3": [
-            0.842,
-            0.8586
+            0.8421,
+            0.8584
           ],
           "reciprocal rank": [
-            0.7501,
-            0.7676
+            0.7504,
+            0.7678
           ],
           "trials_to_label": [
-            6.5647,
-            6.9295
+            6.5649,
+            6.9302
           ]
         },
         "means": {
@@ -1942,8 +2012,8 @@
       "path": {
         "ci95": {
           "ndcg@3": [
-            0.7388,
-            0.7553
+            0.7389,
+            0.7552
           ],
           "rank": [
             1.6026,
@@ -1954,12 +2024,12 @@
             0.863
           ],
           "reciprocal rank": [
-            0.7386,
+            0.7388,
             0.7557
           ],
           "trials_to_label": [
-            5.9606,
-            6.2376
+            5.9596,
+            6.2359
           ]
         },
         "means": {
@@ -1973,24 +2043,24 @@
       "random": {
         "ci95": {
           "ndcg@3": [
-            0.7236,
-            0.7393
+            0.7235,
+            0.7394
           ],
           "rank": [
-            1.653,
-            1.705
+            1.6542,
+            1.7055
           ],
           "recall@3": [
-            0.8588,
-            0.874
+            0.859,
+            0.8741
           ],
           "reciprocal rank": [
             0.7228,
-            0.7404
+            0.7408
           ],
           "trials_to_label": [
-            6.3548,
-            6.6885
+            6.3529,
+            6.6831
           ]
         },
         "means": {
@@ -2006,126 +2076,252 @@
       "api_big - api_small": {
         "ndcg@3": {
           "ci95": [
-            -0.0038,
-            0.009
+            0.0003,
+            0.0126
           ],
-          "mean": 0.0026,
+          "mean": 0.0064,
           "n": 4112
         },
         "rank": {
           "ci95": [
-            -0.0294,
-            0.0119
+            -0.0399,
+            0.0
           ],
-          "mean": -0.0092,
+          "mean": -0.0197,
           "n": 4112
         },
         "recall@3": {
           "ci95": [
-            -0.0046,
-            0.007
+            -0.0005,
+            0.0107
           ],
-          "mean": 0.0012,
+          "mean": 0.0051,
           "n": 4112
         },
         "reciprocal rank": {
           "ci95": [
-            -0.0076,
-            0.0071
+            -0.0042,
+            0.0101
           ],
-          "mean": -0.0002,
+          "mean": 0.003,
           "n": 4112
         },
         "trials_to_label": {
           "ci95": [
-            -0.1792,
-            -0.0012
+            -0.2301,
+            -0.062
           ],
-          "mean": -0.0902,
+          "mean": -0.1454,
           "n": 4112
         }
       },
       "api_big - laya": {
         "ndcg@3": {
           "ci95": [
-            0.0233,
-            0.0409
+            0.0056,
+            0.0229
           ],
-          "mean": 0.0321,
+          "mean": 0.0141,
           "n": 4112
         },
         "rank": {
           "ci95": [
-            -0.1077,
-            -0.0479
+            -0.0562,
+            0.0017
           ],
-          "mean": -0.0778,
+          "mean": -0.0272,
           "n": 4112
         },
         "recall@3": {
           "ci95": [
-            0.0188,
-            0.0353
+            0.0054,
+            0.0212
           ],
-          "mean": 0.0271,
+          "mean": 0.0133,
           "n": 4112
         },
         "reciprocal rank": {
           "ci95": [
-            0.0105,
-            0.0303
+            -0.0063,
+            0.0133
           ],
-          "mean": 0.0203,
+          "mean": 0.0035,
           "n": 4112
         },
         "trials_to_label": {
           "ci95": [
-            -0.777,
-            -0.5479
+            -0.4803,
+            -0.2624
           ],
-          "mean": -0.6615,
+          "mean": -0.3704,
+          "n": 4112
+        }
+      },
+      "api_full - api_big": {
+        "ndcg@3": {
+          "ci95": [
+            -0.0065,
+            0.0028
+          ],
+          "mean": -0.0018,
+          "n": 4112
+        },
+        "rank": {
+          "ci95": [
+            -0.0109,
+            0.0185
+          ],
+          "mean": 0.0039,
+          "n": 4112
+        },
+        "recall@3": {
+          "ci95": [
+            -0.0019,
+            0.007
+          ],
+          "mean": 0.0025,
+          "n": 4112
+        },
+        "reciprocal rank": {
+          "ci95": [
+            -0.0101,
+            0.0007
+          ],
+          "mean": -0.0046,
+          "n": 4112
+        },
+        "trials_to_label": {
+          "ci95": [
+            -0.0608,
+            0.07
+          ],
+          "mean": 0.0049,
+          "n": 4112
+        }
+      },
+      "api_full - api_small": {
+        "ndcg@3": {
+          "ci95": [
+            -0.0014,
+            0.0106
+          ],
+          "mean": 0.0046,
+          "n": 4112
+        },
+        "rank": {
+          "ci95": [
+            -0.0355,
+            0.0036
+          ],
+          "mean": -0.0158,
+          "n": 4112
+        },
+        "recall@3": {
+          "ci95": [
+            0.0021,
+            0.0132
+          ],
+          "mean": 0.0076,
+          "n": 4112
+        },
+        "reciprocal rank": {
+          "ci95": [
+            -0.0088,
+            0.0053
+          ],
+          "mean": -0.0016,
+          "n": 4112
+        },
+        "trials_to_label": {
+          "ci95": [
+            -0.2232,
+            -0.0589
+          ],
+          "mean": -0.1406,
+          "n": 4112
+        }
+      },
+      "api_full - laya": {
+        "ndcg@3": {
+          "ci95": [
+            0.0041,
+            0.0209
+          ],
+          "mean": 0.0124,
+          "n": 4112
+        },
+        "rank": {
+          "ci95": [
+            -0.0511,
+            0.0049
+          ],
+          "mean": -0.0233,
+          "n": 4112
+        },
+        "recall@3": {
+          "ci95": [
+            0.0079,
+            0.0238
+          ],
+          "mean": 0.0158,
+          "n": 4112
+        },
+        "reciprocal rank": {
+          "ci95": [
+            -0.0107,
+            0.0084
+          ],
+          "mean": -0.0011,
+          "n": 4112
+        },
+        "trials_to_label": {
+          "ci95": [
+            -0.473,
+            -0.2605
+          ],
+          "mean": -0.3655,
           "n": 4112
         }
       },
       "api_small - laya": {
         "ndcg@3": {
           "ci95": [
-            0.0206,
-            0.0388
+            -0.0007,
+            0.0165
           ],
-          "mean": 0.0296,
+          "mean": 0.0077,
           "n": 4112
         },
         "rank": {
           "ci95": [
-            -0.0975,
-            -0.0389
+            -0.037,
+            0.0216
           ],
-          "mean": -0.0686,
+          "mean": -0.0075,
           "n": 4112
         },
         "recall@3": {
           "ci95": [
-            0.0181,
-            0.0342
+            0.0003,
+            0.0163
           ],
-          "mean": 0.026,
+          "mean": 0.0082,
           "n": 4112
         },
         "reciprocal rank": {
           "ci95": [
-            0.0106,
-            0.0306
+            -0.0093,
+            0.01
           ],
-          "mean": 0.0205,
+          "mean": 0.0005,
           "n": 4112
         },
         "trials_to_label": {
           "ci95": [
-            -0.6873,
-            -0.4565
+            -0.3307,
+            -0.1155
           ],
-          "mean": -0.5713,
+          "mean": -0.225,
           "n": 4112
         }
       }
@@ -2196,9 +2392,20 @@
         "card_chars_max": 11991,
         "card_chars_mean": 4727.6154,
         "cards": 91,
-        "tokens_in": 1057220,
+        "tokens_in": 1057215,
         "tokens_out": 7353,
         "usd": 0.3355
+      },
+      "full": {
+        "builder_truncated": 0,
+        "calls_failed": 0,
+        "calls_ok": 455,
+        "card_chars_max": 31436,
+        "card_chars_mean": 6911.1319,
+        "cards": 91,
+        "tokens_in": 1546845,
+        "tokens_out": 7284,
+        "usd": 0.4823
       },
       "small": {
         "builder_truncated": 22,
@@ -2214,6 +2421,18 @@
     },
     "effectiveness": {
       "big": {
+        "abstain": 10,
+        "case_passes": 266,
+        "em": 1.0,
+        "em_ci95": [
+          0.9852,
+          1.0
+        ],
+        "exact": 256,
+        "mean_j_wrong": null,
+        "wrong": 0
+      },
+      "full": {
         "abstain": 10,
         "case_passes": 266,
         "em": 1.0,
@@ -2270,6 +2489,25 @@
           1.0
         ]
       },
+      "full": {
+        "exhausted": 0,
+        "exhausted_ci95": [
+          0.0,
+          0.0787
+        ],
+        "iqr_t": [
+          1.0,
+          2.0
+        ],
+        "mean_t": 1.4133,
+        "median_t": 1.0,
+        "n": 45,
+        "pass@B": 1.0,
+        "t_ci95": [
+          1.0,
+          1.0
+        ]
+      },
       "off": {
         "exhausted": 0,
         "exhausted_ci95": [
@@ -2312,11 +2550,28 @@
     "invariants": {
       "answer_changed": 0,
       "b2_changed": 0,
-      "case_passes_total": 532,
+      "case_passes_total": 798,
       "violations": 0
     },
     "pass_at": {
       "big": {
+        "median": 1,
+        "n": 45,
+        "pass_at": [
+          0.6667,
+          0.8889,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "solved": 45
+      },
+      "full": {
         "median": 1,
         "n": 45,
         "pass_at": [
@@ -2376,6 +2631,10 @@
         "cases_with_passes": 45,
         "mean_tau": 0.8667
       },
+      "full": {
+        "cases_with_passes": 45,
+        "mean_tau": 0.8133
+      },
       "small": {
         "cases_with_passes": 45,
         "mean_tau": 0.7689
@@ -2387,7 +2646,7 @@
         "family": "(ii) G1 variant vs no-G1, t_i",
         "mde": 0.1322,
         "p_exact": 0.375,
-        "p_holm": 0.75,
+        "p_holm": 1.0,
         "statistic": "Wilcoxon W+ = 11.5 over 45 pairs (0 censored)",
         "test": "small vs off (subset, tight B=10)"
       },
@@ -2396,18 +2655,57 @@
         "family": "(ii) G1 variant vs no-G1, t_i",
         "mde": 0.063,
         "p_exact": 0.5,
-        "p_holm": 0.75,
+        "p_holm": 1.0,
         "statistic": "Wilcoxon W+ = 3.0 over 45 pairs (0 censored)",
         "test": "big vs off (subset, tight B=10)"
+      },
+      {
+        "effect": "HL shift 0.0 (CI95 [-0.4, 0.8]), rank-biserial 0.3333",
+        "family": "(ii) G1 variant vs no-G1, t_i",
+        "mde": 0.0588,
+        "p_exact": 0.75,
+        "p_holm": 1.0,
+        "statistic": "Wilcoxon W+ = 4.0 over 45 pairs (0 censored)",
+        "test": "full vs off (subset, tight B=10)"
       },
       {
         "effect": "HL shift 0.0 (CI95 [-1.0, 1.0]), rank-biserial 0.3333",
         "family": "(iii) G1 variant vs G1 variant, t_i",
         "mde": 0.1147,
         "p_exact": 0.625,
-        "p_holm": 0.625,
+        "p_holm": 1.0,
         "statistic": "Wilcoxon W+ = 10.0 over 45 pairs (0 censored)",
         "test": "small vs big (subset, tight B=10)",
+        "tost": {
+          "delta": 0.25,
+          "equivalent": true,
+          "p_lower": 0.0,
+          "p_upper": 0.0
+        }
+      },
+      {
+        "effect": "HL shift 0.0 (CI95 [-0.6, 1.0]), rank-biserial 0.6",
+        "family": "(iii) G1 variant vs G1 variant, t_i",
+        "mde": 0.1013,
+        "p_exact": 0.312,
+        "p_holm": 0.936,
+        "statistic": "Wilcoxon W+ = 12.0 over 45 pairs (0 censored)",
+        "test": "small vs full (subset, tight B=10)",
+        "tost": {
+          "delta": 0.25,
+          "equivalent": true,
+          "p_lower": 0.0,
+          "p_upper": 0.0
+        }
+      },
+      {
+        "effect": "HL shift 0.0 (CI95 [-0.2, 0.6]), rank-biserial 0.6667",
+        "family": "(iii) G1 variant vs G1 variant, t_i",
+        "mde": 0.0476,
+        "p_exact": 0.5,
+        "p_holm": 1.0,
+        "statistic": "Wilcoxon W+ = 5.0 over 45 pairs (0 censored)",
+        "test": "big vs full (subset, tight B=10)",
         "tost": {
           "delta": 0.25,
           "equivalent": true,
@@ -2432,6 +2730,23 @@
         ">=2400": {
           "api_cut": 0,
           "builder_cut": 16,
+          "cards": 51
+        }
+      },
+      "full": {
+        "1200-2399": {
+          "api_cut": 0,
+          "builder_cut": 0,
+          "cards": 12
+        },
+        "<1200": {
+          "api_cut": 0,
+          "builder_cut": 0,
+          "cards": 28
+        },
+        ">=2400": {
+          "api_cut": 0,
+          "builder_cut": 0,
           "cards": 51
         }
       },

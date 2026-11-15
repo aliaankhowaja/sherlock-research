@@ -17,8 +17,9 @@ the produced order). The random-order reference is not recomputed: the committed
 public_g1.json random_ref (100 seeds) is reused as-is.
 
 Records are processed a few at a time so the hosted calls stay busy (each row's calls are already
-parallel); results are reported in file order. A dead endpoint raises and the script exits loudly —
-there is no silent fall-back to the G0 order.
+parallel); results are reported in file order. Any failed hosted call (transport or parse) aborts
+the script with a loud error — failed calls are not cached, so a run that swallowed one could never
+be reproduced by --check; there is no silent fall-back to the G0 order.
 
 Writes public_g1_api.json and public_g1_api.md (the markdown is also printed). Card text is never
 written out; per-row card hashes/chars, scores, token counts, truncation flags and USD are.
@@ -71,6 +72,10 @@ def _api_orders(record: dict, seed: int, cfg: dict, variants: tuple[str, ...]):
         if g1["status"] == "unavailable":
             failed.append(f"{record['id']} ({v}): {g1.get('reason') or 'unavailable'}")
             continue
+        if g1["status"] != "ok" or g1["calls"]["failed"]:  # a partial row is a failed call in disguise:
+            failed.append(f"{record['id']} ({v}): status {g1['status']} with {g1['calls']['failed']} failed "
+                          f"call(s) — failed calls are not cached, so the run could not be reproduced; aborting")
+            continue
         orders[f"api_{v}"] = order_candidates(on_path, clues, [s["node"] for s in g1["scores"]])
         g1s[v] = g1
     return orders, g1s, failed
@@ -90,9 +95,12 @@ def _stability_row(record: dict, cfg: dict, passes: int, variants: tuple[str, ..
             g1 = rank({**cfg, "backend": "api", "card_variant": v, "passes": 1, "pass_offset": p,
                        "cache_dir": str(Path(cfg["cache_dir"]) / v)},
                       on_path, lambda n, deck=deck: tuple(deck[n]))
-            if g1["status"] == "unavailable":
-                rec["error"] = g1.get("reason") or "unavailable"
-                break
+            if g1["status"] != "ok" or g1["calls"]["failed"]:
+                # no silent degradation to a null tau: failed calls are not cached, so a run that
+                # swallowed one could never be reproduced by --check (E3 amendment: this happened —
+                # a rate-limit burst nulled 8 consecutive stability rows' full passes)
+                raise RuntimeError(f"stability row {record['id']} ({v}, pass {p}): status {g1['status']} "
+                                   f"with {g1['calls']['failed']} failed call(s) — {g1.get('reason') or 'failed'}")
             rec["orders"].append(order_candidates(on_path, clues, [s["node"] for s in g1["scores"]]))
         taus = [g1_api._kendall_tau(rec["orders"][i], rec["orders"][j])
                 for i in range(len(rec["orders"])) for j in range(i + 1, len(rec["orders"]))]
@@ -230,6 +238,31 @@ def _mean(values):
     return round(statistics.mean(values), 3) if values else None
 
 
+def _first_diff(want, got, path="$"):
+    """First path where two canonical artifacts disagree, so a failed --check says where."""
+    if type(want) is not type(got):
+        return f"{path}: type {type(want).__name__} vs {type(got).__name__}"
+    if isinstance(want, dict):
+        for k in sorted(set(want) | set(got)):
+            if k not in want:
+                return f"{path}.{k}: only in the fresh run ({str(got[k])[:120]})"
+            if k not in got:
+                return f"{path}.{k}: only in the committed artifact ({str(want[k])[:120]})"
+            found = _first_diff(want[k], got[k], f"{path}.{k}")
+            if found:
+                return found
+        return None
+    if isinstance(want, list):
+        if len(want) != len(got):
+            return f"{path}: list length {len(want)} vs {len(got)}"
+        for i, (w, g) in enumerate(zip(want, got)):
+            found = _first_diff(w, g, f"{path}[{i}]")
+            if found:
+                return found
+        return None
+    return None if want == got else f"{path}: {str(want)[:120]!r} vs {str(got)[:120]!r}"
+
+
 def canonical(res):
     """The artifact minus wall-clock fields; everything scored stays."""
     out = json.loads(json.dumps(res))
@@ -359,10 +392,15 @@ def main() -> int:
         (args.out / "public_g1_api.md").write_text(render(res), encoding="utf-8", newline="\n")
     if args.check:
         want = canonical(json.loads(Path(args.check).read_text(encoding="utf-8")))
-        fresh = json.dumps(canonical(res), indent=2, sort_keys=True) + "\n"
-        if json.dumps(want, indent=2, sort_keys=True) + "\n" != fresh:
+        got = canonical(res)
+        if json.dumps(want, indent=2, sort_keys=True) + "\n" != json.dumps(got, indent=2, sort_keys=True) + "\n":
+            diff = _first_diff(want, got) or "(values differ somewhere the walk could not localize)"
             print("public_g1_api: results differ from", args.check, "(not reproducible, or the code changed)",
                   file=sys.stderr)
+            print(f"public_g1_api: first difference: {diff}", file=sys.stderr)
+            dump = HERE / ".g1" / "fresh_public_check.json"
+            dump.write_text(json.dumps(got, indent=2, sort_keys=True) + "\n", encoding="utf-8", newline="\n")
+            print(f"public_g1_api: the fresh canonical projection was written to {dump} for diffing", file=sys.stderr)
             return 1
         print("public_g1_api: results identical to", args.check)
     print(render(res), end="")
