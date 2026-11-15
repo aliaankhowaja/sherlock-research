@@ -254,4 +254,67 @@ Across-pass agreement of the produced order (mean pairwise Kendall tau): {'big':
 
 
 
+## Table 5b — public-trace ordering with the hosted G1 (api; 4112 headline rows, seed 1)
+
+
+
+| method | metric | mean | CI95 |
+|---|---|---|---|
+| random | rank | 1.6792 | [1.653, 1.705] |
+| random | reciprocal rank | 0.7318 | [0.7228, 0.7404] |
+| random | recall@3 | 0.8665 | [0.8588, 0.874] |
+| random | ndcg@3 | 0.7314 | [0.7236, 0.7393] |
+| random | trials_to_label | 6.5182 | [6.3548, 6.6885] |
+| path | rank | 1.6274 | [1.6026, 1.6525] |
+| path | reciprocal rank | 0.7473 | [0.7386, 0.7557] |
+| path | recall@3 | 0.8553 | [0.8476, 0.863] |
+| path | ndcg@3 | 0.7471 | [0.7388, 0.7553] |
+| path | trials_to_label | 6.098 | [5.9606, 6.2376] |
+| g0 | rank | 1.6564 | [1.6304, 1.6821] |
+| g0 | reciprocal rank | 0.7453 | [0.7363, 0.754] |
+| g0 | recall@3 | 0.854 | [0.8463, 0.8618] |
+| g0 | ndcg@3 | 0.7451 | [0.7365, 0.7536] |
+| g0 | trials_to_label | 6.3281 | [6.1712, 6.4903] |
+| laya | rank | 1.634 | [1.6072, 1.6607] |
+| laya | reciprocal rank | 0.759 | [0.7501, 0.7676] |
+| laya | recall@3 | 0.8502 | [0.842, 0.8586] |
+| laya | ndcg@3 | 0.7447 | [0.7362, 0.7532] |
+| laya | trials_to_label | 6.7449 | [6.5647, 6.9295] |
+| api_small | rank | 1.5654 | [1.5401, 1.5905] |
+| api_small | reciprocal rank | 0.7795 | [0.7709, 0.7881] |
+| api_small | recall@3 | 0.8762 | [0.8689, 0.8836] |
+| api_small | ndcg@3 | 0.7742 | [0.7665, 0.7823] |
+| api_small | trials_to_label | 6.1736 | [6.0088, 6.34] |
+| api_big | rank | 1.5562 | [1.5316, 1.5805] |
+| api_big | reciprocal rank | 0.7793 | [0.7707, 0.7878] |
+| api_big | recall@3 | 0.8774 | [0.87, 0.8847] |
+| api_big | ndcg@3 | 0.7768 | [0.7688, 0.7847] |
+| api_big | trials_to_label | 6.0834 | [5.9212, 6.2478] |
+
+
+
+Paired differences on the same rows (api order − reference order):
+
+
+
+| pair | metric | mean diff | n | CI95 |
+|---|---|---|---|---|
+| api_small - laya | rank | -0.0686 | 4112 | [-0.0975, -0.0389] |
+| api_small - laya | reciprocal rank | 0.0205 | 4112 | [0.0106, 0.0306] |
+| api_small - laya | recall@3 | 0.026 | 4112 | [0.0181, 0.0342] |
+| api_small - laya | ndcg@3 | 0.0296 | 4112 | [0.0206, 0.0388] |
+| api_small - laya | trials_to_label | -0.5713 | 4112 | [-0.6873, -0.4565] |
+| api_big - laya | rank | -0.0778 | 4112 | [-0.1077, -0.0479] |
+| api_big - laya | reciprocal rank | 0.0203 | 4112 | [0.0105, 0.0303] |
+| api_big - laya | recall@3 | 0.0271 | 4112 | [0.0188, 0.0353] |
+| api_big - laya | ndcg@3 | 0.0321 | 4112 | [0.0233, 0.0409] |
+| api_big - laya | trials_to_label | -0.6615 | 4112 | [-0.777, -0.5479] |
+| api_big - api_small | rank | -0.0092 | 4112 | [-0.0294, 0.0119] |
+| api_big - api_small | reciprocal rank | -0.0002 | 4112 | [-0.0076, 0.0071] |
+| api_big - api_small | recall@3 | 0.0012 | 4112 | [-0.0046, 0.007] |
+| api_big - api_small | ndcg@3 | 0.0026 | 4112 | [-0.0038, 0.009] |
+| api_big - api_small | trials_to_label | -0.0902 | 4112 | [-0.1792, -0.0012] |
+
+
+
 G1 wall ms is the per-scoring-pass clock of the local backends (B5 proxy); the hosted-G1 artifacts record calls, tokens and USD from the API usage fields (§14.1), and their truncation flags distinguish the builder-side cut from the model-context cut.

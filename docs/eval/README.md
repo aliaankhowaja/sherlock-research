@@ -46,6 +46,41 @@ Pipelines of 32-33 nodes, up to 32 on a path: Sherlock used 1 trial on 27 cases,
 
 The baselines are deliberately cheap. They show that the cases are not solvable by blaming the last node or reading error clues (most faults are silent), not that Sherlock beats a strong learned method.
 
+## Hosted-LLM G1 (E1/E2): the planted leg
+
+Pre-registered in [`metrics-spec.md`](metrics-spec.md) §14.1 before any scored run. G1's local scoring is replaced by a hosted LLM call over the node card — the same replacement the public-corpus ordering evaluation (§8) needs — and the card is the only manipulated variable: **E1 `small`** is the laya card budget (2,400 chars, byte-identical to the cards the committed local-laya run was scored on, unit-test pinned), **E2 `big`** is 12,000 chars plus `GOOD_IN`/`UPSTREAM`/`WRITES_ALL`. Same system prompt, temperature 0, no thinking tokens, 256 output tokens, `gemini-2.5-flash` on Vertex AI. The provider layer (`python/sherlock/src/sherlock/g1_api.py`) also speaks `gemini_api` and any OpenAI-compatible endpoint, configured via `.env`, so the runs can be re-done with a reviewer's own key. Artifact: [`pipeline_g1/pipeline_g1.json`](pipeline_g1/pipeline_g1.json) (+`.md`); scored tables: `table6_pipeline` in [`score.json`](score.json).
+
+86 cases + 3 harmless probes, 5 passes per variant on the G1-relevant subset (candidates ≥ 2), one pass elsewhere — 266 case-passes per variant. As pre-registered, the planted leg is the degenerate/invariant leg (G0 is near-optimal here, §5): what it certifies is that an LLM-backed G1 does not damage the pipeline, and its cost/truncation/stability profile. The ordering signal comes from the public corpus below.
+
+- **Effectiveness**: EM 1.0 in all three variants (off: 84 exact / 2 abstain of 86; small and big: 256 exact / 10 abstain each of 266 case-passes; abstains are the by-design LLM cases). Zero wrong answers.
+- **Invariants (AC-G1-1)**: 0 answer changes and 0 honesty violations across 532 case-passes; trials-to-final-verdict changes: 0 (counted, not asserted).
+- **Efficiency** (45 G1-relevant cases, tight B = 10): median t_i = 1.0 in every variant (mean 1.40 off / 1.46 small / 1.43 big), pass@10 = 1.0, 0 exhausted.
+- **Tests** (exact Wilcoxon + Holm, pre-registered families): small-vs-off p = 0.75, big-vs-off p = 0.75, small-vs-big p = 0.625; TOST at δ = 0.25 trials: small-vs-big equivalent. No trial-count regression from LLM ordering — expected, planted t_i is almost everywhere 1.
+- **Cost** (§4, published price recorded verbatim in the artifact): small — 91 cards, mean 1,408 chars, 455 calls, 361k/7.3k tokens in/out, $0.1265; big — mean 4,728 chars (max 11,991), 1.06M/7.4k tokens, $0.3355. 0 failed calls in either variant.
+- **Truncation**: builder-side cut 22/91 small cards, 16/91 big; API-context cuts 0 (the model's 1M-token prompt window cut nothing; big cards fit).
+- **Stability** (§6.7): mean pairwise Kendall τ of the produced order across 5 passes — 0.77 small, 0.87 big: the extra context also makes the ordering more reproducible.
+- **Reproducibility**: a full re-run from the call cache (`--check`) must be byte-identical modulo wall clock — it passed (`results identical`); every call is cached under `python/sherlock/eval/.g1/api_cache/{variant}/` keyed by card, pass index and call parameters, so an interrupted run only pays for what is missing.
+
+## Hosted-LLM G1 (E1/E2): the public-corpus leg
+
+Same layer, same protocol on the public trace corpus (§8): 4,112 headline rows (aegis 2,364; whowhen 1,748), one scored pass per row plus the pre-registered 200-row × 5-pass stability subsample, orders compared against the published labels with the same rank metrics as the committed laya run, and the committed 100-seed random-order reference reused (not recomputed). Artifact: [`public_traces/public_g1_api.json`](public_traces/public_g1_api.json) (+`.md`); scored table: `table5_public_api` in [`score.json`](score.json), including paired diffs against the committed `public_g1.json` rows (aligned by id). Cost: small $21.76, big $75.64 (62.9M/1.16M and 242M/1.17M tokens); 0 API-context cuts, 0 failed calls. The `--check` re-run from the call cache is byte-identical.
+
+**Ordering (lower rank is better):**
+
+| method | rank | reciprocal rank | recall@3 | ndcg@3 | trials→label |
+|---|---|---|---|---|---|
+| api_big | **1.556** | **0.779** | **0.877** | **0.777** | **6.083** |
+| api_small | 1.565 | 0.779 | 0.876 | 0.774 | 6.174 |
+| path | 1.627 | 0.747 | 0.855 | 0.747 | 6.098 |
+| g0 | 1.656 | 0.745 | 0.854 | 0.745 | 6.328 |
+| random (100-seed ref) | 1.685 | 0.729 | 0.867 | 0.730 | 6.518 |
+
+- **Hosted G1 beats every baseline on every headline metric**; per-corpus, aegis drives the gain (api rank 1.52 vs path 1.67), whowhen stays close (path 1.57 vs api_small 1.63, api_big 1.60).
+- **Paired vs the committed laya run (same rows, by id)**: api_big − laya rank −0.078 (CI95 −0.108…−0.048), ndcg@3 +0.032 (+0.023…+0.041), trials→label −0.66 (−0.78…−0.55); api_small − laya is similar (rank −0.069, ndcg +0.030). Since `api_small`'s cards are byte-identical to laya's, the gain is the scorer, not the card budget.
+- **Card size (api_big − api_small)**: differences are tiny — rank CI −0.029…+0.012, ndcg CI −0.004…+0.009; only trials→label is (marginally) better for big (−0.09, CI −0.179…−0.001). On this corpus the 8× card budget buys almost nothing in ordering quality — the failure signature already fits in 2,400 chars for what the label needs.
+- **Stability** (200 rows × 5 passes): mean pairwise Kendall τ 0.804 small / 0.877 big.
+- Caveat kept from §8: these are label-ordering metrics; a lower trial count does not mean the named agents are a minimal fix, and on this corpus no known-good run exists, so big cards carry no `GOOD_IN` fields (documented asymmetry, §14.1).
+
 ## CI invariants
 
 `./scripts/test.sh` stage "evaluation check" regenerates the whole table (about 5 minutes: it records and replays real `langgraph dev` servers) and diffs it with the committed `results.json`, so:
