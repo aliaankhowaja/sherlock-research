@@ -1,0 +1,7961 @@
+[
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      4
+    ],
+    "id": "singleton:5:0",
+    "method": "production",
+    "missing": 4,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      4
+    ],
+    "id": "singleton:5:0",
+    "method": "enum",
+    "missing": 4,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      4
+    ],
+    "id": "singleton:5:0",
+    "method": "dual",
+    "missing": 4,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      4
+    ],
+    "id": "singleton:5:0",
+    "method": "ascending",
+    "missing": 4,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      4
+    ],
+    "id": "singleton:5:0",
+    "method": "exhaustive",
+    "missing": 4,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      6
+    ],
+    "id": "pair:5:0",
+    "method": "production",
+    "missing": 4,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      6
+    ],
+    "id": "pair:5:0",
+    "method": "enum",
+    "missing": 4,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      6
+    ],
+    "id": "pair:5:0",
+    "method": "dual",
+    "missing": 4,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      6,
+      17
+    ],
+    "id": "disjoint:5:0",
+    "method": "production",
+    "missing": 4,
+    "sets": [
+      17
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      6,
+      17
+    ],
+    "id": "disjoint:5:0",
+    "method": "enum",
+    "missing": 4,
+    "sets": [
+      17
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      6,
+      17
+    ],
+    "id": "disjoint:5:0",
+    "method": "dual",
+    "missing": 4,
+    "sets": [
+      17
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      3,
+      6
+    ],
+    "id": "overlap:5:0",
+    "method": "production",
+    "missing": 4,
+    "sets": [
+      3
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      3,
+      6
+    ],
+    "id": "overlap:5:0",
+    "method": "enum",
+    "missing": 4,
+    "sets": [
+      3
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      3,
+      6
+    ],
+    "id": "overlap:5:0",
+    "method": "dual",
+    "missing": 4,
+    "sets": [
+      3
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      4
+    ],
+    "id": "antagonist:5:0",
+    "method": "production",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      4
+    ],
+    "id": "antagonist:5:0",
+    "method": "enum",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      4
+    ],
+    "id": "antagonist:5:0",
+    "method": "dual",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      4
+    ],
+    "id": "singleton:5:1",
+    "method": "production",
+    "missing": 4,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      4
+    ],
+    "id": "singleton:5:1",
+    "method": "enum",
+    "missing": 4,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      4
+    ],
+    "id": "singleton:5:1",
+    "method": "dual",
+    "missing": 4,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      4
+    ],
+    "id": "singleton:5:1",
+    "method": "ascending",
+    "missing": 4,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      4
+    ],
+    "id": "singleton:5:1",
+    "method": "exhaustive",
+    "missing": 4,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      12
+    ],
+    "id": "pair:5:1",
+    "method": "production",
+    "missing": 4,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      12
+    ],
+    "id": "pair:5:1",
+    "method": "enum",
+    "missing": 4,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      12,
+      17
+    ],
+    "id": "disjoint:5:1",
+    "method": "production",
+    "missing": 4,
+    "sets": [
+      17
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      12,
+      17
+    ],
+    "id": "disjoint:5:1",
+    "method": "enum",
+    "missing": 4,
+    "sets": [
+      17
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      12,
+      24
+    ],
+    "id": "overlap:5:1",
+    "method": "production",
+    "missing": 4,
+    "sets": [
+      24
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      12,
+      24
+    ],
+    "id": "overlap:5:1",
+    "method": "enum",
+    "missing": 4,
+    "sets": [
+      24
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      12,
+      24
+    ],
+    "id": "overlap:5:1",
+    "method": "dual",
+    "missing": 4,
+    "sets": [
+      24
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      4
+    ],
+    "id": "antagonist:5:1",
+    "method": "production",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      4
+    ],
+    "id": "antagonist:5:1",
+    "method": "enum",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      4
+    ],
+    "id": "antagonist:5:1",
+    "method": "dual",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      4
+    ],
+    "id": "singleton:5:2",
+    "method": "production",
+    "missing": 4,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      4
+    ],
+    "id": "singleton:5:2",
+    "method": "enum",
+    "missing": 4,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      4
+    ],
+    "id": "singleton:5:2",
+    "method": "dual",
+    "missing": 4,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      4
+    ],
+    "id": "singleton:5:2",
+    "method": "ascending",
+    "missing": 4,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      4
+    ],
+    "id": "singleton:5:2",
+    "method": "exhaustive",
+    "missing": 4,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      6
+    ],
+    "id": "pair:5:2",
+    "method": "production",
+    "missing": 4,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      6
+    ],
+    "id": "pair:5:2",
+    "method": "enum",
+    "missing": 4,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      6
+    ],
+    "id": "pair:5:2",
+    "method": "dual",
+    "missing": 4,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      6,
+      24
+    ],
+    "id": "disjoint:5:2",
+    "method": "production",
+    "missing": 4,
+    "sets": [
+      24
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      6,
+      24
+    ],
+    "id": "disjoint:5:2",
+    "method": "enum",
+    "missing": 4,
+    "sets": [
+      24
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      6,
+      24
+    ],
+    "id": "disjoint:5:2",
+    "method": "dual",
+    "missing": 4,
+    "sets": [
+      24
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      6,
+      10
+    ],
+    "id": "overlap:5:2",
+    "method": "production",
+    "missing": 4,
+    "sets": [
+      10
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      6,
+      10
+    ],
+    "id": "overlap:5:2",
+    "method": "enum",
+    "missing": 4,
+    "sets": [
+      10
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      6,
+      10
+    ],
+    "id": "overlap:5:2",
+    "method": "dual",
+    "missing": 4,
+    "sets": [
+      10
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      4
+    ],
+    "id": "antagonist:5:2",
+    "method": "production",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      4
+    ],
+    "id": "antagonist:5:2",
+    "method": "enum",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      4
+    ],
+    "id": "antagonist:5:2",
+    "method": "dual",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      1
+    ],
+    "id": "singleton:5:3",
+    "method": "production",
+    "missing": 1,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      1
+    ],
+    "id": "singleton:5:3",
+    "method": "enum",
+    "missing": 1,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      1
+    ],
+    "id": "singleton:5:3",
+    "method": "dual",
+    "missing": 1,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      1
+    ],
+    "id": "singleton:5:3",
+    "method": "ascending",
+    "missing": 1,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      1
+    ],
+    "id": "singleton:5:3",
+    "method": "exhaustive",
+    "missing": 1,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      5
+    ],
+    "id": "pair:5:3",
+    "method": "production",
+    "missing": 1,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      5
+    ],
+    "id": "pair:5:3",
+    "method": "enum",
+    "missing": 1,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      5
+    ],
+    "id": "pair:5:3",
+    "method": "dual",
+    "missing": 1,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      5,
+      24
+    ],
+    "id": "disjoint:5:3",
+    "method": "production",
+    "missing": 1,
+    "sets": [
+      24
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      5,
+      24
+    ],
+    "id": "disjoint:5:3",
+    "method": "enum",
+    "missing": 1,
+    "sets": [
+      24
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      5,
+      24
+    ],
+    "id": "disjoint:5:3",
+    "method": "dual",
+    "missing": 1,
+    "sets": [
+      24
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      5,
+      12
+    ],
+    "id": "overlap:5:3",
+    "method": "production",
+    "missing": 1,
+    "sets": [
+      12
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      5,
+      12
+    ],
+    "id": "overlap:5:3",
+    "method": "enum",
+    "missing": 1,
+    "sets": [
+      12
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      5,
+      12
+    ],
+    "id": "overlap:5:3",
+    "method": "dual",
+    "missing": 1,
+    "sets": [
+      12
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      1
+    ],
+    "id": "antagonist:5:3",
+    "method": "production",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      1
+    ],
+    "id": "antagonist:5:3",
+    "method": "enum",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      1
+    ],
+    "id": "antagonist:5:3",
+    "method": "dual",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      8
+    ],
+    "id": "singleton:5:4",
+    "method": "production",
+    "missing": 8,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      8
+    ],
+    "id": "singleton:5:4",
+    "method": "enum",
+    "missing": 8,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      8
+    ],
+    "id": "singleton:5:4",
+    "method": "dual",
+    "missing": 8,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      8
+    ],
+    "id": "singleton:5:4",
+    "method": "ascending",
+    "missing": 8,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      8
+    ],
+    "id": "singleton:5:4",
+    "method": "exhaustive",
+    "missing": 8,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      24
+    ],
+    "id": "pair:5:4",
+    "method": "production",
+    "missing": 8,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      24
+    ],
+    "id": "pair:5:4",
+    "method": "enum",
+    "missing": 8,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      24
+    ],
+    "id": "pair:5:4",
+    "method": "dual",
+    "missing": 8,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      5,
+      24
+    ],
+    "id": "disjoint:5:4",
+    "method": "production",
+    "missing": 8,
+    "sets": [
+      5
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      5,
+      24
+    ],
+    "id": "disjoint:5:4",
+    "method": "enum",
+    "missing": 8,
+    "sets": [
+      5
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      5,
+      24
+    ],
+    "id": "disjoint:5:4",
+    "method": "dual",
+    "missing": 8,
+    "sets": [
+      5
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      17,
+      24
+    ],
+    "id": "overlap:5:4",
+    "method": "production",
+    "missing": 8,
+    "sets": [
+      17
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      17,
+      24
+    ],
+    "id": "overlap:5:4",
+    "method": "enum",
+    "missing": 8,
+    "sets": [
+      17
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      17,
+      24
+    ],
+    "id": "overlap:5:4",
+    "method": "dual",
+    "missing": 8,
+    "sets": [
+      17
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      8
+    ],
+    "id": "antagonist:5:4",
+    "method": "production",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      8
+    ],
+    "id": "antagonist:5:4",
+    "method": "enum",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      8
+    ],
+    "id": "antagonist:5:4",
+    "method": "dual",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      1
+    ],
+    "id": "singleton:5:5",
+    "method": "production",
+    "missing": 1,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      1
+    ],
+    "id": "singleton:5:5",
+    "method": "enum",
+    "missing": 1,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      1
+    ],
+    "id": "singleton:5:5",
+    "method": "dual",
+    "missing": 1,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      1
+    ],
+    "id": "singleton:5:5",
+    "method": "ascending",
+    "missing": 1,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      1
+    ],
+    "id": "singleton:5:5",
+    "method": "exhaustive",
+    "missing": 1,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      3
+    ],
+    "id": "pair:5:5",
+    "method": "production",
+    "missing": 1,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      3
+    ],
+    "id": "pair:5:5",
+    "method": "enum",
+    "missing": 1,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      3
+    ],
+    "id": "pair:5:5",
+    "method": "dual",
+    "missing": 1,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      3,
+      12
+    ],
+    "id": "disjoint:5:5",
+    "method": "production",
+    "missing": 1,
+    "sets": [
+      12
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      3,
+      12
+    ],
+    "id": "disjoint:5:5",
+    "method": "enum",
+    "missing": 1,
+    "sets": [
+      12
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      3,
+      12
+    ],
+    "id": "disjoint:5:5",
+    "method": "dual",
+    "missing": 1,
+    "sets": [
+      12
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      3,
+      10
+    ],
+    "id": "overlap:5:5",
+    "method": "production",
+    "missing": 1,
+    "sets": [
+      10
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      3,
+      10
+    ],
+    "id": "overlap:5:5",
+    "method": "enum",
+    "missing": 1,
+    "sets": [
+      10
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      3,
+      10
+    ],
+    "id": "overlap:5:5",
+    "method": "dual",
+    "missing": 1,
+    "sets": [
+      10
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      1
+    ],
+    "id": "antagonist:5:5",
+    "method": "production",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      1
+    ],
+    "id": "antagonist:5:5",
+    "method": "enum",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      1
+    ],
+    "id": "antagonist:5:5",
+    "method": "dual",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      8
+    ],
+    "id": "singleton:5:6",
+    "method": "production",
+    "missing": 8,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      8
+    ],
+    "id": "singleton:5:6",
+    "method": "enum",
+    "missing": 8,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      8
+    ],
+    "id": "singleton:5:6",
+    "method": "dual",
+    "missing": 8,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      8
+    ],
+    "id": "singleton:5:6",
+    "method": "ascending",
+    "missing": 8,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      8
+    ],
+    "id": "singleton:5:6",
+    "method": "exhaustive",
+    "missing": 8,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      12
+    ],
+    "id": "pair:5:6",
+    "method": "production",
+    "missing": 8,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      12
+    ],
+    "id": "pair:5:6",
+    "method": "enum",
+    "missing": 8,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      3,
+      12
+    ],
+    "id": "disjoint:5:6",
+    "method": "production",
+    "missing": 8,
+    "sets": [
+      3
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      3,
+      12
+    ],
+    "id": "disjoint:5:6",
+    "method": "enum",
+    "missing": 8,
+    "sets": [
+      3
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      6,
+      12
+    ],
+    "id": "overlap:5:6",
+    "method": "production",
+    "missing": 8,
+    "sets": [
+      6
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      6,
+      12
+    ],
+    "id": "overlap:5:6",
+    "method": "enum",
+    "missing": 8,
+    "sets": [
+      6
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      8
+    ],
+    "id": "antagonist:5:6",
+    "method": "production",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      8
+    ],
+    "id": "antagonist:5:6",
+    "method": "enum",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      8
+    ],
+    "id": "antagonist:5:6",
+    "method": "dual",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      16
+    ],
+    "id": "singleton:5:7",
+    "method": "production",
+    "missing": 16,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      16
+    ],
+    "id": "singleton:5:7",
+    "method": "enum",
+    "missing": 16,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      16
+    ],
+    "id": "singleton:5:7",
+    "method": "dual",
+    "missing": 16,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      16
+    ],
+    "id": "singleton:5:7",
+    "method": "ascending",
+    "missing": 16,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      16
+    ],
+    "id": "singleton:5:7",
+    "method": "exhaustive",
+    "missing": 16,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      17
+    ],
+    "id": "pair:5:7",
+    "method": "production",
+    "missing": 16,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      17
+    ],
+    "id": "pair:5:7",
+    "method": "enum",
+    "missing": 16,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      17
+    ],
+    "id": "pair:5:7",
+    "method": "dual",
+    "missing": 16,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      10,
+      17
+    ],
+    "id": "disjoint:5:7",
+    "method": "production",
+    "missing": 16,
+    "sets": [
+      10
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      10,
+      17
+    ],
+    "id": "disjoint:5:7",
+    "method": "enum",
+    "missing": 16,
+    "sets": [
+      10
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      10,
+      17
+    ],
+    "id": "disjoint:5:7",
+    "method": "dual",
+    "missing": 16,
+    "sets": [
+      10
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      9,
+      17
+    ],
+    "id": "overlap:5:7",
+    "method": "production",
+    "missing": 16,
+    "sets": [
+      9
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      9,
+      17
+    ],
+    "id": "overlap:5:7",
+    "method": "enum",
+    "missing": 16,
+    "sets": [
+      9
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      9,
+      17
+    ],
+    "id": "overlap:5:7",
+    "method": "dual",
+    "missing": 16,
+    "sets": [
+      9
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      16
+    ],
+    "id": "antagonist:5:7",
+    "method": "production",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      16
+    ],
+    "id": "antagonist:5:7",
+    "method": "enum",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      16
+    ],
+    "id": "antagonist:5:7",
+    "method": "dual",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      8
+    ],
+    "id": "singleton:5:8",
+    "method": "production",
+    "missing": 8,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      8
+    ],
+    "id": "singleton:5:8",
+    "method": "enum",
+    "missing": 8,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      8
+    ],
+    "id": "singleton:5:8",
+    "method": "dual",
+    "missing": 8,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      8
+    ],
+    "id": "singleton:5:8",
+    "method": "ascending",
+    "missing": 8,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      8
+    ],
+    "id": "singleton:5:8",
+    "method": "exhaustive",
+    "missing": 8,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      9
+    ],
+    "id": "pair:5:8",
+    "method": "production",
+    "missing": 8,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      9
+    ],
+    "id": "pair:5:8",
+    "method": "enum",
+    "missing": 8,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      9
+    ],
+    "id": "pair:5:8",
+    "method": "dual",
+    "missing": 8,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      9,
+      20
+    ],
+    "id": "disjoint:5:8",
+    "method": "production",
+    "missing": 8,
+    "sets": [
+      20
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      9,
+      20
+    ],
+    "id": "disjoint:5:8",
+    "method": "enum",
+    "missing": 8,
+    "sets": [
+      20
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      9,
+      20
+    ],
+    "id": "disjoint:5:8",
+    "method": "dual",
+    "missing": 8,
+    "sets": [
+      20
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      9,
+      17
+    ],
+    "id": "overlap:5:8",
+    "method": "production",
+    "missing": 8,
+    "sets": [
+      17
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      9,
+      17
+    ],
+    "id": "overlap:5:8",
+    "method": "enum",
+    "missing": 8,
+    "sets": [
+      17
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      9,
+      17
+    ],
+    "id": "overlap:5:8",
+    "method": "dual",
+    "missing": 8,
+    "sets": [
+      17
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      8
+    ],
+    "id": "antagonist:5:8",
+    "method": "production",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      8
+    ],
+    "id": "antagonist:5:8",
+    "method": "enum",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      8
+    ],
+    "id": "antagonist:5:8",
+    "method": "dual",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      16
+    ],
+    "id": "singleton:5:9",
+    "method": "production",
+    "missing": 16,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      16
+    ],
+    "id": "singleton:5:9",
+    "method": "enum",
+    "missing": 16,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      16
+    ],
+    "id": "singleton:5:9",
+    "method": "dual",
+    "missing": 16,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      16
+    ],
+    "id": "singleton:5:9",
+    "method": "ascending",
+    "missing": 16,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      16
+    ],
+    "id": "singleton:5:9",
+    "method": "exhaustive",
+    "missing": 16,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      17
+    ],
+    "id": "pair:5:9",
+    "method": "production",
+    "missing": 16,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      17
+    ],
+    "id": "pair:5:9",
+    "method": "enum",
+    "missing": 16,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      17
+    ],
+    "id": "pair:5:9",
+    "method": "dual",
+    "missing": 16,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      6,
+      17
+    ],
+    "id": "disjoint:5:9",
+    "method": "production",
+    "missing": 16,
+    "sets": [
+      6
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      6,
+      17
+    ],
+    "id": "disjoint:5:9",
+    "method": "enum",
+    "missing": 16,
+    "sets": [
+      6
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      6,
+      17
+    ],
+    "id": "disjoint:5:9",
+    "method": "dual",
+    "missing": 16,
+    "sets": [
+      6
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      3,
+      17
+    ],
+    "id": "overlap:5:9",
+    "method": "production",
+    "missing": 16,
+    "sets": [
+      3
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      3,
+      17
+    ],
+    "id": "overlap:5:9",
+    "method": "enum",
+    "missing": 16,
+    "sets": [
+      3
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      3,
+      17
+    ],
+    "id": "overlap:5:9",
+    "method": "dual",
+    "missing": 16,
+    "sets": [
+      3
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      16
+    ],
+    "id": "antagonist:5:9",
+    "method": "production",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      16
+    ],
+    "id": "antagonist:5:9",
+    "method": "enum",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      16
+    ],
+    "id": "antagonist:5:9",
+    "method": "dual",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      16
+    ],
+    "id": "singleton:6:0",
+    "method": "production",
+    "missing": 16,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      16
+    ],
+    "id": "singleton:6:0",
+    "method": "enum",
+    "missing": 16,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      16
+    ],
+    "id": "singleton:6:0",
+    "method": "dual",
+    "missing": 16,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      16
+    ],
+    "id": "singleton:6:0",
+    "method": "ascending",
+    "missing": 16,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      16
+    ],
+    "id": "singleton:6:0",
+    "method": "exhaustive",
+    "missing": 16,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      20
+    ],
+    "id": "pair:6:0",
+    "method": "production",
+    "missing": 16,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      20
+    ],
+    "id": "pair:6:0",
+    "method": "enum",
+    "missing": 16,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      3,
+      20
+    ],
+    "id": "disjoint:6:0",
+    "method": "production",
+    "missing": 16,
+    "sets": [
+      3
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      3,
+      20
+    ],
+    "id": "disjoint:6:0",
+    "method": "enum",
+    "missing": 16,
+    "sets": [
+      3
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      3,
+      20
+    ],
+    "id": "disjoint:6:0",
+    "method": "dual",
+    "missing": 16,
+    "sets": [
+      3
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      6,
+      20
+    ],
+    "id": "overlap:6:0",
+    "method": "production",
+    "missing": 16,
+    "sets": [
+      6
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      6,
+      20
+    ],
+    "id": "overlap:6:0",
+    "method": "enum",
+    "missing": 16,
+    "sets": [
+      6
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      6,
+      20
+    ],
+    "id": "overlap:6:0",
+    "method": "dual",
+    "missing": 16,
+    "sets": [
+      6
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      16
+    ],
+    "id": "antagonist:6:0",
+    "method": "production",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      16
+    ],
+    "id": "antagonist:6:0",
+    "method": "enum",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      16
+    ],
+    "id": "antagonist:6:0",
+    "method": "dual",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      4
+    ],
+    "id": "singleton:6:1",
+    "method": "production",
+    "missing": 4,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      4
+    ],
+    "id": "singleton:6:1",
+    "method": "enum",
+    "missing": 4,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      4
+    ],
+    "id": "singleton:6:1",
+    "method": "dual",
+    "missing": 4,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      4
+    ],
+    "id": "singleton:6:1",
+    "method": "ascending",
+    "missing": 4,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      4
+    ],
+    "id": "singleton:6:1",
+    "method": "exhaustive",
+    "missing": 4,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      12
+    ],
+    "id": "pair:6:1",
+    "method": "production",
+    "missing": 4,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      12
+    ],
+    "id": "pair:6:1",
+    "method": "enum",
+    "missing": 4,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      12,
+      33
+    ],
+    "id": "disjoint:6:1",
+    "method": "production",
+    "missing": 4,
+    "sets": [
+      33
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      12,
+      33
+    ],
+    "id": "disjoint:6:1",
+    "method": "enum",
+    "missing": 4,
+    "sets": [
+      33
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      12,
+      40
+    ],
+    "id": "overlap:6:1",
+    "method": "production",
+    "missing": 4,
+    "sets": [
+      40
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      12,
+      40
+    ],
+    "id": "overlap:6:1",
+    "method": "enum",
+    "missing": 4,
+    "sets": [
+      40
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      4
+    ],
+    "id": "antagonist:6:1",
+    "method": "production",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      4
+    ],
+    "id": "antagonist:6:1",
+    "method": "enum",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      4
+    ],
+    "id": "antagonist:6:1",
+    "method": "dual",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      4
+    ],
+    "id": "singleton:6:2",
+    "method": "production",
+    "missing": 4,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      4
+    ],
+    "id": "singleton:6:2",
+    "method": "enum",
+    "missing": 4,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      4
+    ],
+    "id": "singleton:6:2",
+    "method": "dual",
+    "missing": 4,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      4
+    ],
+    "id": "singleton:6:2",
+    "method": "ascending",
+    "missing": 4,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      4
+    ],
+    "id": "singleton:6:2",
+    "method": "exhaustive",
+    "missing": 4,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      12
+    ],
+    "id": "pair:6:2",
+    "method": "production",
+    "missing": 4,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      12
+    ],
+    "id": "pair:6:2",
+    "method": "enum",
+    "missing": 4,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      12,
+      18
+    ],
+    "id": "disjoint:6:2",
+    "method": "production",
+    "missing": 4,
+    "sets": [
+      18
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      12,
+      18
+    ],
+    "id": "disjoint:6:2",
+    "method": "enum",
+    "missing": 4,
+    "sets": [
+      18
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      10,
+      12
+    ],
+    "id": "overlap:6:2",
+    "method": "production",
+    "missing": 4,
+    "sets": [
+      10
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      10,
+      12
+    ],
+    "id": "overlap:6:2",
+    "method": "enum",
+    "missing": 4,
+    "sets": [
+      10
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      10,
+      12
+    ],
+    "id": "overlap:6:2",
+    "method": "dual",
+    "missing": 4,
+    "sets": [
+      10
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      4
+    ],
+    "id": "antagonist:6:2",
+    "method": "production",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      4
+    ],
+    "id": "antagonist:6:2",
+    "method": "enum",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      4
+    ],
+    "id": "antagonist:6:2",
+    "method": "dual",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      1
+    ],
+    "id": "singleton:6:3",
+    "method": "production",
+    "missing": 1,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      1
+    ],
+    "id": "singleton:6:3",
+    "method": "enum",
+    "missing": 1,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      1
+    ],
+    "id": "singleton:6:3",
+    "method": "dual",
+    "missing": 1,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      1
+    ],
+    "id": "singleton:6:3",
+    "method": "ascending",
+    "missing": 1,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      1
+    ],
+    "id": "singleton:6:3",
+    "method": "exhaustive",
+    "missing": 1,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      5
+    ],
+    "id": "pair:6:3",
+    "method": "production",
+    "missing": 1,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      5
+    ],
+    "id": "pair:6:3",
+    "method": "enum",
+    "missing": 1,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      5,
+      40
+    ],
+    "id": "disjoint:6:3",
+    "method": "production",
+    "missing": 1,
+    "sets": [
+      40
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      5,
+      40
+    ],
+    "id": "disjoint:6:3",
+    "method": "enum",
+    "missing": 1,
+    "sets": [
+      40
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      5,
+      12
+    ],
+    "id": "overlap:6:3",
+    "method": "production",
+    "missing": 1,
+    "sets": [
+      12
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      5,
+      12
+    ],
+    "id": "overlap:6:3",
+    "method": "enum",
+    "missing": 1,
+    "sets": [
+      12
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      1
+    ],
+    "id": "antagonist:6:3",
+    "method": "production",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      1
+    ],
+    "id": "antagonist:6:3",
+    "method": "enum",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      1
+    ],
+    "id": "antagonist:6:3",
+    "method": "dual",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      8
+    ],
+    "id": "singleton:6:4",
+    "method": "production",
+    "missing": 8,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      8
+    ],
+    "id": "singleton:6:4",
+    "method": "enum",
+    "missing": 8,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      8
+    ],
+    "id": "singleton:6:4",
+    "method": "dual",
+    "missing": 8,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      8
+    ],
+    "id": "singleton:6:4",
+    "method": "ascending",
+    "missing": 8,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      8
+    ],
+    "id": "singleton:6:4",
+    "method": "exhaustive",
+    "missing": 8,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      40
+    ],
+    "id": "pair:6:4",
+    "method": "production",
+    "missing": 8,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      40
+    ],
+    "id": "pair:6:4",
+    "method": "enum",
+    "missing": 8,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      17,
+      40
+    ],
+    "id": "disjoint:6:4",
+    "method": "production",
+    "missing": 8,
+    "sets": [
+      17
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      17,
+      40
+    ],
+    "id": "disjoint:6:4",
+    "method": "enum",
+    "missing": 8,
+    "sets": [
+      17
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      40,
+      48
+    ],
+    "id": "overlap:6:4",
+    "method": "production",
+    "missing": 8,
+    "sets": [
+      48
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      40,
+      48
+    ],
+    "id": "overlap:6:4",
+    "method": "enum",
+    "missing": 8,
+    "sets": [
+      48
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      8
+    ],
+    "id": "antagonist:6:4",
+    "method": "production",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      8
+    ],
+    "id": "antagonist:6:4",
+    "method": "enum",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      8
+    ],
+    "id": "antagonist:6:4",
+    "method": "dual",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      2
+    ],
+    "id": "singleton:6:5",
+    "method": "production",
+    "missing": 2,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      2
+    ],
+    "id": "singleton:6:5",
+    "method": "enum",
+    "missing": 2,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      2
+    ],
+    "id": "singleton:6:5",
+    "method": "dual",
+    "missing": 2,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      2
+    ],
+    "id": "singleton:6:5",
+    "method": "ascending",
+    "missing": 2,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      2
+    ],
+    "id": "singleton:6:5",
+    "method": "exhaustive",
+    "missing": 2,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      3
+    ],
+    "id": "pair:6:5",
+    "method": "production",
+    "missing": 2,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      3
+    ],
+    "id": "pair:6:5",
+    "method": "enum",
+    "missing": 2,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      3
+    ],
+    "id": "pair:6:5",
+    "method": "dual",
+    "missing": 2,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      3,
+      40
+    ],
+    "id": "disjoint:6:5",
+    "method": "production",
+    "missing": 2,
+    "sets": [
+      40
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      3,
+      40
+    ],
+    "id": "disjoint:6:5",
+    "method": "enum",
+    "missing": 2,
+    "sets": [
+      40
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      3,
+      40
+    ],
+    "id": "disjoint:6:5",
+    "method": "dual",
+    "missing": 2,
+    "sets": [
+      40
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      3,
+      9
+    ],
+    "id": "overlap:6:5",
+    "method": "production",
+    "missing": 2,
+    "sets": [
+      9
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      3,
+      9
+    ],
+    "id": "overlap:6:5",
+    "method": "enum",
+    "missing": 2,
+    "sets": [
+      9
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      3,
+      9
+    ],
+    "id": "overlap:6:5",
+    "method": "dual",
+    "missing": 2,
+    "sets": [
+      9
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      2
+    ],
+    "id": "antagonist:6:5",
+    "method": "production",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      2
+    ],
+    "id": "antagonist:6:5",
+    "method": "enum",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      2
+    ],
+    "id": "antagonist:6:5",
+    "method": "dual",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      4
+    ],
+    "id": "singleton:6:6",
+    "method": "production",
+    "missing": 4,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      4
+    ],
+    "id": "singleton:6:6",
+    "method": "enum",
+    "missing": 4,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      4
+    ],
+    "id": "singleton:6:6",
+    "method": "dual",
+    "missing": 4,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      4
+    ],
+    "id": "singleton:6:6",
+    "method": "ascending",
+    "missing": 4,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      4
+    ],
+    "id": "singleton:6:6",
+    "method": "exhaustive",
+    "missing": 4,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      36
+    ],
+    "id": "pair:6:6",
+    "method": "production",
+    "missing": 4,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      36
+    ],
+    "id": "pair:6:6",
+    "method": "enum",
+    "missing": 4,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      10,
+      36
+    ],
+    "id": "disjoint:6:6",
+    "method": "production",
+    "missing": 4,
+    "sets": [
+      10
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      10,
+      36
+    ],
+    "id": "disjoint:6:6",
+    "method": "enum",
+    "missing": 4,
+    "sets": [
+      10
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      34,
+      36
+    ],
+    "id": "overlap:6:6",
+    "method": "production",
+    "missing": 4,
+    "sets": [
+      34
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      34,
+      36
+    ],
+    "id": "overlap:6:6",
+    "method": "enum",
+    "missing": 4,
+    "sets": [
+      34
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      4
+    ],
+    "id": "antagonist:6:6",
+    "method": "production",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      4
+    ],
+    "id": "antagonist:6:6",
+    "method": "enum",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      4
+    ],
+    "id": "antagonist:6:6",
+    "method": "dual",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      16
+    ],
+    "id": "singleton:6:7",
+    "method": "production",
+    "missing": 16,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      16
+    ],
+    "id": "singleton:6:7",
+    "method": "enum",
+    "missing": 16,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      16
+    ],
+    "id": "singleton:6:7",
+    "method": "dual",
+    "missing": 16,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      16
+    ],
+    "id": "singleton:6:7",
+    "method": "ascending",
+    "missing": 16,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      16
+    ],
+    "id": "singleton:6:7",
+    "method": "exhaustive",
+    "missing": 16,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      17
+    ],
+    "id": "pair:6:7",
+    "method": "production",
+    "missing": 16,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      17
+    ],
+    "id": "pair:6:7",
+    "method": "enum",
+    "missing": 16,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      17
+    ],
+    "id": "pair:6:7",
+    "method": "dual",
+    "missing": 16,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      17,
+      40
+    ],
+    "id": "disjoint:6:7",
+    "method": "production",
+    "missing": 16,
+    "sets": [
+      40
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      17,
+      40
+    ],
+    "id": "disjoint:6:7",
+    "method": "enum",
+    "missing": 16,
+    "sets": [
+      40
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      17,
+      40
+    ],
+    "id": "disjoint:6:7",
+    "method": "dual",
+    "missing": 16,
+    "sets": [
+      40
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      17,
+      33
+    ],
+    "id": "overlap:6:7",
+    "method": "production",
+    "missing": 16,
+    "sets": [
+      33
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      17,
+      33
+    ],
+    "id": "overlap:6:7",
+    "method": "enum",
+    "missing": 16,
+    "sets": [
+      33
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      17,
+      33
+    ],
+    "id": "overlap:6:7",
+    "method": "dual",
+    "missing": 16,
+    "sets": [
+      33
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      16
+    ],
+    "id": "antagonist:6:7",
+    "method": "production",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      16
+    ],
+    "id": "antagonist:6:7",
+    "method": "enum",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      16
+    ],
+    "id": "antagonist:6:7",
+    "method": "dual",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      32
+    ],
+    "id": "singleton:6:8",
+    "method": "production",
+    "missing": 32,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      32
+    ],
+    "id": "singleton:6:8",
+    "method": "enum",
+    "missing": 32,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      32
+    ],
+    "id": "singleton:6:8",
+    "method": "dual",
+    "missing": 32,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      32
+    ],
+    "id": "singleton:6:8",
+    "method": "ascending",
+    "missing": 32,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      32
+    ],
+    "id": "singleton:6:8",
+    "method": "exhaustive",
+    "missing": 32,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      48
+    ],
+    "id": "pair:6:8",
+    "method": "production",
+    "missing": 32,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      48
+    ],
+    "id": "pair:6:8",
+    "method": "enum",
+    "missing": 32,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      9,
+      48
+    ],
+    "id": "disjoint:6:8",
+    "method": "production",
+    "missing": 32,
+    "sets": [
+      9
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      9,
+      48
+    ],
+    "id": "disjoint:6:8",
+    "method": "enum",
+    "missing": 32,
+    "sets": [
+      9
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      17,
+      48
+    ],
+    "id": "overlap:6:8",
+    "method": "production",
+    "missing": 32,
+    "sets": [
+      17
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      17,
+      48
+    ],
+    "id": "overlap:6:8",
+    "method": "enum",
+    "missing": 32,
+    "sets": [
+      17
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      32
+    ],
+    "id": "antagonist:6:8",
+    "method": "production",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      32
+    ],
+    "id": "antagonist:6:8",
+    "method": "enum",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      32
+    ],
+    "id": "antagonist:6:8",
+    "method": "dual",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      32
+    ],
+    "id": "singleton:6:9",
+    "method": "production",
+    "missing": 32,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      32
+    ],
+    "id": "singleton:6:9",
+    "method": "enum",
+    "missing": 32,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      32
+    ],
+    "id": "singleton:6:9",
+    "method": "dual",
+    "missing": 32,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      32
+    ],
+    "id": "singleton:6:9",
+    "method": "ascending",
+    "missing": 32,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      32
+    ],
+    "id": "singleton:6:9",
+    "method": "exhaustive",
+    "missing": 32,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      33
+    ],
+    "id": "pair:6:9",
+    "method": "production",
+    "missing": 32,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      33
+    ],
+    "id": "pair:6:9",
+    "method": "enum",
+    "missing": 32,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      33
+    ],
+    "id": "pair:6:9",
+    "method": "dual",
+    "missing": 32,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      6,
+      33
+    ],
+    "id": "disjoint:6:9",
+    "method": "production",
+    "missing": 32,
+    "sets": [
+      6
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      6,
+      33
+    ],
+    "id": "disjoint:6:9",
+    "method": "enum",
+    "missing": 32,
+    "sets": [
+      6
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      6,
+      33
+    ],
+    "id": "disjoint:6:9",
+    "method": "dual",
+    "missing": 32,
+    "sets": [
+      6
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      3,
+      33
+    ],
+    "id": "overlap:6:9",
+    "method": "production",
+    "missing": 32,
+    "sets": [
+      3
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      3,
+      33
+    ],
+    "id": "overlap:6:9",
+    "method": "enum",
+    "missing": 32,
+    "sets": [
+      3
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      3,
+      33
+    ],
+    "id": "overlap:6:9",
+    "method": "dual",
+    "missing": 32,
+    "sets": [
+      3
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      32
+    ],
+    "id": "antagonist:6:9",
+    "method": "production",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      32
+    ],
+    "id": "antagonist:6:9",
+    "method": "enum",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      32
+    ],
+    "id": "antagonist:6:9",
+    "method": "dual",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      16
+    ],
+    "id": "singleton:7:0",
+    "method": "production",
+    "missing": 16,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      16
+    ],
+    "id": "singleton:7:0",
+    "method": "enum",
+    "missing": 16,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      16
+    ],
+    "id": "singleton:7:0",
+    "method": "dual",
+    "missing": 16,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      16
+    ],
+    "id": "singleton:7:0",
+    "method": "ascending",
+    "missing": 16,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      16
+    ],
+    "id": "singleton:7:0",
+    "method": "exhaustive",
+    "missing": 16,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      20
+    ],
+    "id": "pair:7:0",
+    "method": "enum",
+    "missing": 16,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      3,
+      20
+    ],
+    "id": "disjoint:7:0",
+    "method": "enum",
+    "missing": 16,
+    "sets": [
+      3
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      6,
+      20
+    ],
+    "id": "overlap:7:0",
+    "method": "enum",
+    "missing": 16,
+    "sets": [
+      6
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      16
+    ],
+    "id": "antagonist:7:0",
+    "method": "production",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      16
+    ],
+    "id": "antagonist:7:0",
+    "method": "enum",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      16
+    ],
+    "id": "antagonist:7:0",
+    "method": "dual",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      8
+    ],
+    "id": "singleton:7:1",
+    "method": "production",
+    "missing": 8,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      8
+    ],
+    "id": "singleton:7:1",
+    "method": "enum",
+    "missing": 8,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      8
+    ],
+    "id": "singleton:7:1",
+    "method": "dual",
+    "missing": 8,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      8
+    ],
+    "id": "singleton:7:1",
+    "method": "ascending",
+    "missing": 8,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      8
+    ],
+    "id": "singleton:7:1",
+    "method": "exhaustive",
+    "missing": 8,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      72
+    ],
+    "id": "pair:7:1",
+    "method": "enum",
+    "missing": 8,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      36,
+      72
+    ],
+    "id": "disjoint:7:1",
+    "method": "enum",
+    "missing": 8,
+    "sets": [
+      36
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      72,
+      96
+    ],
+    "id": "overlap:7:1",
+    "method": "enum",
+    "missing": 8,
+    "sets": [
+      96
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      8
+    ],
+    "id": "antagonist:7:1",
+    "method": "production",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      8
+    ],
+    "id": "antagonist:7:1",
+    "method": "enum",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      8
+    ],
+    "id": "antagonist:7:1",
+    "method": "dual",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      4
+    ],
+    "id": "singleton:7:2",
+    "method": "production",
+    "missing": 4,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      4
+    ],
+    "id": "singleton:7:2",
+    "method": "enum",
+    "missing": 4,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      4
+    ],
+    "id": "singleton:7:2",
+    "method": "dual",
+    "missing": 4,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      4
+    ],
+    "id": "singleton:7:2",
+    "method": "ascending",
+    "missing": 4,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      4
+    ],
+    "id": "singleton:7:2",
+    "method": "exhaustive",
+    "missing": 4,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      12
+    ],
+    "id": "pair:7:2",
+    "method": "enum",
+    "missing": 4,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      12,
+      18
+    ],
+    "id": "disjoint:7:2",
+    "method": "enum",
+    "missing": 4,
+    "sets": [
+      18
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      10,
+      12
+    ],
+    "id": "overlap:7:2",
+    "method": "enum",
+    "missing": 4,
+    "sets": [
+      10
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      4
+    ],
+    "id": "antagonist:7:2",
+    "method": "production",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      4
+    ],
+    "id": "antagonist:7:2",
+    "method": "enum",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      4
+    ],
+    "id": "antagonist:7:2",
+    "method": "dual",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      1
+    ],
+    "id": "singleton:7:3",
+    "method": "production",
+    "missing": 1,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      1
+    ],
+    "id": "singleton:7:3",
+    "method": "enum",
+    "missing": 1,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      1
+    ],
+    "id": "singleton:7:3",
+    "method": "dual",
+    "missing": 1,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      1
+    ],
+    "id": "singleton:7:3",
+    "method": "ascending",
+    "missing": 1,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      1
+    ],
+    "id": "singleton:7:3",
+    "method": "exhaustive",
+    "missing": 1,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      5
+    ],
+    "id": "pair:7:3",
+    "method": "production",
+    "missing": 1,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      5
+    ],
+    "id": "pair:7:3",
+    "method": "enum",
+    "missing": 1,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      5
+    ],
+    "id": "pair:7:3",
+    "method": "dual",
+    "missing": 1,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      5,
+      72
+    ],
+    "id": "disjoint:7:3",
+    "method": "production",
+    "missing": 1,
+    "sets": [
+      72
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      5,
+      72
+    ],
+    "id": "disjoint:7:3",
+    "method": "enum",
+    "missing": 1,
+    "sets": [
+      72
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      5,
+      72
+    ],
+    "id": "disjoint:7:3",
+    "method": "dual",
+    "missing": 1,
+    "sets": [
+      72
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      5,
+      12
+    ],
+    "id": "overlap:7:3",
+    "method": "production",
+    "missing": 1,
+    "sets": [
+      12
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      5,
+      12
+    ],
+    "id": "overlap:7:3",
+    "method": "enum",
+    "missing": 1,
+    "sets": [
+      12
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      5,
+      12
+    ],
+    "id": "overlap:7:3",
+    "method": "dual",
+    "missing": 1,
+    "sets": [
+      12
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      1
+    ],
+    "id": "antagonist:7:3",
+    "method": "production",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      1
+    ],
+    "id": "antagonist:7:3",
+    "method": "enum",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      1
+    ],
+    "id": "antagonist:7:3",
+    "method": "dual",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      32
+    ],
+    "id": "singleton:7:4",
+    "method": "production",
+    "missing": 32,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      32
+    ],
+    "id": "singleton:7:4",
+    "method": "enum",
+    "missing": 32,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      32
+    ],
+    "id": "singleton:7:4",
+    "method": "dual",
+    "missing": 32,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      32
+    ],
+    "id": "singleton:7:4",
+    "method": "ascending",
+    "missing": 32,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      32
+    ],
+    "id": "singleton:7:4",
+    "method": "exhaustive",
+    "missing": 32,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      48
+    ],
+    "id": "pair:7:4",
+    "method": "production",
+    "missing": 32,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      48
+    ],
+    "id": "pair:7:4",
+    "method": "enum",
+    "missing": 32,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      48
+    ],
+    "id": "pair:7:4",
+    "method": "dual",
+    "missing": 32,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      48,
+      72
+    ],
+    "id": "disjoint:7:4",
+    "method": "production",
+    "missing": 32,
+    "sets": [
+      72
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      48,
+      72
+    ],
+    "id": "disjoint:7:4",
+    "method": "enum",
+    "missing": 32,
+    "sets": [
+      72
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      48,
+      72
+    ],
+    "id": "disjoint:7:4",
+    "method": "dual",
+    "missing": 32,
+    "sets": [
+      72
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      48,
+      80
+    ],
+    "id": "overlap:7:4",
+    "method": "production",
+    "missing": 32,
+    "sets": [
+      80
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      48,
+      80
+    ],
+    "id": "overlap:7:4",
+    "method": "enum",
+    "missing": 32,
+    "sets": [
+      80
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      48,
+      80
+    ],
+    "id": "overlap:7:4",
+    "method": "dual",
+    "missing": 32,
+    "sets": [
+      80
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      32
+    ],
+    "id": "antagonist:7:4",
+    "method": "production",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      32
+    ],
+    "id": "antagonist:7:4",
+    "method": "enum",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      32
+    ],
+    "id": "antagonist:7:4",
+    "method": "dual",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      64
+    ],
+    "id": "singleton:7:5",
+    "method": "production",
+    "missing": 64,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      64
+    ],
+    "id": "singleton:7:5",
+    "method": "enum",
+    "missing": 64,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      64
+    ],
+    "id": "singleton:7:5",
+    "method": "dual",
+    "missing": 64,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      64
+    ],
+    "id": "singleton:7:5",
+    "method": "ascending",
+    "missing": 64,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      64
+    ],
+    "id": "singleton:7:5",
+    "method": "exhaustive",
+    "missing": 64,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      72
+    ],
+    "id": "pair:7:5",
+    "method": "enum",
+    "missing": 64,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      3,
+      72
+    ],
+    "id": "disjoint:7:5",
+    "method": "enum",
+    "missing": 64,
+    "sets": [
+      3
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      10,
+      72
+    ],
+    "id": "overlap:7:5",
+    "method": "enum",
+    "missing": 64,
+    "sets": [
+      10
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      64
+    ],
+    "id": "antagonist:7:5",
+    "method": "production",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      64
+    ],
+    "id": "antagonist:7:5",
+    "method": "enum",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      64
+    ],
+    "id": "antagonist:7:5",
+    "method": "dual",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      4
+    ],
+    "id": "singleton:7:6",
+    "method": "production",
+    "missing": 4,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      4
+    ],
+    "id": "singleton:7:6",
+    "method": "enum",
+    "missing": 4,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      4
+    ],
+    "id": "singleton:7:6",
+    "method": "dual",
+    "missing": 4,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      4
+    ],
+    "id": "singleton:7:6",
+    "method": "ascending",
+    "missing": 4,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      4
+    ],
+    "id": "singleton:7:6",
+    "method": "exhaustive",
+    "missing": 4,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      36
+    ],
+    "id": "pair:7:6",
+    "method": "enum",
+    "missing": 4,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      10,
+      36
+    ],
+    "id": "disjoint:7:6",
+    "method": "enum",
+    "missing": 4,
+    "sets": [
+      10
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      34,
+      36
+    ],
+    "id": "overlap:7:6",
+    "method": "enum",
+    "missing": 4,
+    "sets": [
+      34
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      4
+    ],
+    "id": "antagonist:7:6",
+    "method": "production",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      4
+    ],
+    "id": "antagonist:7:6",
+    "method": "enum",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      4
+    ],
+    "id": "antagonist:7:6",
+    "method": "dual",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      32
+    ],
+    "id": "singleton:7:7",
+    "method": "production",
+    "missing": 32,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      32
+    ],
+    "id": "singleton:7:7",
+    "method": "enum",
+    "missing": 32,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      32
+    ],
+    "id": "singleton:7:7",
+    "method": "dual",
+    "missing": 32,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      32
+    ],
+    "id": "singleton:7:7",
+    "method": "ascending",
+    "missing": 32,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      32
+    ],
+    "id": "singleton:7:7",
+    "method": "exhaustive",
+    "missing": 32,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      96
+    ],
+    "id": "pair:7:7",
+    "method": "enum",
+    "missing": 32,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      17,
+      96
+    ],
+    "id": "disjoint:7:7",
+    "method": "enum",
+    "missing": 32,
+    "sets": [
+      17
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      80,
+      96
+    ],
+    "id": "overlap:7:7",
+    "method": "enum",
+    "missing": 32,
+    "sets": [
+      80
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      32
+    ],
+    "id": "antagonist:7:7",
+    "method": "production",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      32
+    ],
+    "id": "antagonist:7:7",
+    "method": "enum",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      32
+    ],
+    "id": "antagonist:7:7",
+    "method": "dual",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      16
+    ],
+    "id": "singleton:7:8",
+    "method": "production",
+    "missing": 16,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      16
+    ],
+    "id": "singleton:7:8",
+    "method": "enum",
+    "missing": 16,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      16
+    ],
+    "id": "singleton:7:8",
+    "method": "dual",
+    "missing": 16,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      16
+    ],
+    "id": "singleton:7:8",
+    "method": "ascending",
+    "missing": 16,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      16
+    ],
+    "id": "singleton:7:8",
+    "method": "exhaustive",
+    "missing": 16,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      48
+    ],
+    "id": "pair:7:8",
+    "method": "production",
+    "missing": 16,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      48
+    ],
+    "id": "pair:7:8",
+    "method": "enum",
+    "missing": 16,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      48
+    ],
+    "id": "pair:7:8",
+    "method": "dual",
+    "missing": 16,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      48,
+      65
+    ],
+    "id": "disjoint:7:8",
+    "method": "production",
+    "missing": 16,
+    "sets": [
+      65
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      48,
+      65
+    ],
+    "id": "disjoint:7:8",
+    "method": "enum",
+    "missing": 16,
+    "sets": [
+      65
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      48,
+      65
+    ],
+    "id": "disjoint:7:8",
+    "method": "dual",
+    "missing": 16,
+    "sets": [
+      65
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      33,
+      48
+    ],
+    "id": "overlap:7:8",
+    "method": "production",
+    "missing": 16,
+    "sets": [
+      33
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      33,
+      48
+    ],
+    "id": "overlap:7:8",
+    "method": "enum",
+    "missing": 16,
+    "sets": [
+      33
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      33,
+      48
+    ],
+    "id": "overlap:7:8",
+    "method": "dual",
+    "missing": 16,
+    "sets": [
+      33
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      16
+    ],
+    "id": "antagonist:7:8",
+    "method": "production",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      16
+    ],
+    "id": "antagonist:7:8",
+    "method": "enum",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      16
+    ],
+    "id": "antagonist:7:8",
+    "method": "dual",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      2
+    ],
+    "id": "singleton:7:9",
+    "method": "production",
+    "missing": 2,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      2
+    ],
+    "id": "singleton:7:9",
+    "method": "enum",
+    "missing": 2,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      2
+    ],
+    "id": "singleton:7:9",
+    "method": "dual",
+    "missing": 2,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      2
+    ],
+    "id": "singleton:7:9",
+    "method": "ascending",
+    "missing": 2,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      2
+    ],
+    "id": "singleton:7:9",
+    "method": "exhaustive",
+    "missing": 2,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      66
+    ],
+    "id": "pair:7:9",
+    "method": "enum",
+    "missing": 2,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      33,
+      66
+    ],
+    "id": "disjoint:7:9",
+    "method": "enum",
+    "missing": 2,
+    "sets": [
+      33
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      65,
+      66
+    ],
+    "id": "overlap:7:9",
+    "method": "enum",
+    "missing": 2,
+    "sets": [
+      65
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      2
+    ],
+    "id": "antagonist:7:9",
+    "method": "production",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      2
+    ],
+    "id": "antagonist:7:9",
+    "method": "enum",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      2
+    ],
+    "id": "antagonist:7:9",
+    "method": "dual",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      128
+    ],
+    "id": "singleton:9:0",
+    "method": "production",
+    "missing": 128,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      128
+    ],
+    "id": "singleton:9:0",
+    "method": "enum",
+    "missing": 128,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      128
+    ],
+    "id": "singleton:9:0",
+    "method": "dual",
+    "missing": 128,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      128
+    ],
+    "id": "singleton:9:0",
+    "method": "ascending",
+    "missing": 128,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      128
+    ],
+    "id": "singleton:9:0",
+    "method": "exhaustive",
+    "missing": 128,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      160
+    ],
+    "id": "pair:9:0",
+    "method": "production",
+    "missing": 128,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      160
+    ],
+    "id": "pair:9:0",
+    "method": "enum",
+    "missing": 128,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      160
+    ],
+    "id": "pair:9:0",
+    "method": "dual",
+    "missing": 128,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      10,
+      160
+    ],
+    "id": "disjoint:9:0",
+    "method": "production",
+    "missing": 128,
+    "sets": [
+      10
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      10,
+      160
+    ],
+    "id": "disjoint:9:0",
+    "method": "enum",
+    "missing": 128,
+    "sets": [
+      10
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      10,
+      160
+    ],
+    "id": "disjoint:9:0",
+    "method": "dual",
+    "missing": 128,
+    "sets": [
+      10
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      34,
+      160
+    ],
+    "id": "overlap:9:0",
+    "method": "production",
+    "missing": 128,
+    "sets": [
+      34
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      34,
+      160
+    ],
+    "id": "overlap:9:0",
+    "method": "enum",
+    "missing": 128,
+    "sets": [
+      34
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      34,
+      160
+    ],
+    "id": "overlap:9:0",
+    "method": "dual",
+    "missing": 128,
+    "sets": [
+      34
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      128
+    ],
+    "id": "antagonist:9:0",
+    "method": "production",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      128
+    ],
+    "id": "antagonist:9:0",
+    "method": "enum",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      128
+    ],
+    "id": "antagonist:9:0",
+    "method": "dual",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      32
+    ],
+    "id": "singleton:9:1",
+    "method": "production",
+    "missing": 32,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      32
+    ],
+    "id": "singleton:9:1",
+    "method": "enum",
+    "missing": 32,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      32
+    ],
+    "id": "singleton:9:1",
+    "method": "dual",
+    "missing": 32,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      32
+    ],
+    "id": "singleton:9:1",
+    "method": "ascending",
+    "missing": 32,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      32
+    ],
+    "id": "singleton:9:1",
+    "method": "exhaustive",
+    "missing": 32,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      96
+    ],
+    "id": "pair:9:1",
+    "method": "production",
+    "missing": 32,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      96
+    ],
+    "id": "pair:9:1",
+    "method": "enum",
+    "missing": 32,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      96
+    ],
+    "id": "pair:9:1",
+    "method": "dual",
+    "missing": 32,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      96,
+      144
+    ],
+    "id": "disjoint:9:1",
+    "method": "production",
+    "missing": 32,
+    "sets": [
+      144
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      96,
+      144
+    ],
+    "id": "disjoint:9:1",
+    "method": "enum",
+    "missing": 32,
+    "sets": [
+      144
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      96,
+      144
+    ],
+    "id": "disjoint:9:1",
+    "method": "dual",
+    "missing": 32,
+    "sets": [
+      144
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      96,
+      192
+    ],
+    "id": "overlap:9:1",
+    "method": "production",
+    "missing": 32,
+    "sets": [
+      192
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      96,
+      192
+    ],
+    "id": "overlap:9:1",
+    "method": "enum",
+    "missing": 32,
+    "sets": [
+      192
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      96,
+      192
+    ],
+    "id": "overlap:9:1",
+    "method": "dual",
+    "missing": 32,
+    "sets": [
+      192
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      32
+    ],
+    "id": "antagonist:9:1",
+    "method": "production",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      32
+    ],
+    "id": "antagonist:9:1",
+    "method": "enum",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      32
+    ],
+    "id": "antagonist:9:1",
+    "method": "dual",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      8
+    ],
+    "id": "singleton:9:2",
+    "method": "production",
+    "missing": 8,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      8
+    ],
+    "id": "singleton:9:2",
+    "method": "enum",
+    "missing": 8,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      8
+    ],
+    "id": "singleton:9:2",
+    "method": "dual",
+    "missing": 8,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      8
+    ],
+    "id": "singleton:9:2",
+    "method": "ascending",
+    "missing": 8,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      8
+    ],
+    "id": "singleton:9:2",
+    "method": "exhaustive",
+    "missing": 8,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      72
+    ],
+    "id": "pair:9:2",
+    "method": "enum",
+    "missing": 8,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      48,
+      72
+    ],
+    "id": "disjoint:9:2",
+    "method": "enum",
+    "missing": 8,
+    "sets": [
+      48
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      72,
+      80
+    ],
+    "id": "overlap:9:2",
+    "method": "enum",
+    "missing": 8,
+    "sets": [
+      80
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      8
+    ],
+    "id": "antagonist:9:2",
+    "method": "production",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      8
+    ],
+    "id": "antagonist:9:2",
+    "method": "enum",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      8
+    ],
+    "id": "antagonist:9:2",
+    "method": "dual",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      2
+    ],
+    "id": "singleton:9:3",
+    "method": "production",
+    "missing": 2,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      2
+    ],
+    "id": "singleton:9:3",
+    "method": "enum",
+    "missing": 2,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      2
+    ],
+    "id": "singleton:9:3",
+    "method": "dual",
+    "missing": 2,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      2
+    ],
+    "id": "singleton:9:3",
+    "method": "ascending",
+    "missing": 2,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      2
+    ],
+    "id": "singleton:9:3",
+    "method": "exhaustive",
+    "missing": 2,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      34
+    ],
+    "id": "pair:9:3",
+    "method": "enum",
+    "missing": 2,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      34,
+      65
+    ],
+    "id": "disjoint:9:3",
+    "method": "enum",
+    "missing": 2,
+    "sets": [
+      65
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      34,
+      96
+    ],
+    "id": "overlap:9:3",
+    "method": "enum",
+    "missing": 2,
+    "sets": [
+      96
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      2
+    ],
+    "id": "antagonist:9:3",
+    "method": "production",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      2
+    ],
+    "id": "antagonist:9:3",
+    "method": "enum",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      2
+    ],
+    "id": "antagonist:9:3",
+    "method": "dual",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      2
+    ],
+    "id": "singleton:9:4",
+    "method": "production",
+    "missing": 2,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      2
+    ],
+    "id": "singleton:9:4",
+    "method": "enum",
+    "missing": 2,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      2
+    ],
+    "id": "singleton:9:4",
+    "method": "dual",
+    "missing": 2,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      2
+    ],
+    "id": "singleton:9:4",
+    "method": "ascending",
+    "missing": 2,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      2
+    ],
+    "id": "singleton:9:4",
+    "method": "exhaustive",
+    "missing": 2,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      6
+    ],
+    "id": "pair:9:4",
+    "method": "production",
+    "missing": 2,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      6
+    ],
+    "id": "pair:9:4",
+    "method": "enum",
+    "missing": 2,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      6
+    ],
+    "id": "pair:9:4",
+    "method": "dual",
+    "missing": 2,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      6,
+      192
+    ],
+    "id": "disjoint:9:4",
+    "method": "production",
+    "missing": 2,
+    "sets": [
+      192
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      6,
+      192
+    ],
+    "id": "disjoint:9:4",
+    "method": "enum",
+    "missing": 2,
+    "sets": [
+      192
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      6,
+      192
+    ],
+    "id": "disjoint:9:4",
+    "method": "dual",
+    "missing": 2,
+    "sets": [
+      192
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      6,
+      68
+    ],
+    "id": "overlap:9:4",
+    "method": "production",
+    "missing": 2,
+    "sets": [
+      68
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      6,
+      68
+    ],
+    "id": "overlap:9:4",
+    "method": "enum",
+    "missing": 2,
+    "sets": [
+      68
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      6,
+      68
+    ],
+    "id": "overlap:9:4",
+    "method": "dual",
+    "missing": 2,
+    "sets": [
+      68
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      2
+    ],
+    "id": "antagonist:9:4",
+    "method": "production",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      2
+    ],
+    "id": "antagonist:9:4",
+    "method": "enum",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      2
+    ],
+    "id": "antagonist:9:4",
+    "method": "dual",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      4
+    ],
+    "id": "singleton:9:5",
+    "method": "production",
+    "missing": 4,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      4
+    ],
+    "id": "singleton:9:5",
+    "method": "enum",
+    "missing": 4,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      4
+    ],
+    "id": "singleton:9:5",
+    "method": "dual",
+    "missing": 4,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      4
+    ],
+    "id": "singleton:9:5",
+    "method": "ascending",
+    "missing": 4,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      4
+    ],
+    "id": "singleton:9:5",
+    "method": "exhaustive",
+    "missing": 4,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      12
+    ],
+    "id": "pair:9:5",
+    "method": "enum",
+    "missing": 4,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      3,
+      12
+    ],
+    "id": "disjoint:9:5",
+    "method": "enum",
+    "missing": 4,
+    "sets": [
+      3
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      10,
+      12
+    ],
+    "id": "overlap:9:5",
+    "method": "enum",
+    "missing": 4,
+    "sets": [
+      10
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      4
+    ],
+    "id": "antagonist:9:5",
+    "method": "production",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      4
+    ],
+    "id": "antagonist:9:5",
+    "method": "enum",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      4
+    ],
+    "id": "antagonist:9:5",
+    "method": "dual",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      32
+    ],
+    "id": "singleton:9:6",
+    "method": "production",
+    "missing": 32,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      32
+    ],
+    "id": "singleton:9:6",
+    "method": "enum",
+    "missing": 32,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      32
+    ],
+    "id": "singleton:9:6",
+    "method": "dual",
+    "missing": 32,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      32
+    ],
+    "id": "singleton:9:6",
+    "method": "ascending",
+    "missing": 32,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      32
+    ],
+    "id": "singleton:9:6",
+    "method": "exhaustive",
+    "missing": 32,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      288
+    ],
+    "id": "pair:9:6",
+    "method": "enum",
+    "missing": 32,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      24,
+      288
+    ],
+    "id": "disjoint:9:6",
+    "method": "enum",
+    "missing": 32,
+    "sets": [
+      24
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      264,
+      288
+    ],
+    "id": "overlap:9:6",
+    "method": "enum",
+    "missing": 32,
+    "sets": [
+      264
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      32
+    ],
+    "id": "antagonist:9:6",
+    "method": "production",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      32
+    ],
+    "id": "antagonist:9:6",
+    "method": "enum",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      32
+    ],
+    "id": "antagonist:9:6",
+    "method": "dual",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      2
+    ],
+    "id": "singleton:9:7",
+    "method": "production",
+    "missing": 2,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      2
+    ],
+    "id": "singleton:9:7",
+    "method": "enum",
+    "missing": 2,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      2
+    ],
+    "id": "singleton:9:7",
+    "method": "dual",
+    "missing": 2,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      2
+    ],
+    "id": "singleton:9:7",
+    "method": "ascending",
+    "missing": 2,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      2
+    ],
+    "id": "singleton:9:7",
+    "method": "exhaustive",
+    "missing": 2,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      66
+    ],
+    "id": "pair:9:7",
+    "method": "enum",
+    "missing": 2,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      66,
+      144
+    ],
+    "id": "disjoint:9:7",
+    "method": "enum",
+    "missing": 2,
+    "sets": [
+      144
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      66,
+      192
+    ],
+    "id": "overlap:9:7",
+    "method": "enum",
+    "missing": 2,
+    "sets": [
+      192
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      2
+    ],
+    "id": "antagonist:9:7",
+    "method": "production",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      2
+    ],
+    "id": "antagonist:9:7",
+    "method": "enum",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      2
+    ],
+    "id": "antagonist:9:7",
+    "method": "dual",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      16
+    ],
+    "id": "singleton:9:8",
+    "method": "production",
+    "missing": 16,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      16
+    ],
+    "id": "singleton:9:8",
+    "method": "enum",
+    "missing": 16,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      16
+    ],
+    "id": "singleton:9:8",
+    "method": "dual",
+    "missing": 16,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      16
+    ],
+    "id": "singleton:9:8",
+    "method": "ascending",
+    "missing": 16,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      16
+    ],
+    "id": "singleton:9:8",
+    "method": "exhaustive",
+    "missing": 16,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      20
+    ],
+    "id": "pair:9:8",
+    "method": "enum",
+    "missing": 16,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      20,
+      65
+    ],
+    "id": "disjoint:9:8",
+    "method": "enum",
+    "missing": 16,
+    "sets": [
+      65
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      20,
+      68
+    ],
+    "id": "overlap:9:8",
+    "method": "enum",
+    "missing": 16,
+    "sets": [
+      68
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      16
+    ],
+    "id": "antagonist:9:8",
+    "method": "production",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      16
+    ],
+    "id": "antagonist:9:8",
+    "method": "enum",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      16
+    ],
+    "id": "antagonist:9:8",
+    "method": "dual",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      8
+    ],
+    "id": "singleton:9:9",
+    "method": "production",
+    "missing": 8,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      8
+    ],
+    "id": "singleton:9:9",
+    "method": "enum",
+    "missing": 8,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      8
+    ],
+    "id": "singleton:9:9",
+    "method": "dual",
+    "missing": 8,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      8
+    ],
+    "id": "singleton:9:9",
+    "method": "ascending",
+    "missing": 8,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      8
+    ],
+    "id": "singleton:9:9",
+    "method": "exhaustive",
+    "missing": 8,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      72
+    ],
+    "id": "pair:9:9",
+    "method": "enum",
+    "missing": 8,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      17,
+      72
+    ],
+    "id": "disjoint:9:9",
+    "method": "enum",
+    "missing": 8,
+    "sets": [
+      17
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      72,
+      80
+    ],
+    "id": "overlap:9:9",
+    "method": "enum",
+    "missing": 8,
+    "sets": [
+      80
+    ],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      8
+    ],
+    "id": "antagonist:9:9",
+    "method": "production",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      8
+    ],
+    "id": "antagonist:9:9",
+    "method": "enum",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  },
+  {
+    "cap": "full",
+    "complete": false,
+    "false_complete": false,
+    "gold": [
+      8
+    ],
+    "id": "antagonist:9:9",
+    "method": "dual",
+    "missing": null,
+    "sets": [],
+    "unsupported": []
+  }
+]

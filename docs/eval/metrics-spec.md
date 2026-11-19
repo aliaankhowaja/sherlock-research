@@ -360,3 +360,7 @@ entries because the cards, pass indices and call parameters are identical.
 - **Not pre-registered (exploratory, labelled as such if reported):** per-team t_i breakdowns, any
   cost comparison between variants beyond the §4 table, any post-hoc slice of the public corpus.
 
+
+### 2026-11-19 final mechanistic ablations
+
+The supplementary protocol defines a new family of three comparisons across the planted and generated workflows. It uses two-sided paired sign tests with Holm adjustment and paired percentile bootstrap intervals for mean differences. Planted resamples preserve team sizes. Search order permutations are repeated measurements within workflow. The hosted G1 analysis reuses the archived scores. These experiments were specified locally after the original benchmark results were known. [Protocol](final_ablations/protocol.md) · [Results](final_ablations/results.md)

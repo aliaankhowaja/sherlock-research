@@ -23,7 +23,7 @@ class CountedReplay(Runtime):
 
 
 class ReplayAPI:
-    def __init__(self, work, tape):
+    def __init__(self, work, tape, graphs=None):
         def block_network(event, args):
             if event in ("socket.connect", "socket.getaddrinfo"):
                 (work/"net_attempts.txt").open("a").write(event+"\n")
@@ -33,7 +33,7 @@ class ReplayAPI:
         os.chdir(work)
         os.environ.update(DATABASE_URI=":memory:", REDIS_URI="fake", MIGRATIONS_PATH="__inmem",
                           LANGGRAPH_RUNTIME_EDITION="inmem", LANGSMITH_LANGGRAPH_API_VARIANT="local_dev",
-                          LANGSERVE_GRAPHS=json.dumps({"bench_solver":str(work/"bench_solver.py")+":graph"}),
+                          LANGSERVE_GRAPHS=json.dumps(graphs or {"bench_solver":str(work/"bench_solver.py")+":graph"}),
                           N_JOBS_PER_WORKER="1", LANGGRAPH_DISABLE_FILE_PERSISTENCE="true",
                           LANGGRAPH_UI_BUNDLER="false", LANGSMITH_TRACING="false", LANGGRAPH_API_URL="http://testserver",
                           LANGGRAPH_ALLOW_BLOCKING="true", LANGGRAPH_CLI_NO_ANALYTICS="1")

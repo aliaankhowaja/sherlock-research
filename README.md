@@ -100,6 +100,8 @@ endpoint is dead.
 - **Public**: AEGIS and Who&When agent-run traces converted to checkpoint histories
   (`python/sherlock/eval/convert_public_traces.py`); labels are the published blamed agents.
 
+The final paired ablations isolate gate contributions on the seven planted teams and compare search strategies on single-repair, multiple-repair, missing-evidence, and nonmonotone workflows. [Results and reproduction command](docs/eval/final_ablations/results.md)
+
 ### Replay corpus
 
 [Read the first manuscript draft](docs/paper/sherlock.md).
