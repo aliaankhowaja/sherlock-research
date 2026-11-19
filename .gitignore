@@ -17,3 +17,10 @@ python/sherlock/eval/.g1/
 
 # Uncompressed public-trace corpus (about 411 MB). The gzip beside it is tracked.
 docs/eval/public_traces/cases.jsonl
+
+# Local replay dataset and recorder output
+/data/sherlock-replay-corpus/
+/python/sherlock/eval/.replay_corpus/
+
+/paper
+/data

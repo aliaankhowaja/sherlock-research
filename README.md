@@ -99,3 +99,13 @@ endpoint is dead.
 - **Generated**: 100 harder cases with many co-culprit candidates (`g1_gen.py`).
 - **Public**: AEGIS and Who&When agent-run traces converted to checkpoint histories
   (`python/sherlock/eval/convert_public_traces.py`); labels are the published blamed agents.
+
+### Replay corpus
+
+The [local dataset card](data/sherlock-replay-corpus/README.md) describes 185 retained questions from 300 attempts and one separate abstention case. The directory is gitignored. For offline analysis, read `data/sherlock-replay-corpus/data/cases.jsonl` and resolve each row’s `recording` path relative to `data/sherlock-replay-corpus/`. The raw run histories and all 300 attempts are in the sibling workspace at `../sherlock-data/sherlock-replay-run-raw/replay_corpus_raw/`.
+
+For the paper, “minimal” means **inclusion-minimal**. Restoring the set makes the exact-answer check pass, and every proper subset fails. The saved fork verdicts yield 65 cases requiring extract alone, 56 requiring format alone, and 64 requiring both. These are injected faults on a single seven-node team using recorded replies. Agreement between Sherlock and gold is a regression check because gold uses the same fork implementation. The separate abstention case illustrates the evidence needed for minimality. Restoring both request-changing nodes passes, but the recordings lack the replies needed to test either singleton.
+
+The generation report, design plan, recorder, team and their tests were copied from product commit `0ebaf3fdb5f8367362957d649e88e2e9f9c751fc`. The report documents the pinned sources, eligibility rules, model settings, exclusions and changes from the plan. [Generation report](docs/eval/replay_corpus/README.md) · [Design plan](docs/notes/replay-corpus-plan.md) · [Public-trace conversion notes](docs/notes/public-trace-conversion.md)
+
+The generation report and exported card describe pilot review at export time. The later raw run summary records `transcripts_read: true` and an empty problems list. The accompanying review note records human confirmation that all 30 pilot transcripts were read. [Raw run summary](../sherlock-data/sherlock-replay-run-raw/replay_corpus_raw/more.json) · [Pilot review note](../sherlock-data/pilot-transcripts.md)
