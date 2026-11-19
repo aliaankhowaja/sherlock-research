@@ -1,0 +1,307 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "Budget-limited exact repair recovery across six interventions on 185 questions.",
+  "width": 420,
+  "height": 240,
+  "data": {
+    "values": [
+      {
+        "cap": 1,
+        "method": "sherlock",
+        "n": 1110,
+        "exact": 370,
+        "complete_and_exact": 370,
+        "mean_forks": 1.0,
+        "accuracy": 0.3333333333333333
+      },
+      {
+        "cap": 1,
+        "method": "all_changed",
+        "n": 1110,
+        "exact": 370,
+        "complete_and_exact": 0,
+        "mean_forks": 0.0,
+        "accuracy": 0.3333333333333333
+      },
+      {
+        "cap": 1,
+        "method": "singleton",
+        "n": 1110,
+        "exact": 370,
+        "complete_and_exact": 370,
+        "mean_forks": 1.0,
+        "accuracy": 0.3333333333333333
+      },
+      {
+        "cap": 1,
+        "method": "exhaustive",
+        "n": 1110,
+        "exact": 370,
+        "complete_and_exact": 370,
+        "mean_forks": 1.0,
+        "accuracy": 0.3333333333333333
+      },
+      {
+        "cap": 2,
+        "method": "sherlock",
+        "n": 1110,
+        "exact": 391,
+        "complete_and_exact": 370,
+        "mean_forks": 1.6666666666666667,
+        "accuracy": 0.35225225225225226
+      },
+      {
+        "cap": 2,
+        "method": "all_changed",
+        "n": 1110,
+        "exact": 370,
+        "complete_and_exact": 0,
+        "mean_forks": 0.0,
+        "accuracy": 0.3333333333333333
+      },
+      {
+        "cap": 2,
+        "method": "singleton",
+        "n": 1110,
+        "exact": 740,
+        "complete_and_exact": 370,
+        "mean_forks": 1.6666666666666667,
+        "accuracy": 0.6666666666666666
+      },
+      {
+        "cap": 2,
+        "method": "exhaustive",
+        "n": 1110,
+        "exact": 740,
+        "complete_and_exact": 370,
+        "mean_forks": 1.6666666666666667,
+        "accuracy": 0.6666666666666666
+      },
+      {
+        "cap": 3,
+        "method": "sherlock",
+        "n": 1110,
+        "exact": 925,
+        "complete_and_exact": 925,
+        "mean_forks": 2.3333333333333335,
+        "accuracy": 0.8333333333333334
+      },
+      {
+        "cap": 3,
+        "method": "all_changed",
+        "n": 1110,
+        "exact": 370,
+        "complete_and_exact": 0,
+        "mean_forks": 0.0,
+        "accuracy": 0.3333333333333333
+      },
+      {
+        "cap": 3,
+        "method": "singleton",
+        "n": 1110,
+        "exact": 740,
+        "complete_and_exact": 370,
+        "mean_forks": 1.8333333333333333,
+        "accuracy": 0.6666666666666666
+      },
+      {
+        "cap": 3,
+        "method": "exhaustive",
+        "n": 1110,
+        "exact": 925,
+        "complete_and_exact": 925,
+        "mean_forks": 2.3333333333333335,
+        "accuracy": 0.8333333333333334
+      },
+      {
+        "cap": 4,
+        "method": "sherlock",
+        "n": 1110,
+        "exact": 925,
+        "complete_and_exact": 925,
+        "mean_forks": 2.5,
+        "accuracy": 0.8333333333333334
+      },
+      {
+        "cap": 4,
+        "method": "all_changed",
+        "n": 1110,
+        "exact": 370,
+        "complete_and_exact": 0,
+        "mean_forks": 0.0,
+        "accuracy": 0.3333333333333333
+      },
+      {
+        "cap": 4,
+        "method": "singleton",
+        "n": 1110,
+        "exact": 740,
+        "complete_and_exact": 370,
+        "mean_forks": 1.8333333333333333,
+        "accuracy": 0.6666666666666666
+      },
+      {
+        "cap": 4,
+        "method": "exhaustive",
+        "n": 1110,
+        "exact": 925,
+        "complete_and_exact": 925,
+        "mean_forks": 2.5,
+        "accuracy": 0.8333333333333334
+      },
+      {
+        "cap": 5,
+        "method": "sherlock",
+        "n": 1110,
+        "exact": 925,
+        "complete_and_exact": 925,
+        "mean_forks": 2.6666666666666665,
+        "accuracy": 0.8333333333333334
+      },
+      {
+        "cap": 5,
+        "method": "all_changed",
+        "n": 1110,
+        "exact": 370,
+        "complete_and_exact": 0,
+        "mean_forks": 0.0,
+        "accuracy": 0.3333333333333333
+      },
+      {
+        "cap": 5,
+        "method": "singleton",
+        "n": 1110,
+        "exact": 740,
+        "complete_and_exact": 370,
+        "mean_forks": 1.8333333333333333,
+        "accuracy": 0.6666666666666666
+      },
+      {
+        "cap": 5,
+        "method": "exhaustive",
+        "n": 1110,
+        "exact": 925,
+        "complete_and_exact": 925,
+        "mean_forks": 2.6666666666666665,
+        "accuracy": 0.8333333333333334
+      },
+      {
+        "cap": 6,
+        "method": "sherlock",
+        "n": 1110,
+        "exact": 946,
+        "complete_and_exact": 925,
+        "mean_forks": 2.8333333333333335,
+        "accuracy": 0.8522522522522522
+      },
+      {
+        "cap": 6,
+        "method": "all_changed",
+        "n": 1110,
+        "exact": 370,
+        "complete_and_exact": 0,
+        "mean_forks": 0.0,
+        "accuracy": 0.3333333333333333
+      },
+      {
+        "cap": 6,
+        "method": "singleton",
+        "n": 1110,
+        "exact": 740,
+        "complete_and_exact": 370,
+        "mean_forks": 1.8333333333333333,
+        "accuracy": 0.6666666666666666
+      },
+      {
+        "cap": 6,
+        "method": "exhaustive",
+        "n": 1110,
+        "exact": 1110,
+        "complete_and_exact": 925,
+        "mean_forks": 2.8333333333333335,
+        "accuracy": 1.0
+      },
+      {
+        "cap": 7,
+        "method": "sherlock",
+        "n": 1110,
+        "exact": 1110,
+        "complete_and_exact": 1110,
+        "mean_forks": 3.0,
+        "accuracy": 1.0
+      },
+      {
+        "cap": 7,
+        "method": "all_changed",
+        "n": 1110,
+        "exact": 370,
+        "complete_and_exact": 0,
+        "mean_forks": 0.0,
+        "accuracy": 0.3333333333333333
+      },
+      {
+        "cap": 7,
+        "method": "singleton",
+        "n": 1110,
+        "exact": 740,
+        "complete_and_exact": 370,
+        "mean_forks": 1.8333333333333333,
+        "accuracy": 0.6666666666666666
+      },
+      {
+        "cap": 7,
+        "method": "exhaustive",
+        "n": 1110,
+        "exact": 1110,
+        "complete_and_exact": 1110,
+        "mean_forks": 3.0,
+        "accuracy": 1.0
+      }
+    ]
+  },
+  "mark": {
+    "type": "line",
+    "point": true
+  },
+  "encoding": {
+    "x": {
+      "field": "cap",
+      "type": "quantitative",
+      "title": "Maximum restore forks",
+      "scale": {
+        "domain": [
+          1,
+          7
+        ],
+        "zero": false
+      },
+      "axis": {
+        "tickMinStep": 1
+      }
+    },
+    "y": {
+      "field": "accuracy",
+      "type": "quantitative",
+      "title": "Exact minimal repair recovery",
+      "scale": {
+        "domain": [
+          0,
+          1
+        ]
+      },
+      "axis": {
+        "format": ".0%"
+      }
+    },
+    "color": {
+      "field": "method",
+      "type": "nominal",
+      "title": "Method"
+    },
+    "strokeDash": {
+      "field": "method",
+      "type": "nominal",
+      "title": "Method"
+    }
+  }
+}

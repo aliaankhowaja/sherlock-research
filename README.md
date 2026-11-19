@@ -102,6 +102,10 @@ endpoint is dead.
 
 ### Replay corpus
 
+[Read the first manuscript draft](docs/paper/sherlock.md).
+
+The CPU replay evaluation crosses three fault assignments with decoy on/off for every retained question. The LangGraph server report contains the paired comparisons, budget curves, independent repeat and machine specifications. The search-efficiency study uses the separate generated workflow test split. [LangGraph server results](docs/eval/replay_corpus/final/langgraph/results.md) · [Generated workflow efficiency results](docs/eval/search_efficiency/results.md)
+
 The [local dataset card](data/sherlock-replay-corpus/README.md) describes 185 retained questions from 300 attempts and one separate abstention case. The directory is gitignored. For offline analysis, read `data/sherlock-replay-corpus/data/cases.jsonl` and resolve each row’s `recording` path relative to `data/sherlock-replay-corpus/`. The raw run histories and all 300 attempts are in the sibling workspace at `../sherlock-data/sherlock-replay-run-raw/replay_corpus_raw/`.
 
 For the paper, “minimal” means **inclusion-minimal**. Restoring the set makes the exact-answer check pass, and every proper subset fails. The saved fork verdicts yield 65 cases requiring extract alone, 56 requiring format alone, and 64 requiring both. These are injected faults on a single seven-node team using recorded replies. Agreement between Sherlock and gold is a regression check because gold uses the same fork implementation. The separate abstention case illustrates the evidence needed for minimality. Restoring both request-changing nodes passes, but the recordings lack the replies needed to test either singleton.

@@ -1,0 +1,45 @@
+{
+  "cgroup_limits": {
+    "cpu.max": "max 100000",
+    "memory.max": "max"
+  },
+  "max_child_peak_rss_KiB": 41172,
+  "python": "3.13.5 (main, Aug 10 2026, 12:06:59) [GCC 14.2.0]",
+  "sqlite": "3.46.1",
+  "kernel": "6.12.117+deb13-cloud-amd64",
+  "os": "PRETTY_NAME=\"Debian GNU/Linux 13 (trixie)\"\nNAME=\"Debian GNU/Linux\"\nVERSION_ID=\"13\"\nVERSION=\"13 (trixie)\"\nVERSION_CODENAME=trixie\nDEBIAN_VERSION_FULL=13.7\nID=debian\nHOME_URL=\"https://www.debian.org/\"\nSUPPORT_URL=\"https://www.debian.org/support\"\nBUG_REPORT_URL=\"https://bugs.debian.org/\"\n",
+  "lscpu": "Architecture:                            x86_64\nCPU op-mode(s):                          32-bit, 64-bit\nAddress sizes:                           46 bits physical, 48 bits virtual\nByte Order:                              Little Endian\nCPU(s):                                  16\nOn-line CPU(s) list:                     0-15\nVendor ID:                               GenuineIntel\nModel name:                              Intel(R) Xeon(R) CPU @ 3.10GHz\nCPU family:                              6\nModel:                                   85\nThread(s) per core:                      2\nCore(s) per socket:                      8\nSocket(s):                               1\nStepping:                                7\nBogoMIPS:                                6200.46\nFlags:                                   fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid tsc_known_freq pni pclmulqdq ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch ssbd ibrs ibpb stibp ibrs_enhanced fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm mpx avx512f avx512dq rdseed adx smap clflushopt clwb avx512cd avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves arat avx512_vnni md_clear arch_capabilities\nHypervisor vendor:                       KVM\nVirtualization type:                     full\nL1d cache:                               256 KiB (8 instances)\nL1i cache:                               256 KiB (8 instances)\nL2 cache:                                8 MiB (8 instances)\nL3 cache:                                24.8 MiB (1 instance)\nNUMA node(s):                            1\nNUMA node0 CPU(s):                       0-15\nVulnerability Gather data sampling:      Not affected\nVulnerability Indirect target selection: Mitigation; Aligned branch/return thunks\nVulnerability Itlb multihit:             Not affected\nVulnerability L1tf:                      Not affected\nVulnerability Mds:                       Not affected\nVulnerability Meltdown:                  Not affected\nVulnerability Mmio stale data:           Vulnerable: Clear CPU buffers attempted, no microcode; SMT Host state unknown\nVulnerability Reg file data sampling:    Not affected\nVulnerability Retbleed:                  Mitigation; Enhanced IBRS\nVulnerability Spec rstack overflow:      Not affected\nVulnerability Spec store bypass:         Mitigation; Speculative Store Bypass disabled via prctl\nVulnerability Spectre v1:                Mitigation; usercopy/swapgs barriers and __user pointer sanitization\nVulnerability Spectre v2:                Mitigation; Enhanced / Automatic IBRS; IBPB conditional; PBRSB-eIBRS SW sequence; BHI SW loop, KVM SW loop\nVulnerability Srbds:                     Not affected\nVulnerability Tsa:                       Not affected\nVulnerability Tsx async abort:           Vulnerable: Clear CPU buffers attempted, no microcode; SMT Host state unknown\nVulnerability Vmscape:                   Not affected",
+  "affinity": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15
+  ],
+  "mem_total": "MemTotal:       65848892 kB",
+  "workers": [
+    1,
+    6
+  ],
+  "total_wall_s": 16.01898237699993,
+  "serial_driver_peak_rss_KiB": 49328,
+  "revision": "d423dce010e6f54d3da42f1297fa94e31bb66872",
+  "tracked_diff": "",
+  "script_sha256": "23c4cc8644c10027910db6fb3d056792dcccc6e7ac1b377fbf40b07054beebb2",
+  "protocol_sha256": "165b6d4f55db51c3fe7761ce4a5d6a269df7b40293548f1a6d5d1448b0dadb8d",
+  "dep_versions": "aiohappyeyeballs==2.7.1\naiohttp==3.14.5\naiohttp-retry==2.9.1\naiosignal==1.4.0\namqp==5.4.2\nannotated-types==0.8.0\nantlr4-python3-runtime==4.9.3\nappdirs==1.4.4\napt-listchanges==4.8\nasyncssh==2.24.1\natpublic==9.0.0\nattrs==26.1.0\nbilliard==4.3.2\ncelery==5.7.0\ncertifi==2025.1.31\ncffi==2.1.1\nchardet==5.2.0\ncharset-normalizer==3.4.2\nclick==8.5.1\nclick-didyoumean==0.3.1\nclick-plugins==1.1.1.2\nclick-repl==0.4.1\ncolorama==0.4.6\nconfigobj==5.0.9\ncryptography==50.0.2\ndbus-python==1.4.0\ndecorator==5.3.1\ndictdiffer==0.10.0\ndiskcache==5.6.3\ndistro==1.9.0\ndistro-info==1.13\ndpath==2.2.0\ndulwich==1.2.21\ndvc==3.67.1\ndvc-data==3.18.3\ndvc-gs==3.1.0\ndvc-http==2.32.0\ndvc-objects==5.3.1\ndvc-render==1.0.2\ndvc-studio-client==0.23.0\ndvc-task==0.40.2\nentrypoints==0.4.2\nfilelock==4.2.12\nflatten-dict==0.6.0\nflufl.lock==9.2.0\nfrozenlist==1.8.0\nfsspec==2026.9.0\nfuncy==2.1\ngcsfs==2026.10.1\ngitdb==4.0.12\nGitPython==3.2.1\ngoogle-api-core==2.44.0\ngoogle-auth==2.62.2\ngoogle-auth-oauthlib==1.5.0\ngoogle-cloud-core==2.8.0\ngoogle-cloud-storage==3.17.1\ngoogle-cloud-storage-control==1.17.0\ngoogle-crc32c==1.9.0\ngoogle-resumable-media==2.11.0\ngoogleapis-common-protos==1.76.0\ngrandalf==0.8\ngrpc-google-iam-v1==0.14.6\ngrpcio==1.85.3\ngrpcio-status==1.85.3\ngto==1.10.1\nhydra-core==1.3.8\nidna==3.10\niterative-telemetry==0.0.10\nkombu==5.7.0\nmarkdown-it-py==4.3.0\nmdurl==0.1.2\nmultidict==7.2.1\nnetworkx==3.7\noauthlib==4.0.1\nomegaconf==2.3.1\nopentelemetry-api==1.45.2\norjson==3.13.0\npackaging==25.0\npathspec==1.1.1\nplatformdirs==4.14.7\nprompt_toolkit==3.0.53\npropcache==0.5.4\nproto-plus==1.29.0\nprotobuf==7.36.2\npsutil==7.2.2\npyasn1==0.6.5\npyasn1_modules==0.4.2\npycparser==3.12\npydantic==2.14.3\npydantic-settings==2.16.3\npydantic_core==2.50.4\npydot==4.0.1\npygit2==1.21.0\nPygments==2.21.0\nPyGObject==3.50.0\npygtrie==2.6.2\npyparsing==3.3.3\npython-apt==3.0.0\npython-dateutil==2.9.0.post0\npython-debian==1.0.1\npython-debianbts==4.1.1\npython-dotenv==1.2.4\nPyYAML==6.0.2\nreportbug==13.2.0\nrequests==2.34.2\nrequests-oauthlib==2.0.0\nrich==15.0.0\nruamel.yaml==0.19.1\nscmrepo==3.6.2\nsemver==3.1.2\nshortuuid==1.0.13\nshtab==1.13.0\nsix==1.17.0\nsmmap==5.0.3\nsqltrie==0.11.3\nssh-import-id==5.10\ntabulate==0.10.0\ntomlkit==0.15.2\ntqdm==4.70.1\ntyping-inspection==0.4.5\ntyping_extensions==4.16.0\ntzlocal==5.4.5\nunattended-upgrades==0.1\nurllib3==2.3.0\nvine==5.1.0\nvoluptuous==0.16.0\nwcwidth==0.9.4\nwheel==0.46.1\nyarl==1.25.1\nzc.lockfile==4.1",
+  "limits": "Limit                     Soft Limit           Hard Limit           Units     \nMax cpu time              unlimited            unlimited            seconds   \nMax file size             unlimited            unlimited            bytes     \nMax data size             unlimited            unlimited            bytes     \nMax stack size            8388608              unlimited            bytes     \nMax core file size        0                    unlimited            bytes     \nMax resident set          unlimited            unlimited            bytes     \nMax processes             256896               256896               processes \nMax open files            524288               524288               files     \nMax locked memory         8388608              8388608              bytes     \nMax address space         unlimited            unlimited            bytes     \nMax file locks            unlimited            unlimited            locks     \nMax pending signals       256896               256896               signals   \nMax msgqueue size         819200               819200               bytes     \nMax nice priority         0                    0                    \nMax realtime priority     0                    0                    \nMax realtime timeout      unlimited            unlimited            us        \n",
+  "command": "python3 python/sherlock/eval/final_replay.py",
+  "network": "Python audit hook denies socket.connect and DNS"
+}

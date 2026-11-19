@@ -1,0 +1,5 @@
+method,conditions,exact,no_set,bias_named,forks
+Sherlock,1110,1110,0,0,3330
+All changed writes,1110,370,0,555,0
+Singleton restores,1110,740,370,0,2035
+Exhaustive eligible restores,1110,1110,0,0,3330

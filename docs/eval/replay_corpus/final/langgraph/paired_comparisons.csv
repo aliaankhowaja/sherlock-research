@@ -1,0 +1,4 @@
+baseline,questions,sherlock_only_all_correct,baseline_only_all_correct,mean_accuracy_gain,bootstrap_low,bootstrap_high,mcnemar_p,holm_p
+All changed writes,185,185,0,0.6666666666666667,0.6666666666666667,0.6666666666666667,4.078315292499078e-56,1.2234945877497233e-55
+Singleton restores,185,185,0,0.33333333333333337,0.33333333333333337,0.33333333333333337,4.078315292499078e-56,1.2234945877497233e-55
+Exhaustive eligible restores,185,0,0,0.0,0.0,0.0,1.0,1.0
