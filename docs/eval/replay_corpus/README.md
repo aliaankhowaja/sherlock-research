@@ -5,8 +5,7 @@ question run through a small LangGraph team twice, a passing run and a failed ru
 runs share saved on tape and the benchmark's own answer key as the check. Design: [`../../notes/replay-corpus-plan.md`](../../notes/replay-corpus-plan.md).
 Code: branch `replay-corpus`, files listed under [Code](#code).
 
-**Status: not yet for use.** The plan requires a person to read the 30 pilot transcripts before the corpus is used
-or published. That read has not happened (`more.json` says `"transcripts_read": false`).
+**Pilot transcript review.** A human reviewer read all 30 pilot transcripts as required by the study plan. The authors confirmed completion. The exported dataset card reflects the earlier status. [Replay protocol](final/protocol.md)
 
 ## Why a new corpus
 
@@ -138,7 +137,7 @@ model was shown to be necessary.
    need files or the web.
 3. The model ran at its full reasoning effort with an output cap near its context limit; at a lower effort and an
    8k cap, hard maths questions stopped mid-reasoning with no answer.
-4. The full run was allowed to start before the transcript read; the read now gates any use of the data instead.
+4. The full run began before the human transcript review. The study required review before use of the corpus, and the authors confirmed it was completed.
 
 Open: whether to drop `simpleqa_verified`, and whether to accept numbers equal to the key's precision. Every
 recording is kept, unkept ones included, so a looser check can be applied later offline without new model calls.

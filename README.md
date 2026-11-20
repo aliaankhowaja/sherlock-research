@@ -104,7 +104,7 @@ The final paired ablations isolate gate contributions on the seven planted teams
 
 ### Replay corpus
 
-[Read the first manuscript draft](docs/paper/sherlock.md).
+Read the [manuscript](docs/paper/sherlock.pdf) or its [LaTeX source](docs/paper/sherlock.tex).
 
 The CPU replay evaluation crosses three fault assignments with decoy on/off for every retained question. The LangGraph server report contains the paired comparisons, budget curves, independent repeat and machine specifications. The search-efficiency study uses the separate generated workflow test split. [LangGraph server results](docs/eval/replay_corpus/final/langgraph/results.md) · [Generated workflow efficiency results](docs/eval/search_efficiency/results.md)
 
@@ -114,4 +114,4 @@ For the paper, “minimal” means **inclusion-minimal**. Restoring the set make
 
 The generation report, design plan, recorder, team and their tests were copied from product commit `0ebaf3fdb5f8367362957d649e88e2e9f9c751fc`. The report documents the pinned sources, eligibility rules, model settings, exclusions and changes from the plan. [Generation report](docs/eval/replay_corpus/README.md) · [Design plan](docs/notes/replay-corpus-plan.md) · [Public-trace conversion notes](docs/notes/public-trace-conversion.md)
 
-The generation report and exported card describe pilot review at export time. The later raw run summary records `transcripts_read: true` and an empty problems list. The accompanying review note records human confirmation that all 30 pilot transcripts were read. [Raw run summary](../sherlock-data/sherlock-replay-run-raw/replay_corpus_raw/more.json) · [Pilot review note](../sherlock-data/pilot-transcripts.md)
+A human reviewer read all 30 pilot transcripts. The authors confirmed completion. The dataset card preserves the status recorded at export time. [Corpus generation report](docs/eval/replay_corpus/README.md) · [Replay protocol](docs/eval/replay_corpus/final/protocol.md)
