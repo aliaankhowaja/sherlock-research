@@ -27,7 +27,7 @@ Ali Aan & Ibraheem Farooq & Wajih ur raza\\
 \begin{document}
 \maketitle
 \begin{abstract}
-In an LLM agent workflow, several distinct configuration changes can repair the same failed execution. A successful replay establishes what one change achieves but leaves open whether a maintainer has found every inclusion-minimal repair. Sherlock restores selected node configurations from a passing reference and re-executes the failed workflow from a checkpoint against recorded external replies. We compare two ways to establish coverage when a replay can pass, fail, or lack a matching reply. The production search infers subset failures under monotonicity. A direct-evidence search instead tests candidates in ascending cardinality and omits only sets that already contain a passing witness. On 86 planted failures, production recovered 84 exact families at ten queries and conditionally certified 82. On 40 antagonistic controls it missed every repair, whereas direct search recovered all 40 at a budget of 40, certifying 20. Across all 127 nontrivial three-node predicates with a failed empty set and four inert candidates, production marked 21 incorrect families complete. Direct search certified all 127 at full budget. This assurance has a measurable cost: on 100 monotone workflows, direct search averaged 35.11 queries against 6.67 for forced duality. The choice between these procedures therefore turns on what can be established about the workflow's behavior under additional restores.
+In an LLM agent workflow, several distinct configuration changes can repair the same failed execution. A successful replay establishes what one change achieves but leaves open whether a maintainer has found every inclusion-minimal repair. Sherlock restores selected node configurations from a passing reference and re-executes the failed workflow from a checkpoint against recorded external replies. We compare two ways to establish coverage when a replay can pass, fail, or leave the intervention unresolved. The production search infers subset failures under monotonicity. A direct-evidence search instead tests candidates in ascending cardinality and omits only sets that already contain a passing witness. On 86 planted failures, production recovered 84 exact families at ten queries and conditionally certified 82. On 40 antagonistic controls it missed every repair, whereas direct search recovered all 40 at a budget of 40, certifying 20. Across all 127 nontrivial three-node predicates with a failed empty set and four inert candidates, production marked 21 incorrect families complete. Direct search certified all 127 at full budget. This assurance has a measurable cost: on 100 monotone workflows, direct search averaged 35.11 queries against 6.67 for forced duality. The choice between these procedures therefore turns on what can be established about the workflow's behavior under additional restores.
 \end{abstract}
 \section{Introduction}
 In a workflow built around a large language model (LLM), a model call can sit between ordinary software components that select evidence, parse a reply, or write the final answer. Each component reads state left by its predecessors. An incorrect answer may first become visible at the last writer even when that writer processed its input correctly. Conversely, a changed intermediate value may be harmless if no successor reads it. Studies of multi-agent traces identify both coordination failures and failures of task verification across systems \cite{cemri,zhang}. For a maintainer who has a reproducible failed check, the immediate question is which changes would make that check pass.
@@ -60,6 +60,8 @@ Causal Agent Replay intervenes at an agent step and samples continuations under 
 
 ReplayRCA restores the environment preceding a chosen step. It compares continuation after a replacement action with continuation after the original action through the same replay mechanism. Its post-hoc and live-oversight tracks evaluate whether a diagnostician can improve outcomes by intervening once \cite{replayrca}. The placebo controls for variation introduced by continuation, which a simple comparison against the historical failure would confound with the intervention. Finding two disjoint configuration repairs, or a necessary pair whose individual restores fail, requires a different experimental design. It requires a defined universe of configurations and queries about subsets of that universe. A single-action success rate leaves that family unidentified even when estimated precisely.
 
+Li et al. recover inclusion-minimal repair families by replacing messages with their clean counterparts and replaying the workflow \cite{li}. Their Graph-Constrained Joint Replay (GCJR) tests single events and causally incomparable pairs. It recovered the exact family on all 90 in-scope synthetic DAGs and all 24 cases in a model pilot, and abstained on all 30 sequential-joint controls. Sherlock restores node configurations and asks when the observed verdicts certify a family even if some interventions remain unresolved. We did not compare the methods on a common benchmark.
+
 \paragraph{From isolating a change to enumerating alternatives.}
 Zeller's work on yesterday's passing version and today's failing version tests subsets of their differences to isolate a failure-inducing change \cite{yesterday}. A passing reference is valuable for the same reason here: it supplies concrete configuration values to try. Zeller and Hildebrandt formalize reduction by repeated tests on subsets and complements and distinguish one-element minimality from stronger notions of minimality. Their testing framework also admits unresolved outcomes \cite{zeller}. A reduction that terminates when no single element can be removed can miss a smaller passing subset when the predicate is non-monotone. Zeller's work on cause-effect chains applies interventions at successive program states to trace how a value difference propagates to a failure \cite{chains}. This motivates recomputing downstream state after a patch. A chain through program states and a family of alternative interventions describe different aspects of the same failure.
 
@@ -76,6 +78,7 @@ Pakhomov and Nijkamp show why repeatability alone is insufficient: two restored 
 Study & Observation or intervention & Output and coverage condition\\\midrule
 Who\&When / Pro & Annotate a trace or inject a labeled fault & Agent or step label. Repair-subset outcomes unmeasured.\\
 CAR / ReplayRCA & Replace a decision and sample continuations & Effect estimate or placebo-adjusted success. Alternative configuration sets untested.\\
+GCJR & Restore messages and replay & Minimal event sets within a graph-constrained domain of singletons and pairs.\\
 Delta debugging & Test subsets of input differences & Reduced example under the test predicate. Unresolved tests constrain minimality.\\
 Partial MUS enumeration & Query formula satisfiability & Multiple minimal conflicts. Exhaustion distinguishes partial from complete enumeration.\\
 Sherlock & Restore configurations on a recorded fork & Minimal repairs relative to eligible patches. Required verdicts must be observed or entailed under stated assumptions.\\\bottomrule
@@ -127,12 +130,12 @@ For the generated test split, the experiment executes every eligible subset to c
 $\boxed{\text{extract }(E)}\longrightarrow\boxed{\text{normalize }(N)}
 \longrightarrow\boxed{\text{validate}}\longrightarrow\boxed{\text{post}}$\\[4pt]
 \small
-\begin{tabular}{@{}lll@{}}\toprule
-Restore & Value seen or recovered by normalizer & Posted USD\\\midrule
-Neither (failed run) & Trust parsed amount 1 & 1.10\\
-$E$ alone & Trust corrected amount 1,200.50 & 1,320.55\\
-$N$ alone & Reparse raw text \texttt{1,200.50} & 1,320.55\\
-Both (reference configuration) & Reparse the same raw text & 1,320.55\\\bottomrule
+\begin{tabular}{@{}llrr@{}}\toprule
+Restore & Normalizer action & Amount (EUR) & Posted (USD)\\\midrule
+Neither (failed run) & Use parsed amount & 1.00 & 1.10\\
+$E$ alone & Use parsed amount & 1,200.50 & 1,320.55\\
+$N$ alone & Reparse raw text & 1,200.50 & 1,320.55\\
+Both (reference) & Reparse raw text & 1,200.50 & 1,320.55\\\bottomrule
 \end{tabular}
 \caption{The invoice example. Restoring either configuration suffices because the normalizer receives both the parsed amount and the raw text. Validation and posting rerun on the resulting state.}\label{fig:invoice}
 \end{figure}
@@ -249,7 +252,7 @@ Search eligible sets (cap 10) & 84 & 0 & 2 & 28/30 \\
 \bottomrule\end{tabular}
 \end{minipage}\end{center}
 
-\textbf{Does ranking or pruning change the outcome?} We switched G0 priority and G2 filtering independently, leaving replay active. Each configuration retained the gold nodes in all 86 cases. At cap 10, G2 saved two queries on each of seven cases and zero on the other 79. The zero paired recovery effect in Table~\ref{tab:primary} is an observed tie for every case. The eligible universe after context matching was already small. G0 had no aggregate effect on these endpoints. Lowering the cap from ten to three reduced exact recovery to 83 and certified recovery to 81 in every configuration. The three-node support-desk example below accounts for this difference.
+\textbf{Does ranking or pruning change the outcome?} We switched G0 priority and G2 filtering independently, leaving replay active. Each configuration retained the gold nodes in all 86 cases. At cap 10, G2 saved two queries on each of seven cases and zero on the other 79. The zero paired recovery effect in Table~\ref{tab:primary} is an observed tie for every case. With G2 enabled, 41 cases had one eligible candidate, 44 had two, and one had three. At cap 10 production queried every nonempty subset on all 86 cases. None reached the duality threshold of seven candidates. G0 had no aggregate effect on these endpoints. Lowering the cap from ten to three reduced exact recovery to 83 and certified recovery to 81 in every configuration. The three-node support-desk example below accounts for this difference.
 
 \begin{center}\begin{minipage}{\linewidth}\centering
 \captionof{table}{Factorial gate ablation on 86 failures. Recovery columns and the first query column use cap 10. The final column gives total queries at cap 3. Each method receives the same patches that change the failed context before filtering.}\label{tab:gates}
@@ -264,7 +267,7 @@ Off & Off & 84/86 & 82/86 & 194 & 190 \\
 \bottomrule\end{tabular}
 \end{minipage}\end{center}
 
-\textbf{When does an exact answer lack a certificate?} In the support-desk stale-cache case, restoring customer lookup alone passed and restoring the service-level node alone failed. The joint query encountered a tape miss. Sherlock returned the gold singleton and conservatively withheld its completeness flag. The revenue outlier-filter case had the same pattern. In both cases the passing singleton and failed competing singleton already determine the family over two candidates. The implementation conservatively withholds its flag after any queried tape miss. These two cases account for the entire gap between 84 exact and 82 certified at cap 10. Three harmless controls were recognized as already passing.
+\textbf{When does production withhold its completeness flag?} Two cases account for the gap between 84 exact families and 82 completeness flags at cap 10. In the support-desk case with the stale customer profile and the SLA typo, restoring customer lookup alone passed and restoring the standard SLA alone failed. In the revenue case with the 1,000 USD outlier cutoff and the incorrect warning text, restoring the outlier filter alone passed and restoring the quality note alone failed. Both joint trials returned an unknown verdict. The archived trials record no reason for either joint verdict. In each case the two singleton verdicts already determine the family because the pair contains a passing singleton. Production nevertheless withholds its flag after any queried unknown. Two separate planted cases ended with an \texttt{unrecorded\_call} abstention. Three harmless controls were recognized as already passing.
 
 
 \paragraph{Runtime experiment: crossing faults with a decoy}\label{sec:runtime}
@@ -283,7 +286,7 @@ Exhaustive restores & 1110 & 0 & 0 & 3.00 \\
 \bottomrule\end{tabular}
 \end{minipage}\end{center}
 
-All changed writes named the decoy in all 555 decoy-on conditions. Testing singletons eliminated wrong nonempty claims, but returned no set on every joint fault. At cap 40 Sherlock certified all 1,110 exact families. Exhaustive replay recovered the same families at the same mean cost. This graph supplies no observed efficiency advantage for Sherlock over exhaustive replay. With one causal fault and no decoy Sherlock needed one fork. With either a second fault or a decoy it needed three. The combination required seven on every question.
+Of the 740 incorrect diagnoses from all changed writes, 555 included the decoy. The other 185 occurred with the extraction fault alone and the decoy off. The faulty extractor changed the formatter's input, so the baseline named both nodes even though restoring extraction alone repaired the output. Testing singletons eliminated wrong nonempty claims, but returned no set on every joint fault. At cap 40 Sherlock certified all 1,110 exact families. Exhaustive replay recovered the same families at the same mean cost. This graph supplies no observed efficiency advantage for Sherlock over exhaustive replay. With one causal fault and no decoy Sherlock needed one fork. With either a second fault or a decoy it needed three. The combination required seven on every question.
 
 \begin{center}\begin{minipage}{\linewidth}\centering
 \includegraphics[width=.92\linewidth]{figures/budget.pdf}
@@ -411,7 +414,7 @@ With ten queries, Sherlock recovered 84 of 86 planted repair families and condit
 
 A prospective evaluation could enroll naturally occurring failures before diagnosis, record whether a suitable reference exists, and establish gold families independently where replay permits. Integrating the direct-evidence policy into the live server and measuring latency under realistic request costs would test whether the logical query reductions transfer to deployment.
 \begin{thebibliography}{99}\small\raggedright
-\bibitem{cemri} M. Cemri, M. Z. Pan, S. Yang, L. A. Agrawal, B. Chopra, R. Tiwari, K. Keutzer, A. Parameswaran, D. Klein, K. Ramchandran, M. A. Zaharia, J. E. Gonzalez, and I. Stoica. Why Do Multi-Agent LLM Systems Fail? \emph{NeurIPS} 38, 2025. \href{https://doi.org/10.52202/085713-4082}{Publisher record}.
+\bibitem{cemri} M. Cemri, M. Z. Pan, S. Yang, L. A. Agrawal, B. Chopra, R. Tiwari, K. Keutzer, A. Parameswaran, D. Klein, K. Ramchandran, M. A. Zaharia, J. E. Gonzalez, and I. Stoica. Why Do Multi-Agent LLM Systems Fail? \emph{Advances in Neural Information Processing Systems} 38, Datasets and Benchmarks Track, 2025. \href{https://doi.org/10.52202/085713-4082}{Publisher record}.
 \bibitem{zhang} S. Zhang, M. Yin, J. Zhang, J. Liu, Z. Han, J. Zhang, B. Li, C. Wang, H. Wang, Y. Chen, and Q. Wu. Which Agent Causes Task Failures and When? On Automated Failure Attribution of LLM Multi-Agent Systems. \emph{ICML}, PMLR 267, 76583--76599, 2025. \href{https://proceedings.mlr.press/v267/zhang25cq.html}{Proceedings}.
 \bibitem{shah} J. Shah. Causal Agent Replay: Counterfactual Attribution for LLM-Agent Failures. \emph{arXiv preprint}, 2026. \href{https://arxiv.org/abs/2606.08275}{arXiv:2606.08275}.
 \bibitem{replayrca} J. Canale and F. Soulis. ReplayRCA: Measuring Post-hoc Diagnosis and Live Oversight of Agent Failures by Counterfactual Replay. \emph{arXiv preprint}, 2026. \href{https://arxiv.org/abs/2610.41025}{arXiv:2610.41025}.
@@ -426,5 +429,6 @@ A prospective evaluation could enroll naturally occurring failures before diagno
 \bibitem{r2} Z. Guo, X. Wang, J. Tang, X. Liu, Z. Xu, M. Wu, M. F. Kaashoek, and Z. Zhang. R2: An Application-Level Kernel for Record and Replay. \emph{OSDI}, 193--208, 2008. \href{https://www.usenix.org/legacy/event/osdi08/tech/full_papers/guo/guo.pdf}{Proceedings}.
 \bibitem{rr} R. O'Callahan, C. Jones, N. Froyd, K. Huey, A. Noll, and N. Partush. Engineering Record and Replay for Deployability. \emph{USENIX ATC}, 377--389, 2017. \href{https://www.usenix.org/conference/atc17/technical-sessions/presentation/ocallahan}{Proceedings}.
 \bibitem{pakhomov} E. Pakhomov and E. Nijkamp. Attributing Agent Failures to Their History Needs an Executed Counterfactual: Toward a Reporting Standard. \emph{arXiv preprint}, 2026. \href{https://arxiv.org/abs/2611.05650}{arXiv:2611.05650}.
+\bibitem{li} B. Li, Y. Song, Z. Yao, and T. Li. Localizing Emergent Failures in Agentic AI: Recovering Minimal Repair Families via Counterfactual Replay. \emph{arXiv preprint}, 2026. \href{https://arxiv.org/abs/2608.29228}{arXiv:2608.29228}.
 \end{thebibliography}
 \end{document}
